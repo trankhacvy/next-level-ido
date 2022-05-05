@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased text-base bg-gray-900 text-gray-400;
+  }
+}
+
+@layer utilities {
+  .bg-gradient {
+    background: #12c2e9;
+    background: -webkit-linear-gradient(to right, #f64f59, #c471ed, #12c2e9); 
+    background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9); 
+  }
+
+  .text-title {
+    @apply text-white text-4xl md:text-5xl text-center font-bold;
+  }
+
+  .border-gradient {
+      position: relative;
+  }
+
+  .border-gradient:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    margin: -5px;
+    border-radius: inherit;
+    background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+  }
+}
+
