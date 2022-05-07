@@ -12,7 +12,7 @@
     "lint": "next lint",
     "build-types": "tsc --noEmit --pretty",
     "test": "jest --watch",
-    "prepare": "husky install"
+    "prepare": "cd .. && husky install app/.husky"
   },
   "dependencies": {
     "@headlessui/react": "^1.6.1",
@@ -61,7 +61,7 @@
     "eslint-plugin-tailwindcss": "^3.5.0",
     "eslint-plugin-testing-library": "^5.3.1",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "husky": "^7.0.4",
+    "husky": ">=6",
     "jest": "^28.0.2",
     "jest-environment-jsdom": "^28.0.2",
     "lint-staged": "^12.4.1",
