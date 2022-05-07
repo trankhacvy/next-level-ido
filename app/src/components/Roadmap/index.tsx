@@ -35,7 +35,11 @@ const Roadmap = () => {
       <div className="relative py-10 max-w-screen-lg mx-auto mt-10">
         <div className="absolute w-[2px] h-full left-1/2 top-0 bg-white" />
         {RoadmapData.map((item, idx) => (
-          <RoadmapItem key={item.title} {...item} isRight={idx % 2 !== 0} />
+          <RoadmapItem
+            key={`${item.title}-${idx}`}
+            {...item}
+            isRight={idx % 2 !== 0}
+          />
         ))}
       </div>
     </section>

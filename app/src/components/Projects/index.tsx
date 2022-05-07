@@ -1,3 +1,4 @@
+import Link from "next/link";
 import ProjectItem from "./ProjectItem";
 
 const Projects = () => {
@@ -9,6 +10,13 @@ const Projects = () => {
         <ProjectItem />
         <ProjectItem />
         <ProjectItem />
+      </div>
+      <div className="text-center mt-8">
+        <Link href="/projects">
+          <a href="/projects" className="inline-block btn-secondary">
+            All Projects
+          </a>
+        </Link>
       </div>
     </section>
   );
