@@ -1,27 +1,34 @@
+import Link from "next/link";
 import { SVGProps } from "react";
 
 const Hero = () => {
   return (
-    <section className="py-20 overflow-hidden">
-      <div className="container mx-auto px-5 mt-8 lg:mt-0 lg:flex lg:items-center lg:space-x-28">
-        <div className="flex-1">
-          <h1 className="max-w-lg text-gradient text-4xl tracking-none leading-tight lg:text-4xl xl:text-6xl font-extrabold">
-            The Next-Level <b>IDO Platform</b>
-          </h1>
-          <p className="text-xl text-gray-300 mt-6">
-            Loto is the next-level IDO platform built on Solana with the needs
-            of both projects and investors alike.
-          </p>
-          <div className="mt-10 md:flex lg:space-x-8">
-            <button className="btn-primary">Enter App</button>
-            <button className="btn-secondary">Learn more</button>
+    <section className="md:h-screen">
+      <div className="container h-full mx-auto px-4 md:px-6 lg:flex lg:items-center">
+        <div className="py-[120px] lg:flex lg:items-center">
+          <div className="text-center lg:text-left lg:max-w-[41%]">
+            <h1 className="text-4xl lg:text-5xl xl:text-[4rem] !leading-tight font-bold">
+              The Next-Level <br /> <b>IDO Platform</b>
+            </h1>
+            <p className="mt-10 text-gray-600 leading-relaxed">
+              Loto is the next-level IDO platform built on Solana with the needs
+              of both projects and investors alike.
+            </p>
+            <div className="mt-10 lg:flex space-y-4 lg:space-y-0 space-x-4">
+              <Link href="/stake">
+                <a href="/stake" className="btn-large btn-primary inline-flex items-center">
+                  Stake $LOTO
+                </a>
+              </Link>
+              <button className="btn-large btn-secondary inline-flex items-center">Learn more</button>
+            </div>
           </div>
+          <figure className="hidden lg:block lg:flex-1 relative min-h-[600px]">
+            <img src="/assets/images/hero-bg.png" />
+            <Figure1 />
+            <Figure2 />
+          </figure>
         </div>
-        <figure className="hidden lg:block lg:flex-1 relative min-h-[600px]">
-          <img src="/assets/images/hero-bg.png" />
-          <Figure1 />
-          <Figure2 />
-        </figure>
       </div>
     </section>
   );
@@ -210,7 +217,6 @@ const Figure1 = (props: SVGProps<SVGSVGElement>) => (
     </defs>
   </svg>
 );
-
 
 const Figure2 = (props: SVGProps<SVGSVGElement>) => (
   <svg

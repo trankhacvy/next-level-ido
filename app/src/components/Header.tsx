@@ -30,8 +30,8 @@ const Header = () => {
   return (
     <header
       className={cx(
-        "fixed z-20 w-full h-[70px] px-5 md:px-8 flex items-center justify-between bg-header/50 backdrop-filter backdrop-blur-md",
-        { "border-b border-b-gray-500": showOnScroll }
+        "fixed z-20 w-full px-5 md:px-8 h-16 bg-white/80 flex items-center justify-between backdrop-blur shadow-none transition-[height] duration-300",
+        showOnScroll ? "md:h-[76px]" : "md:h-[96px]"
       )}
     >
       <a href="/" className="block cursor-pointer">
@@ -43,20 +43,27 @@ const Header = () => {
           <MenuIcon className="w-5 h-5" />
         </button>
         <ul className="hidden lg:flex items-center lg:space-x-5">
-          {Menus.map((item) => (
+          {Menus.map((item, idx) => (
             <li key={item.text}>
               <a
                 className="cursor-pointer inline-block focus:bg-indigo-500/30"
                 href={item.href}
               >
-                <span className="inline-block text-white font-semibold px-4 py-2 rounded-md hover:bg-indigo-500/30 transition-[background-color] transition-300">
+                <span
+                  className={cx(
+                    "inline-block text-body2 font-medium px-4 py-2 text-gray-600 hover:opacity-70",
+                    {
+                      "text-gray-800": idx === 0,
+                    }
+                  )}
+                >
                   {item.text}
                 </span>
               </a>
             </li>
           ))}
           <li>
-            <WalletMultiButton className="btn-primary" />
+            <WalletMultiButton className="btn btn-primary" />
           </li>
         </ul>
       </nav>

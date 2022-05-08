@@ -25,7 +25,7 @@ const ProjectDetail = () => {
 
   return (
     <div className="w-full mt-10">
-      <div className="flex rounded-lg bg-gray-700">
+      <div className="flex">
         <aside className="w-1/4 block">
           <nav className="sticky top-[70px] p-6">
             {Sections.map((sec, idx) => (

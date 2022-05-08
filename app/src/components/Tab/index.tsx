@@ -18,14 +18,14 @@ const Tabbar = ({ tabs, onChange, defaultIndex }: TabbarProps) => {
 
   return (
     <Tab.Group defaultIndex={defaultIndex} onChange={onChange}>
-      <Tab.List className="flex items-center justify-center space-x-10 h-20 p-1">
+      <Tab.List className="flex items-center space-x-8">
         {tabs.map((tab) => (
           <Tab
             key={tab.label}
             className={({ selected }) =>
               cx(
-                "rounded-lg font-semibold hover:bg-transparent transition-[font-size]",
-                selected ? "text-white text-4xl" : "text-slate-400 text-3xl"
+                "text-body2 font-semibold pb-3 border-b-2 border-b-transparent hover:opacity-70",
+                selected ? "text-gray-800 border-b-primary" : "text-gray-600"
               )
             }
           >

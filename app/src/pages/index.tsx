@@ -1,8 +1,9 @@
 import Head from "next/head";
-import Hero from "components/Hero";
+import Hero from "views/home/Hero";
 import Projects from "components/Projects";
-import Roadmap from "components/Roadmap";
-import Statistic from "components/Statistic";
+import Statistic from "views/home/Statistic";
+import Feature1 from "views/home/Feature1";
+import StartNow from "views/home/StartNow";
 import TierSystem from "components/Tier";
 
 const Index = () => {
@@ -16,10 +17,11 @@ const Index = () => {
         />
       </Head>
       <Hero />
-      <Projects />
-      <TierSystem />
-      <Roadmap />
       <Statistic />
+      <Projects />
+      <Feature1 />
+      <TierSystem />
+      <StartNow />
     </main>
   );
 };

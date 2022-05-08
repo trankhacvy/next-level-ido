@@ -2,41 +2,44 @@ import CheckIcon from "@heroicons/react/solid/CheckIcon";
 
 const Tier = () => {
   return (
-    <div className="rounded-lg shadow-md bg-gray-700 ooverflow-hidden hover:border-gradient">
+    <div className="card overflow-hidden">
       <div className="w-full h-[240px] bg-gray-600"></div>
-      <div className="px-4 py-5 space-y-4">
-        <span className="px-6 py-2 uppercase font-semibold rounded-full bg-white text-blue-900">
+      <div className="px-5 py-5 space-y-5">
+        <span className="px-3 py-1 uppercase rounded-md text-body2 text-white bg-gray-800 font-semibold">
           Gold
         </span>
-        <div className="space-x-1">
-          <span className="text-3xl font-semibold text-white">210</span>
-          <span className="text-xl font-medium">SOL</span>
+        <div className="space-x-1 flex items-baseline">
+          <h3 className="text-h3 font-semibold">210</h3>
+          <span className="text-body2 font-medium">SOL</span>
         </div>
-        <p>
+        <p className="text-body1">
           Guaranteed allocation of the amount of 210 PSOL in dollars at the time
           of the participation.
         </p>
         <ul>
-          <li className="flex items-center">
+          <li className="flex">
             <div className="mr-4">
-              <CheckIcon className="text-white w-6 h-6" />
+              <CheckIcon className="text-gray-800 w-6 h-6" />
             </div>
-            <p>
+            <p className="text-body2">
               Dynamic Vesting Period:{" "}
-              <span className="text-white font-semibold">12 weeks</span>
+              <span className="font-semibold">12 weeks</span>
             </p>
           </li>
           <li className="flex items-center">
             <div className="mr-4">
-              <CheckIcon className="text-white w-6 h-6" />
+              <CheckIcon className="text-gray-800 w-6 h-6" />
             </div>
-            <p>
+            <p className="text-body2">
               Dynamic Vesting Period:{" "}
-              <span className="text-white font-semibold">12 weeks</span>
+              <span className="font-semibold">12 weeks</span>
             </p>
           </li>
         </ul>
-        <button className="w-full text-white font-semibold px-8 py-3 bg-gradient rounded-md">
+      </div>
+      <hr className="border-t border-t-gray-500/[0.24] border-dashed" />
+      <div className="p-5">
+        <button className="btn-large btn-primary w-full font-semibold">
           Join Now
         </button>
       </div>

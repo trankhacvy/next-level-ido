@@ -1,5 +1,5 @@
-import "../styles/global.css";
 import "@solana/wallet-adapter-react-ui/styles.css";
+import "../styles/global.css";
 import { useMemo } from "react";
 import { AppProps } from "next/app";
 import Header from "components/Header";

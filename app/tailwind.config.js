@@ -1,28 +1,66 @@
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    fontSize: {
-      xs: '0.75rem',
-      sm: '0.875rem',
-      base: '1rem',
-      lg: '1.125rem',
-      xl: '1.25rem',
-      '2xl': '1.5rem',
-      '3xl': '1.875rem',
-      '4xl': '2.25rem',
-      '5xl': '3rem',
-      '6xl': '4rem',
-    },
     extend: {
       colors: {
-        'header': '#191D1B',
+        primary: '#FA541C',
+        'primary-dark': '#B3200E',
         gray: {
-          700: '#323232',
-          900: '#212121',
+          100: '#F9FAFB',
+          200: '#F4F6F8',
+          300: '#DFE3E8',
+          400: '#C4CDD5',
+          500: '#919EAB',
+          600: '#637381',
+          700: '#454F5B',
+          800: '#212B36',
+          900: '#161C24',
         },
       },
       spacing: {
         '28': '7rem',
+      },
+      fontSize: {
+        h1: ['64px', {
+          lineHeight: '80px',
+        }],
+        h2: ['48px', {
+          lineHeight: '64px',
+        }],
+        h3: ['36px', {
+          lineHeight: '54px',
+        }],
+        h4: ['34px', {
+          lineHeight: '51px',
+        }],
+        h5: ['20px', {
+          lineHeight: '30px',
+        }],
+        h6: ['18px', {
+          lineHeight: '28px',
+        }],
+        body1: ['16px', {
+          lineHeight: '28px',
+        }],
+        body2: ['14px', {
+          lineHeight: '26px',
+        }],
+        caption: ['12px', {
+          lineHeight: '20px',
+        }],
+        'button-medium': ['14px', {
+          lineHeight: '24px',
+        }],
+        'button-large': ['15px', {
+          lineHeight: '26px',
+        }]
+      },
+      padding: {
+        30: '120px'
+      },
+      boxShadow: {
+        z12: '-12px 12px 48px -4px rgba(145, 158, 171, 0.12)',
+        z16: '-16px 16px 56px -8px rgba(145, 158, 171, 0.16)',
       }
     },
   },
