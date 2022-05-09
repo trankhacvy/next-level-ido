@@ -1,48 +1,60 @@
-import CheckIcon from "@heroicons/react/solid/CheckIcon";
+import cx from "classnames";
+import { FaCheck } from "react-icons/fa";
 
-const Tier = () => {
+export type TierProps = {
+  index: number;
+};
+
+const getShadowStyle = (index: number) => {
+  switch (index) {
+    case 0:
+      return "shadow-z4";
+    case 1:
+      return "shadow-z12";
+    case 2:
+      return "shadow-z16";
+    default:
+      return "shadow-z4";
+  }
+};
+
+const Tier = ({ index }: TierProps) => {
   return (
-    <div className="card overflow-hidden">
-      <div className="w-full h-[240px] bg-gray-600"></div>
-      <div className="px-5 py-5 space-y-5">
-        <span className="px-3 py-1 uppercase rounded-md text-body2 text-white bg-gray-800 font-semibold">
-          Gold
-        </span>
-        <div className="space-x-1 flex items-baseline">
-          <h3 className="text-h3 font-semibold">210</h3>
-          <span className="text-body2 font-medium">SOL</span>
+    <div
+      className={cx(
+        "bg-white rounded-2xl overflow-hidden p-10",
+        getShadowStyle(index)
+      )}
+    >
+      <div>
+        <h4 className="text-h5 font-bold text-primary mb-4">Basic</h4>
+        <p className="text-h5 font-semibold">$210</p>
+      </div>
+      <p className="text-body2 mt-6 text-gray-600">
+        Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique
+        sapien
+      </p>
+      <div className="py-10 space-y-4">
+        <div className="flex text-body2">
+          <div>
+            <FaCheck className="w-5 h-5 text-primary" />
+          </div>
+          <p className="ml-4">
+            Guaranteed allocation of the amount of 210 PSOL in dollars at the
+            time of the participation.
+          </p>
         </div>
-        <p className="text-body1">
-          Guaranteed allocation of the amount of 210 PSOL in dollars at the time
-          of the participation.
-        </p>
-        <ul>
-          <li className="flex">
-            <div className="mr-4">
-              <CheckIcon className="text-gray-800 w-6 h-6" />
-            </div>
-            <p className="text-body2">
-              Dynamic Vesting Period:{" "}
-              <span className="font-semibold">12 weeks</span>
-            </p>
-          </li>
-          <li className="flex items-center">
-            <div className="mr-4">
-              <CheckIcon className="text-gray-800 w-6 h-6" />
-            </div>
-            <p className="text-body2">
-              Dynamic Vesting Period:{" "}
-              <span className="font-semibold">12 weeks</span>
-            </p>
-          </li>
-        </ul>
+        <div className="flex text-body2">
+          <div>
+            <FaCheck className="w-5 h-5 text-primary" />
+          </div>
+          <p className="ml-4">
+            Dynamic Vesting Period:{" "}
+            <span className="font-semibold">12 weeks</span>
+          </p>
+        </div>
       </div>
-      <hr className="border-t border-t-gray-500/[0.24] border-dashed" />
-      <div className="p-5">
-        <button className="btn-large btn-primary w-full font-semibold">
-          Join Now
-        </button>
-      </div>
+      <button className="btn-large btn-primary w-full">Join Now</button>
     </div>
   );
 };

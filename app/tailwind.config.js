@@ -59,10 +59,13 @@ module.exports = {
         30: '120px'
       },
       boxShadow: {
+        z4: '-4px 4px 24px 0px rgba(145, 158, 171, 0.12)',
         z12: '-12px 12px 48px -4px rgba(145, 158, 171, 0.12)',
         z16: '-16px 16px 56px -8px rgba(145, 158, 171, 0.16)',
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+  ],
 };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import MenuIcon from "@heroicons/react/outline/MenuIcon";
+import { FaHamburger } from "react-icons/fa";
 import cx from "classnames";
 import { useScrollPosition } from "hooks/useScrollPosition";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
@@ -40,7 +40,7 @@ const Header = () => {
       <nav>
         <button className="flex lg:hidden items-center space-x-2 font-semibold px-4 py-2 rounded bg-indigo-500">
           <span>Menu</span>
-          <MenuIcon className="w-5 h-5" />
+          <FaHamburger className="w-5 h-5" />
         </button>
         <ul className="hidden lg:flex items-center lg:space-x-5">
           {Menus.map((item, idx) => (

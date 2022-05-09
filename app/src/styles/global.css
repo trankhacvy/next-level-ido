@@ -4,8 +4,12 @@
 
 @layer base {
   body {
-    @apply antialiased text-base text-gray-800 bg-white;
+    @apply antialiased text-base text-gray-800;
     font-family: 'Poppins', sans-serif;
+    background: linear-gradient(rgba(145, 158, 171, 0), rgba(145, 158, 171, 0.12))
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Barlow', sans-serif;
   }
 }
 
