@@ -33,17 +33,19 @@ export const getStaticProps = async () => {
   try {
     const repo = new ProjectsRepositoty();
     const projects = await repo.findByStatus("live", 6);
-
+    console.log('[index] getStaticProps ', projects.length)
     return {
       props: {
         projects: projects as Project[],
       },
+      revalidate: 60,
     };
   } catch (error) {
     return {
       props: {
         projects: [] as Project[],
       },
+      revalidate: 60,
     };
   }
 };
