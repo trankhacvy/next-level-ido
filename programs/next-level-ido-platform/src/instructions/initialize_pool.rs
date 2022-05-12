@@ -9,7 +9,7 @@ pub struct InitializePool<'info> {
         payer = initializer,
         mint::decimals = token_mint.decimals,
         mint::authority = x_token_mint,
-        seeds = ["mint".as_ref(), token_mint.key().as_ref()],
+        seeds = [b"mint", token_mint.key().as_ref()],
         bump
     )]
     x_token_mint: Account<'info, Mint>,
@@ -18,7 +18,7 @@ pub struct InitializePool<'info> {
         payer = initializer,
         token::mint = token_mint,
         token::authority = token_vault,
-        seeds = ["vault".as_ref(), token_mint.key().as_ref()],
+        seeds = [b"vault", token_mint.key().as_ref()],
         bump
     )]
     pub token_vault: Account<'info, TokenAccount>,

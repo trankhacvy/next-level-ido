@@ -3,8 +3,8 @@ import StakeForm from "./StakeForm";
 
 const StakeTab = () => {
   const tabs = [
-    { label: "Stake", content: <StakeForm /> },
-    { label: "Unstake", content: <StakeForm /> },
+    { label: "Stake", content: <StakeForm type="stake" /> },
+    { label: "Unstake", content: <StakeForm type="unstake" /> },
   ];
 
   return (

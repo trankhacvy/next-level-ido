@@ -48,6 +48,17 @@ pub struct Pool {
     pub trailer: [u8; 31],
 }
 
+#[account]
+#[derive(Default)]
+pub struct User {
+    pub owner: Pubkey,
+    pub staked_amount: u64,
+}
+
+impl User {
+    pub const SIZE: usize = 8 + 32 + 8;
+}
+
 #[event]
 pub struct PriceChange {
     pub old_step_per_xstep_e9: u64,

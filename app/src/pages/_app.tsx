@@ -46,5 +46,5 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     </ConnectionProvider>
   );
 };
-
+console.log("NEXT_PUBLIC_MINT_TOKEN", process.env.NEXT_PUBLIC_MINT_TOKEN);
 export default MyApp;

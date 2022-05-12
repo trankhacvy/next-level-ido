@@ -1,3 +1,5 @@
+import Button from "components/Button";
+
 const Statistic = () => {
   return (
     <section className="container mx-auto px-5 py-16 lg:py-30">
@@ -11,13 +13,28 @@ const Statistic = () => {
           />
           <div className="py-10">
             <h6 className="text-h4 font-semibold">Buy $LOTO</h6>
-            <p className="text-body2 mt-2 text-gray-600">
-              Nunc nonummy metus. Donec elit libero
-            </p>
           </div>
           <div className="flex justify-between space-x-4">
-            <button className="btn btn-primary w-1/2">KuCoin</button>
-            <button className="btn btn-primary w-1/2">QuickSwap</button>
+            <Button
+              className="w-1/2"
+              size="large"
+              variant="secondary"
+              as="a"
+              href="https://raydium.io/"
+              target="_blank"
+            >
+              <img src="/assets/svg/raydium-icon.svg" />
+            </Button>
+            <Button
+              className="w-1/2"
+              size="large"
+              variant="secondary"
+              as="a"
+              href="https://www.kucoin.com/"
+              target="_blank"
+            >
+              <img src="/assets/svg/kucoin-icon.svg" />
+            </Button>
           </div>
         </div>
         <div className="text-center bg-white rounded-2xl shadow-z12 px-10 py-16">
@@ -33,9 +50,9 @@ const Statistic = () => {
               Lock $LOTO and get access to our upcoming IDO on Loto
             </p>
           </div>
-          <div>
-            <button className="btn btn-primary inline-block">Lock $LOTO</button>
-          </div>
+          <Button className="w-1/2" size="large" variant="primary">
+            Lock $LOTO
+          </Button>
         </div>
         <div className="text-center bg-white rounded-2xl shadow-z16 px-10 py-20">
           <img
@@ -50,7 +67,9 @@ const Statistic = () => {
               Earn up to 200% APY in $LOTO rewards by staking your LP tokens
             </p>
           </div>
-          <button className="btn btn-primary inline-block">Earn $LOTO</button>
+          <Button className="w-1/2" size="large" variant="primary">
+            Earn $LOTO
+          </Button>
         </div>
       </div>
     </section>

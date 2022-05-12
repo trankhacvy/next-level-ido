@@ -1,8 +1,12 @@
 import cx from "classnames";
+import Button from "components/Button";
+import numeral from "numeral";
 import { FaCheck } from "react-icons/fa";
+import { Tier } from "types/common";
 
 export type TierProps = {
   index: number;
+  tier: Tier;
 };
 
 const getShadowStyle = (index: number) => {
@@ -18,17 +22,19 @@ const getShadowStyle = (index: number) => {
   }
 };
 
-const Tier = ({ index }: TierProps) => {
+const TierCard = ({ index, tier }: TierProps) => {
   return (
     <div
       className={cx(
-        "bg-white rounded-2xl overflow-hidden p-10",
+        "w-full bg-white rounded-2xl overflow-hidden p-10",
         getShadowStyle(index)
       )}
     >
       <div>
-        <h4 className="text-h5 font-bold text-primary mb-4">Basic</h4>
-        <p className="text-h5 font-semibold">$210</p>
+        <h4 className="text-h5 font-bold text-primary mb-4">{tier.name}</h4>
+        <p className="text-h5 font-semibold">
+          ${numeral(tier.stake_amount).format("0,0")}
+        </p>
       </div>
       <p className="text-body2 mt-6 text-gray-600">
         Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique
@@ -54,9 +60,11 @@ const Tier = ({ index }: TierProps) => {
           </p>
         </div>
       </div>
-      <button className="btn-large btn-primary w-full">Join Now</button>
+      <Button as="a" href="/project/1" fullWidth size="large">
+        Join Now
+      </Button>
     </div>
   );
 };
 
-export default Tier;
+export default TierCard;

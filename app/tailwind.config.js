@@ -48,6 +48,9 @@ module.exports = {
         caption: ['12px', {
           lineHeight: '20px',
         }],
+        'button-small': ['13px', {
+          lineHeight: '22px',
+        }],
         'button-medium': ['14px', {
           lineHeight: '24px',
         }],
@@ -59,9 +62,13 @@ module.exports = {
         30: '120px'
       },
       boxShadow: {
-        z4: '-4px 4px 24px 0px rgba(145, 158, 171, 0.12)',
+        z1: '0px 1px 2px 0px rgba(145, 158, 171, 0.24)',
+        z4: '-4px 4px 24px 0px rgba(145, 158, 171, 0.08)',
+        z8: '-8px 8px 24px -8px rgba(145, 158, 171, 0.1)',
         z12: '-12px 12px 48px -4px rgba(145, 158, 171, 0.12)',
         z16: '-16px 16px 56px -8px rgba(145, 158, 171, 0.16)',
+        z20: '-20px 20px 64px -8px rgba(145, 158, 171, 0.2)',
+        z24: '-24px 24px 72px -8px rgba(145, 158, 171, 0.24)',
       }
     },
   },

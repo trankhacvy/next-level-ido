@@ -1,7 +1,7 @@
 [features]
 seeds = false
 [programs.localnet]
-next_level_ido_platform = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+next_level_ido_platform = "EQQc7CVfiLnSPkA1T4ddTSBbVjv39uWgtRGNJssp61a3"
 
 [registry]
 url = "https://anchor.projectserum.com"
@@ -12,3 +12,4 @@ wallet = "/Users/khacvy/.config/solana/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+seed = "yarn run ts-node tests/seed.ts"

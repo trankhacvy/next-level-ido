@@ -1,4 +1,53 @@
-const StakeForm = () => {
+import { AnchorProvider } from "@project-serum/anchor";
+import {
+  AnchorWallet,
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+} from "@solana/wallet-adapter-react";
+import { LOTO_MINT_TOKEN, X_LOTO_MINT_TOKEN } from "common/token";
+import Button from "components/Button";
+import { useTokenBalance } from "hooks/useGetBalance";
+import AppProgram from "libs/program";
+import { useState } from "react";
+
+export type StakeFormProps = {
+  type?: "stake" | "unstake";
+};
+
+const StakeForm = ({ type = "stake" }: StakeFormProps) => {
+  const { connection } = useConnection();
+  const { sendTransaction } = useWallet();
+  const anchorWallet = useAnchorWallet();
+  const [loading, setLoading] = useState(false);
+  const [amount, setAmount] = useState(0);
+  const { mutate: refreshLotoBalance } = useTokenBalance(LOTO_MINT_TOKEN);
+  const { mutate: refreshXLotoBalance } = useTokenBalance(X_LOTO_MINT_TOKEN);
+
+  const handleStake = async () => {
+    try {
+      setLoading(true);
+      const provider = new AnchorProvider(
+        connection,
+        anchorWallet as AnchorWallet,
+        AnchorProvider.defaultOptions()
+      );
+      const program = new AppProgram(provider);
+      if (type === "stake") {
+        await program.stake(amount, sendTransaction);
+      } else {
+        await program.unstake(amount, sendTransaction);
+      }
+      setAmount(0);
+      await refreshLotoBalance();
+      await refreshXLotoBalance();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="mt-8">
       <div className="rounded-2xl bg-gray-500/10 hover:bg-gray-500/20 border flex items-center p-4 space-x-4">
@@ -9,12 +58,33 @@ const StakeForm = () => {
             height={40}
           />
         </div>
-        <span className="text-h6 font-bold">$LOTO</span>
-        <input className="flex-1 px-3 py-2 text-2xl bg-transparent font-semibold text-right focus:outline-none" />
-        <button className="btn btn-secondary">Max</button>
+        <span className="text-h6 font-bold">
+          {type === "stake" ? "$LOTO" : "$xLOTO"}
+        </span>
+        <input
+          value={amount}
+          onChange={(event) => {
+            try {
+              const val = parseInt(event.target.value);
+              setAmount(val);
+            } catch (error) {
+              setAmount(0);
+            }
+          }}
+          type="number"
+          className="flex-1 px-3 py-2 text-2xl bg-transparent font-semibold text-right focus:outline-none"
+        />
+        <Button variant="secondary">Max</Button>
       </div>
-      <div className="text-right mt-8">
-        <button className="btn-large btn-primary">Stake</button>
+      <div className="text-right mt-8 block space-y-4 space-x-4">
+        <Button
+          loading={loading}
+          disabled={loading}
+          size="large"
+          onClick={handleStake}
+        >
+          {type === "stake" ? "Stake" : "Unstake"}
+        </Button>
       </div>
     </div>
   );

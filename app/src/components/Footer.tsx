@@ -11,7 +11,7 @@ const Footer = () => {
           The Next-Level IDO platform
         </p>
         <p className="text-grey-300 mt-4">
-          {new Date().getFullYear()} Vicenzo - All rights reserved.
+          {new Date().getFullYear()} Vincenzo - All rights reserved.
         </p>
       </div>
       <div className="flex flex-wrap"></div>

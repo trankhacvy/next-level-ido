@@ -25,7 +25,7 @@ pub struct Unstake<'info> {
 
     #[account(
         mut,
-        seeds = [ b"vault", token_mint.key().as_ref() ],
+        seeds = [b"vault", token_mint.key().as_ref() ],
         bump = vault_bump,
     )]
     pub token_vault: Account<'info, TokenAccount>,

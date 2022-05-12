@@ -1,3 +1,4 @@
+import Button from "components/Button";
 import Link from "next/link";
 import { SVGProps } from "react";
 
@@ -16,11 +17,13 @@ const Hero = () => {
             </p>
             <div className="mt-10 lg:flex space-y-4 lg:space-y-0 space-x-4">
               <Link href="/stake">
-                <a href="/stake" className="btn-large btn-primary inline-flex items-center">
+                <Button size="large" href="/stake" as="a">
                   Stake $LOTO
-                </a>
+                </Button>
               </Link>
-              <button className="btn-large btn-secondary inline-flex items-center">Learn more</button>
+              <Button size="large" href="/" as="a" variant="secondary">
+                Learn more
+              </Button>
             </div>
           </div>
           <figure className="hidden lg:block lg:flex-1 relative min-h-[600px]">

@@ -1,7 +1,8 @@
 import Link from "next/link";
-import ProjectItem from "./ProjectItem";
+import ProjectCard from "components/ProjectCard";
 import { FaArrowRight } from "react-icons/fa";
 import { Project } from "types/common";
+import Button from "components/Button";
 
 export type ProjectsProps = {
   projects: Project[];
@@ -19,18 +20,15 @@ const Projects = ({ projects }: ProjectsProps) => {
       </div>
       <div className="py-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {projects.map((project) => (
-          <ProjectItem key={project.id} project={project} />
+          <ProjectCard key={project.id} project={project} />
         ))}
       </div>
       <div className="text-center">
         <Link href="/projects">
-          <a
-            href="/projects"
-            className="btn-large inline-flex items-center btn-primary"
-          >
+          <Button href="/projects" as="a" size="large" className="inline-flex">
             View All Projects
             <FaArrowRight className="ml-4" />
-          </a>
+          </Button>
         </Link>
       </div>
     </section>

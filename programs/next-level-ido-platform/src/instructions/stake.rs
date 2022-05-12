@@ -1,5 +1,5 @@
+use crate::state::{PriceChange, User};
 use crate::utils::{get_price, mint_to};
-use crate::state::PriceChange;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use std::convert::TryInto;
@@ -16,15 +16,28 @@ pub struct Stake<'info> {
     pub x_token_mint: Account<'info, Mint>,
     #[account(mut)]
     pub token_from: Account<'info, TokenAccount>,
-    pub token_from_authority: Signer<'info>,
+    // #[account(mut)]
+    // pub token_from_authority: Signer<'info>,
     #[account(
         mut,
-        seeds = ["vault".as_ref(), token_mint.key().as_ref()],
+        seeds = [b"vault", token_mint.key().as_ref()],
         bump
     )]
     pub token_vault: Account<'info, TokenAccount>,
     #[account(mut)]
     pub x_token_to: Account<'info, TokenAccount>,
+
+    #[account(
+        init_if_needed,
+        payer = initializer,
+        space = User::SIZE,
+        seeds = [
+           b"user", initializer.key.as_ref(),
+        ],
+        bump
+    )]
+    user: Box<Account<'info, User>>,
+
     #[account(mut)]
     initializer: Signer<'info>,
     ///used by anchor for init of the above
@@ -36,6 +49,8 @@ pub fn exe(ctx: Context<Stake>, mint_bump: u8, amount: u64) -> Result<()> {
     let total_token = ctx.accounts.token_vault.amount;
     let total_x_token = ctx.accounts.x_token_mint.supply;
     let old_price = get_price(&ctx.accounts.token_vault, &ctx.accounts.x_token_mint);
+
+    ctx.accounts.user.staked_amount = ctx.accounts.user.staked_amount.checked_add(amount).unwrap();
 
     if total_token == 0 || total_x_token == 0 {
         mint_to(
@@ -70,7 +85,7 @@ pub fn exe(ctx: Context<Stake>, mint_bump: u8, amount: u64) -> Result<()> {
         token::Transfer {
             from: ctx.accounts.token_from.to_account_info(),
             to: ctx.accounts.token_vault.to_account_info(),
-            authority: ctx.accounts.token_from_authority.to_account_info(),
+            authority: ctx.accounts.initializer.to_account_info(),
         },
     );
     token::transfer(cpi_ctx, amount)?;

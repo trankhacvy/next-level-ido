@@ -6,11 +6,11 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import Logo from "./Logo";
 
 const Menus = [
-  { text: "Allocation", href: "/#allocation" },
-  { text: "Roadmap", href: "/#roadmap" },
-  { text: "Team", href: "/#team" },
-  { text: "Token", href: "/#token" },
-  { text: "Contact", href: "/#contact" },
+  { text: "Projects", href: "/projects" },
+  { text: "Stake", href: "/stake" },
+  { text: "Team", href: "/" },
+  { text: "Token", href: "/" },
+  { text: "Contact", href: "/" },
 ];
 
 const Header = () => {
@@ -31,8 +31,11 @@ const Header = () => {
     <header
       className={cx(
         "fixed z-20 w-full px-5 md:px-8 h-16 bg-white/80 flex items-center justify-between backdrop-blur shadow-none transition-[height] duration-300",
-        showOnScroll ? "md:h-[76px]" : "md:h-[96px]"
+        showOnScroll ? "md:h-[76px] shadow-z4" : "md:h-[96px]"
       )}
+      style={{
+        transitionProperty: "all",
+      }}
     >
       <a href="/" className="block cursor-pointer">
         <Logo />

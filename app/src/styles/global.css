@@ -38,17 +38,17 @@
   .divider {
     @apply border-t border-t-gray-500/[0.24] border-dashed;
   }
-  .bg-gradient {
+  /* .bg-gradient {
     background: #12c2e9;
     background: -webkit-linear-gradient(to right, #f64f59, #c471ed, #12c2e9); 
     background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9); 
-  }
+  } */
 
-  .text-title {
+  /* .text-title {
     @apply text-white text-4xl md:text-5xl text-center font-bold;
-  }
+  } */
 
-  .border-gradient {
+  /* .border-gradient {
       position: relative;
   }
 
@@ -63,11 +63,11 @@
     margin: -5px;
     border-radius: inherit;
     background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
-  }
+  } */
 
-  .text-gradient {
+  /* .text-gradient {
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(to right, #f64f59, #c471ed, #12c2e9); 
-  }
+  } */
 }
 

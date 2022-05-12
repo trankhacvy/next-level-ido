@@ -62,3 +62,12 @@ export interface Project {
     is_native: boolean;
   }
   
+  export interface Tier {
+    name: string
+    stake_amount: number
+    duration: string
+    whitelist_requirement: string
+    guaranteed_allocation: boolean
+    lottery_ticket?: number
+    pool_weight?: number
+  }
