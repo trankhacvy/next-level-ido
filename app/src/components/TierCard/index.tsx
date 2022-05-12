@@ -1,34 +1,20 @@
 import cx from "classnames";
 import Button from "components/Button";
 import numeral from "numeral";
-import { FaCheck } from "react-icons/fa";
 import { Tier } from "types/common";
 
 export type TierProps = {
-  index: number;
   tier: Tier;
+  hasButton?: boolean;
+  current?: boolean;
 };
 
-const getShadowStyle = (index: number) => {
-  switch (index) {
-    case 0:
-      return "shadow-z4";
-    case 1:
-      return "shadow-z12";
-    case 2:
-      return "shadow-z16";
-    default:
-      return "shadow-z4";
-  }
-};
-
-const TierCard = ({ index, tier }: TierProps) => {
+const TierCard = ({ tier, hasButton = true, current = false }: TierProps) => {
   return (
     <div
-      className={cx(
-        "w-full bg-white rounded-2xl overflow-hidden p-10",
-        getShadowStyle(index)
-      )}
+      className={cx("w-full card overflow-hidden p-10", {
+        "border-2 border-primary border-dashed": current,
+      })}
     >
       <div>
         <h4 className="text-h5 font-bold text-primary mb-4">{tier.name}</h4>
@@ -36,33 +22,41 @@ const TierCard = ({ index, tier }: TierProps) => {
           ${numeral(tier.stake_amount).format("0,0")}
         </p>
       </div>
-      <p className="text-body2 mt-6 text-gray-600">
-        Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique
-        sapien
-      </p>
-      <div className="py-10 space-y-4">
-        <div className="flex text-body2">
-          <div>
-            <FaCheck className="w-5 h-5 text-primary" />
-          </div>
-          <p className="ml-4">
-            Guaranteed allocation of the amount of 210 PSOL in dollars at the
-            time of the participation.
-          </p>
-        </div>
-        <div className="flex text-body2">
-          <div>
-            <FaCheck className="w-5 h-5 text-primary" />
-          </div>
-          <p className="ml-4">
-            Dynamic Vesting Period:{" "}
-            <span className="font-semibold">12 weeks</span>
-          </p>
-        </div>
+      <div className="mt-10">
+        <div className="text-body2 text-gray-600">Staking Length Required</div>
+        <h6 className="text-body1 font-semibold">{tier.duration}</h6>
       </div>
-      <Button as="a" href="/project/1" fullWidth size="large">
-        Join Now
-      </Button>
+      <div className="mt-4">
+        <div className="text-body2 text-gray-600">
+          Whitelist Requirement Twitter
+        </div>
+        <h6 className="text-body1 font-semibold">
+          {tier.whitelist_requirement}
+        </h6>
+      </div>
+      {!tier.guaranteed_allocation && (
+        <div className="mt-4">
+          <div className="text-body2 text-gray-600">Lottery Tickets</div>
+          <h6 className="text-body1 font-semibold">{tier.lottery_ticket}</h6>
+        </div>
+      )}
+      {tier.guaranteed_allocation && (
+        <div className="mt-4">
+          <div className="text-body2 text-gray-600">Guaranteed Allocation</div>
+          <h6 className="text-body1 font-semibold">Yes</h6>
+        </div>
+      )}
+      {tier.guaranteed_allocation && (
+        <div className="mt-4">
+          <div className="text-body2 text-gray-600">Pool Weight</div>
+          <h6 className="text-body1 font-semibold">{tier.pool_weight}</h6>
+        </div>
+      )}
+      {hasButton && (
+        <Button className="mt-10" as="a" href="/stake" fullWidth size="large">
+          Join Now
+        </Button>
+      )}
     </div>
   );
 };

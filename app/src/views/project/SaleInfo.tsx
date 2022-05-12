@@ -1,8 +1,8 @@
 const SaleInfo = () => {
   return (
-    <div className="w-full">
-      <div className="text-h5 font-semibold">IDO Info</div>
-      <div className="card border border-gray-500/[0.24] px-8 py-4 mt-4">
+    <div className="w-full lg:self-stretch">
+      <h4 className="text-2xl font-semibold">IDO Info</h4>
+      <div className="card px-8 py-4 mt-4">
         <div className="flex justify-between py-3">
           <div className="text-body2">Hardcap</div>
           <div className="text-body2 font-semibold">140,000 USDC</div>

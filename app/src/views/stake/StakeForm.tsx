@@ -5,6 +5,7 @@ import {
   useConnection,
   useWallet,
 } from "@solana/wallet-adapter-react";
+import { toast } from "components/Toast";
 import { LOTO_MINT_TOKEN, X_LOTO_MINT_TOKEN } from "common/token";
 import Button from "components/Button";
 import { useTokenBalance } from "hooks/useGetBalance";
@@ -39,10 +40,17 @@ const StakeForm = ({ type = "stake" }: StakeFormProps) => {
         await program.unstake(amount, sendTransaction);
       }
       setAmount(0);
+      toast.success({
+        title: "Stake successfully",
+      });
       await refreshLotoBalance();
       await refreshXLotoBalance();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      toast.success({
+        title: "Stake error",
+        message: error.message,
+      });
     } finally {
       setLoading(false);
     }

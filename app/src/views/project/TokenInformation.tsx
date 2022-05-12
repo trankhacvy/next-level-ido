@@ -1,8 +1,8 @@
 const TokenInformation = () => {
   return (
     <div className="w-full lg:self-stretch">
-      <div className="text-h5 font-semibold">Token Info</div>
-      <div className="card border border-gray-500/[0.24] px-8 py-4 mt-6">
+      <h4 className="text-2xl font-semibold">Token Information</h4>
+      <div className="card px-8 py-4 mt-6">
         <div className="flex justify-between py-3">
           <div className="text-body2">Token Name</div>
           <div className="text-body2 font-semibold">Bitcoin</div>

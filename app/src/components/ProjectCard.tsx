@@ -15,7 +15,7 @@ export type ProjectCardProps = {
 const ProjectCard = ({ project }: ProjectCardProps) => {
   if (!project) return null;
 
-  const { name, description, logo, token_amount } = project;
+  const { id, name, description, logo, token_amount } = project;
   return (
     <article className="card">
       <div className="w-full flex px-8 pt-8">
@@ -61,9 +61,9 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
       </div>
       <hr className="divider" />
       <div className="p-8">
-        <Link href="/projects/1">
+        <Link href={`/projects/${id}`}>
           <a
-            href="/projects/1"
+            href={`/projects/${id}`}
             className="btn-large btn-primary w-full inline-flex items-center justify-center"
           >
             Join

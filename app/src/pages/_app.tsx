@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { AppProps } from "next/app";
 import Header from "components/Header";
 import Footer from "components/Footer";
+import { Toaster } from "components/Toast";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import {
   ConnectionProvider,
@@ -43,6 +44,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           <Footer />
         </WalletModalProvider>
       </WalletProvider>
+      <Toaster />
     </ConnectionProvider>
   );
 };

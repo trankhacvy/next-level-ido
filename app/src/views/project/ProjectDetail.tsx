@@ -16,7 +16,7 @@ const ProjectDetail = () => {
 
   const activeSection = useScrollSpy({
     sectionElementRefs: refs?.current ?? [],
-    offsetPx: -180,
+    offsetPx: -40,
   });
 
   useEffect(() => {
@@ -25,19 +25,22 @@ const ProjectDetail = () => {
 
   return (
     <div className="w-full mt-10">
-      <div className="flex">
-        <aside className="w-1/4 block">
-          <nav className="sticky top-[70px] p-6">
+      <h4 className="text-2xl font-semibold">Project Information</h4>
+      <div className="flex card mt-4">
+        <aside className="w-1/4 block border-r border-r-gray-500/[0.24] border-dashed">
+          <nav className="sticky top-[70px] p-8 space-y-2">
             {Sections.map((sec, idx) => (
-              <a
-                key={`link-${sec.text}`}
-                href={`#id-${sec.text}`}
-                className={cx("py-2 block", {
-                  "text-red-600": activeSection === idx,
-                })}
-              >
-                {sec.text}
-              </a>
+              <div className="flex items-center" key={`link-${sec.text}`}>
+                <div className="w-[6px] h-[6px] mr-4 rounded-full bg-primary" />
+                <a
+                  href={`#id-${sec.text}`}
+                  className={cx("text-body1 block", {
+                    "text-body1 font-semibold": activeSection === idx,
+                  })}
+                >
+                  {sec.text}
+                </a>
+              </div>
             ))}
           </nav>
         </aside>
