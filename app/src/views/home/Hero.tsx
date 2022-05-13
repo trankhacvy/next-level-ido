@@ -8,21 +8,32 @@ const Hero = () => {
       <div className="container h-full mx-auto px-4 md:px-6 lg:flex lg:items-center">
         <div className="py-[120px] lg:flex lg:items-center">
           <div className="text-center lg:text-left lg:max-w-[41%]">
-            <h1 className="text-4xl lg:text-5xl xl:text-[4rem] !leading-tight font-bold">
+            <h1 className="heading-h1">
               The Next-Level <br /> <b>IDO Platform</b>
             </h1>
             <p className="mt-10 text-gray-600 leading-relaxed">
               Loto is the next-level IDO platform built on Solana with the needs
               of both projects and investors alike.
             </p>
-            <div className="mt-10 lg:flex space-y-4 lg:space-y-0 space-x-4">
+            <div className="text-center mt-10 space-x-4 lg:flex space-y-6 lg:space-y-0">
               <Link href="/stake">
-                <Button size="large" href="/stake" as="a">
+                <Button
+                  className="max-w-xs inline-flex"
+                  size="large"
+                  href="/stake"
+                  as="a"
+                >
                   Stake $LOTO
                 </Button>
               </Link>
               <Link href="/">
-                <Button size="large" href="/" as="a" variant="secondary">
+                <Button
+                  className="max-w-xs inline-flex"
+                  size="large"
+                  href="/"
+                  as="a"
+                  variant="secondary"
+                >
                   Learn more
                 </Button>
               </Link>

@@ -24,7 +24,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           <img className="object-cover h-full" src={logo} alt={name} />
         </div>
         <div className="ml-6 flex-1">
-          <h5 className="text-h5 font-semibold">{name}</h5>
+          <h5 className="heading-h5">{name}</h5>
         </div>
       </div>
       <div className="p-8">

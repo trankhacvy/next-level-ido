@@ -55,20 +55,11 @@ const ProjectsPage = () => {
         />
       </Head>
       <div className="container mx-auto px-5 pt-24 pb-20 lg:pt-36 lg:pb-[120px]">
-        <h2 className="text-h2 font-semibold">Projects</h2>
-        <div className="mt-6 text-gray-600 body-1 mb-12">
+        <h2 className="heading-h2">Projects</h2>
+        <div className="mt-6 text-gray-600 text-body1 mb-12">
           Nullam tincidunt adipiscing enim. Mauris sollicitudin fermentum
           libero.
         </div>
-        {/* <div className="my-20 flex space-x-8">
-          <div className="w-40 h-40 bg-white shadow-z1"></div>
-          <div className="w-40 h-40 bg-white shadow-z4"></div>
-          <div className="w-40 h-40 bg-white shadow-z8"></div>
-          <div className="w-40 h-40 bg-white shadow-z12"></div>
-          <div className="w-40 h-40 bg-white shadow-z16"></div>
-          <div className="w-40 h-40 bg-white shadow-z20"></div>
-          <div className="w-40 h-40 bg-white shadow-z24"></div>
-        </div> */}
         <Tabbar tabs={tabsData} />
       </div>
     </main>

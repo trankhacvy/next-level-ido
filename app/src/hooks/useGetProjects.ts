@@ -1,16 +1,16 @@
-import useSWR from 'swr'
 import { ProjectsRepositoty } from 'libs/supabase'
 import { Project } from 'types/common'
+import { useFetchWithCache } from './useFetchWithCache'
 
 export const useGetProjects = (status: 'upcoming' | 'live' | 'finished') => {
-  const { data, isValidating, error } = useSWR<Project[]>(
-      ['getProjects', status],
-      () => new ProjectsRepositoty().findByStatus(status, 10),
+  const { data, isFirstLoading, error } = useFetchWithCache<Project[]>(
+    ['getProjects', status],
+    () => new ProjectsRepositoty().findByStatus(status, 10),
   )
   
   return { 
       projects: data ?? [],
-      isLoading: isValidating,
+      isLoading: isFirstLoading,
       error
    }
 }

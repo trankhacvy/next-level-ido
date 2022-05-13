@@ -4,9 +4,9 @@
 
 @layer base {
   body {
-    @apply antialiased text-base text-gray-800;
+    @apply antialiased text-base text-gray-800 bg-gray-200;
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(rgba(145, 158, 171, 0), rgba(145, 158, 171, 0.12))
+    /* background: linear-gradient(rgba(145, 158, 171, 0), rgba(145, 158, 171, 0.12)) */
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Barlow', sans-serif;
@@ -14,18 +14,24 @@
 }
 
 @layer components {
-  /* .btn {
-    @apply text-button-medium font-semibold min-w-[4rem] h-9 px-4 py-[6px] align-middle rounded-lg;
+  .heading-h1 {
+    @apply text-h1 md:text-h1-md lg:text-h1-lg xl:text-h1-md font-bold;
   }
-  .btn-large {
-    @apply text-button-large font-semibold min-w-[4rem] h-12 px-6 py-2 align-middle rounded-lg;
+  .heading-h2 {
+    @apply text-h2 md:text-h2-md lg:text-h2-lg xl:text-h2-md font-bold;
   }
-  .btn-primary {
-    @apply text-white bg-primary hover:bg-primary-dark;
+  .heading-h3 {
+    @apply text-h3 md:text-h3-md lg:text-h3-lg xl:text-h3-md font-bold;
   }
-  .btn-secondary {
-    @apply text-white bg-gray-800 hover:bg-gray-700;
-  } */
+  .heading-h4 {
+    @apply text-h4 md:text-h4-md lg:text-h4-lg xl:text-h4-md font-bold;
+  }
+  .heading-h5 {
+    @apply text-h5 md:text-h5-md lg:text-h5-lg xl:text-h5-md font-bold;
+  }
+  .heading-h6 {
+    @apply text-h6 md:text-h6-md lg:text-h6-lg xl:text-h6-md font-bold;
+  }
   .card {
     @apply bg-white rounded-2xl shadow-z16;
   }

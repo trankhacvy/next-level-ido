@@ -8,7 +8,7 @@ const StakeTab = () => {
   ];
 
   return (
-    <div className="w-1/2 card p-8 self-stretch">
+    <div className="w-full card p-5 md:p-8 items-stretch">
       <Tabbar tabs={tabs} />
     </div>
   );

@@ -18,8 +18,8 @@ const TierCard = ({ tier, hasButton = true, current = false }: TierProps) => {
       })}
     >
       <div>
-        <h4 className="text-h5 font-bold text-primary mb-4">{tier.name}</h4>
-        <p className="text-h5 font-semibold">
+        <h4 className="heading-h4 font-bold text-primary mb-4">{tier.name}</h4>
+        <p className="heading-h5 font-semibold">
           ${numeral(tier.stake_amount).format("0,0")}
         </p>
       </div>

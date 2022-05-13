@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaHamburger } from "react-icons/fa";
+import { FaStream } from "react-icons/fa";
 import cx from "classnames";
 import { useScrollPosition } from "hooks/useScrollPosition";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
@@ -46,9 +46,9 @@ const Header = () => {
         </a>
       </Link>
       <nav>
-        <button className="flex lg:hidden items-center space-x-2 font-semibold px-4 py-2 rounded bg-indigo-500">
-          <span>Menu</span>
-          <FaHamburger className="w-5 h-5" />
+        <button className="lg:hidden px-4 py-2 rounded-full">
+          <span className="sr-only">Menu</span>
+          <FaStream className="w-6 h-6 text-gray-600" />
         </button>
         <ul className="hidden lg:flex items-center lg:space-x-5">
           {Menus.map((item) => {
