@@ -14,7 +14,7 @@
 }
 
 @layer components {
-  .btn {
+  /* .btn {
     @apply text-button-medium font-semibold min-w-[4rem] h-9 px-4 py-[6px] align-middle rounded-lg;
   }
   .btn-large {
@@ -25,7 +25,7 @@
   }
   .btn-secondary {
     @apply text-white bg-gray-800 hover:bg-gray-700;
-  }
+  } */
   .card {
     @apply bg-white rounded-2xl shadow-z16;
   }
@@ -38,36 +38,16 @@
   .divider {
     @apply border-t border-t-gray-500/[0.24] border-dashed;
   }
-  /* .bg-gradient {
-    background: #12c2e9;
-    background: -webkit-linear-gradient(to right, #f64f59, #c471ed, #12c2e9); 
-    background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9); 
-  } */
-
-  /* .text-title {
-    @apply text-white text-4xl md:text-5xl text-center font-bold;
-  } */
-
-  /* .border-gradient {
-      position: relative;
-  }
-
-  .border-gradient:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-    margin: -5px;
-    border-radius: inherit;
-    background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
-  } */
-
-  /* .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(to right, #f64f59, #c471ed, #12c2e9); 
-  } */
 }
 
+.wallet-adapter-dropdown-list {
+  @apply bg-white text-body1 !text-gray-800 rounded-md shadow-z16;
+}
+
+.wallet-adapter-dropdown-list-item {
+  @apply text-body1 !text-gray-800;
+}
+
+.wallet-adapter-dropdown-list-item:hover {
+  @apply !bg-black/[0.04];
+}

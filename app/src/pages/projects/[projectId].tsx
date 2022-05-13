@@ -34,8 +34,6 @@ const ProjectPage = ({
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  console.log(context);
-
   try {
     const projectId = context.params?.projectId;
     if (!projectId) {

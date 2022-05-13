@@ -1,7 +1,5 @@
-import Link from "next/link";
 import TierCard from "components/TierCard";
 import { tiersData } from "common/tier";
-import Button from "components/Button";
 
 const TiersSection = () => {
   return (
@@ -13,13 +11,6 @@ const TiersSection = () => {
             <TierCard tier={tier} />
           </div>
         ))}
-      </div>
-      <div className="text-center">
-        <Link href="/stake">
-          <Button className="inline-flex" as="a" href="/stake" size="large">
-            Stake Now
-          </Button>
-        </Link>
       </div>
     </section>
   );

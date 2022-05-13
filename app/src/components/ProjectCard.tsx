@@ -7,6 +7,7 @@ import {
   FaFacebook,
 } from "react-icons/fa";
 import { Project } from "types/common";
+import Button from "./Button";
 
 export type ProjectCardProps = {
   project?: Project;
@@ -27,7 +28,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
         </div>
       </div>
       <div className="p-8">
-        <p className="text-body2 line-clamp-4">{description}</p>
+        <p className="text-body2 line-clamp-4 min-h-[110px]">{description}</p>
       </div>
       <hr className="divider" />
       <div className="p-8">
@@ -62,12 +63,9 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
       <hr className="divider" />
       <div className="p-8">
         <Link href={`/projects/${id}`}>
-          <a
-            href={`/projects/${id}`}
-            className="btn-large btn-primary w-full inline-flex items-center justify-center"
-          >
+          <Button size="large" as="a" href={`/projects/${id}`}>
             Join
-          </a>
+          </Button>
         </Link>
       </div>
     </article>

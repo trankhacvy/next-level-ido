@@ -1,5 +1,6 @@
 import cx from "classnames";
 import Button from "components/Button";
+import Link from "next/link";
 import numeral from "numeral";
 import { Tier } from "types/common";
 
@@ -53,9 +54,11 @@ const TierCard = ({ tier, hasButton = true, current = false }: TierProps) => {
         </div>
       )}
       {hasButton && (
-        <Button className="mt-10" as="a" href="/stake" fullWidth size="large">
-          Join Now
-        </Button>
+        <Link href="/stake">
+          <Button className="mt-10" as="a" href="/stake" fullWidth size="large">
+            Join Now
+          </Button>
+        </Link>
       )}
     </div>
   );

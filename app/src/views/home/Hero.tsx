@@ -21,9 +21,11 @@ const Hero = () => {
                   Stake $LOTO
                 </Button>
               </Link>
-              <Button size="large" href="/" as="a" variant="secondary">
-                Learn more
-              </Button>
+              <Link href="/">
+                <Button size="large" href="/" as="a" variant="secondary">
+                  Learn more
+                </Button>
+              </Link>
             </div>
           </div>
           <figure className="hidden lg:block lg:flex-1 relative min-h-[600px]">

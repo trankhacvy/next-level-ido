@@ -4,17 +4,20 @@ import cx from "classnames";
 import { useScrollPosition } from "hooks/useScrollPosition";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import Logo from "./Logo";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Menus = [
-  { text: "Projects", href: "/projects" },
-  { text: "Stake", href: "/stake" },
-  { text: "Team", href: "/" },
-  { text: "Token", href: "/" },
-  { text: "Contact", href: "/" },
+  { text: "Projects", href: "/projects", activeRoutes: ["/", "/projects"] },
+  { text: "Stake", href: "/stake", activeRoutes: ["/stake"] },
+  { text: "Team", href: "/", activeRoutes: ["/team"] },
+  { text: "Token", href: "/", activeRoutes: ["/token"] },
+  { text: "Contact", href: "/", activeRoutes: ["/contact"] },
 ];
 
 const Header = () => {
   const [showOnScroll, setShowOnScroll] = useState(false);
+  const { asPath } = useRouter();
 
   useScrollPosition(
     ({ prevPos, currPos }) => {
@@ -37,36 +40,40 @@ const Header = () => {
         transitionProperty: "all",
       }}
     >
-      <a href="/" className="block cursor-pointer">
-        <Logo />
-      </a>
+      <Link href="/">
+        <a href="/" className="block cursor-pointer">
+          <Logo />
+        </a>
+      </Link>
       <nav>
         <button className="flex lg:hidden items-center space-x-2 font-semibold px-4 py-2 rounded bg-indigo-500">
           <span>Menu</span>
           <FaHamburger className="w-5 h-5" />
         </button>
         <ul className="hidden lg:flex items-center lg:space-x-5">
-          {Menus.map((item, idx) => (
-            <li key={item.text}>
-              <a
-                className="cursor-pointer inline-block focus:bg-indigo-500/30"
-                href={item.href}
-              >
-                <span
-                  className={cx(
-                    "inline-block text-body2 font-medium px-4 py-2 text-gray-600 hover:opacity-70",
-                    {
-                      "text-gray-800": idx === 0,
-                    }
-                  )}
-                >
-                  {item.text}
-                </span>
-              </a>
-            </li>
-          ))}
+          {Menus.map((item) => {
+            const active = item.activeRoutes.includes(asPath);
+            return (
+              <li key={item.text}>
+                <Link href={item.href}>
+                  <a className="cursor-pointer inline-block" href={item.href}>
+                    <span
+                      className={cx(
+                        "inline-block text-body2 font-medium px-4 py-2 text-gray-600 hover:opacity-70",
+                        {
+                          "text-gray-800": active,
+                        }
+                      )}
+                    >
+                      {item.text}
+                    </span>
+                  </a>
+                </Link>
+              </li>
+            );
+          })}
           <li>
-            <WalletMultiButton className="btn btn-primary" />
+            <WalletMultiButton className="text-button-medium font-semibold justify-center min-w-[148px] px-4 py-[6px] align-middle rounded-lg text-white bg-primary hover:!bg-primary-dark" />
           </li>
         </ul>
       </nav>
