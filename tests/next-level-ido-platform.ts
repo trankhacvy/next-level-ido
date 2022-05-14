@@ -81,12 +81,8 @@ describe("next-level-ido-platform", () => {
       );  
 
        //setup logging event listeners
-      // program.addEventListener('PriceChange', (e, s) => {
-      //   console.log('Price Change In Slot ', s);
-      //   console.log('From e9', e.oldStepPerXstepE9.toString());
-      //   console.log('From', e.oldStepPerXstep.toString());
-      //   console.log('To e9', e.newStepPerXstepE9.toString());
-      //   console.log('To', e.newStepPerXstep.toString());
+      // program.addEventListener('Log', (message) => {
+      //   console.log('Log: ', message);
       // });
      
   })
@@ -121,7 +117,7 @@ describe("next-level-ido-platform", () => {
   });
 
   it('stake', async () => {
-    const stakeAmount = DEFAULT_TOKEN_AMOUNT/ 10
+    const stakeAmount = 5000;
 
     const [user] =
       await web3.PublicKey.findProgramAddress(
@@ -129,7 +125,7 @@ describe("next-level-ido-platform", () => {
         program.programId
       );
 
-    await program.methods.stake(mintBump, new BN(stakeAmount))
+    await program.methods.stake(new BN(stakeAmount))
     .accounts({
       tokenMint: mintPubkey,
       xTokenMint: xMintPubkey,
@@ -157,41 +153,79 @@ describe("next-level-ido-platform", () => {
     const vaultAmount = parseInt((await provider.connection.getTokenAccountBalance(vaultPubkey)).value.amount);
     expect(vaultAmount).to.eq(stakeAmount, "vault balance");
     
-    const createdUser = await program.account.user.fetch(user);
+    let createdUser = await program.account.user.fetch(user);
+    console.log('createdUser', createdUser.tier);
+    console.log('createdUser staked', createdUser.stakedAmount.toString());
+    console.log('createdUser staked', createdUser.lastStakeTs.toString());
+    expect(createdUser.stakedAmount.toNumber()).to.equal(stakeAmount);
+    // expect(createdUser.tier).to.equal(0);
 
-    // expect(createdUser.stakedAmount).to.equal(0);
+    // stake more
+    await program.methods.stake(new BN(10000))
+    .accounts({
+      tokenMint: mintPubkey,
+      xTokenMint: xMintPubkey,
+      tokenFrom: walletTokenAccount,
+      // tokenFromAuthority: wallet.publicKey,
+      tokenVault: vaultPubkey,
+      xTokenTo: walletXTokenAccount,
+      user: user,
+      initializer: payer.publicKey,
+      systemProgram: web3.SystemProgram.programId,
+      tokenProgram: TOKEN_PROGRAM_ID,
+    })
+    .signers([payer])
+    .rpc();
+
+    createdUser = await program.account.user.fetch(user);
+    console.log('createdUser stake more', createdUser.tier);
+    console.log('createdUser stake more staked', createdUser.stakedAmount.toString());
+    console.log('createdUser stake more ts', createdUser.lastStakeTs.toString());
 
 
   });
 
-  // it('unstake', async () => {
-  //   const unstakeAmount = DEFAULT_TOKEN_AMOUNT / 20
+  it('unstake', async () => {
+    const unstakeAmount = 14000
 
-  //   await program.methods.unstake(mintBump, new BN(unstakeAmount))
-  //   .accounts({
-  //     tokenMint: mintPubkey,
-  //     xTokenMint: xMintPubkey,
-  //     xTokenFrom: walletXTokenAccount,
-  //     xTokenFromAuthority: wallet.publicKey,
-  //     tokenVault: vaultPubkey,
-  //     tokenTo: walletTokenAccount,
-  //     tokenProgram: TOKEN_PROGRAM_ID,
-  //   })
-  //   .signers([wallet])
-  //   .rpc();
+    const [user] =
+    await web3.PublicKey.findProgramAddress(
+      [Buffer.from("user"), payer.publicKey.toBuffer()],
+      program.programId
+    );
 
-  //   // user token account amount
-  //   const tokenAmount = parseInt((await provider.connection.getTokenAccountBalance(walletTokenAccount)).value.amount);
-  //   expect(tokenAmount).to.eq(DEFAULT_TOKEN_AMOUNT - unstakeAmount, "remaining balance");
+    await program.methods.unstake(new BN(unstakeAmount))
+    .accounts({
+      tokenMint: mintPubkey,
+      xTokenMint: xMintPubkey,
+      xTokenFrom: walletXTokenAccount,
+      xTokenFromAuthority: payer.publicKey,
+      tokenVault: vaultPubkey,
+      tokenTo: walletTokenAccount,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      user: user,
+    })
+    .signers([payer])
+    .rpc();
 
-  //   // user token x account amount
-  //   // const tokenXAmount = parseInt((await provider.connection.getTokenAccountBalance(walletXTokenAccount)).value.amount);
-  //   // expect(tokenXAmount).to.eq(stakeAmount, "token x balance");
+    // user token account amount
+    const tokenAmount = parseInt((await provider.connection.getTokenAccountBalance(walletTokenAccount)).value.amount);
+    expect(tokenAmount).to.eq(DEFAULT_TOKEN_AMOUNT - 1000, "remaining balance");
 
-  //   // vault balance
-  //   // const vaultAmount = parseInt((await provider.connection.getTokenAccountBalance(vaultPubkey)).value.amount);
-  //   // expect(vaultAmount).to.eq(stakeAmount, "vault balance");
+    // user token x account amount
+    // const tokenXAmount = parseInt((await provider.connection.getTokenAccountBalance(walletXTokenAccount)).value.amount);
+    // expect(tokenXAmount).to.eq(stakeAmount, "token x balance");
 
-  // });
+    // vault balance
+    // const vaultAmount = parseInt((await provider.connection.getTokenAccountBalance(vaultPubkey)).value.amount);
+    // expect(vaultAmount).to.eq(stakeAmount, "vault balance");
+
+    let createdUser = await program.account.user.fetch(user);
+    console.log('createdUser', createdUser.tier);
+    console.log('createdUser staked', createdUser.stakedAmount.toString());
+    console.log('createdUser staked', createdUser.lastStakeTs.toString());
+    expect(createdUser.stakedAmount.toNumber()).to.equal(1000);
+
+  });
 
 });

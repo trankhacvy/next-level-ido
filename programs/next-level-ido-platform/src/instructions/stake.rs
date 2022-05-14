@@ -1,17 +1,16 @@
 use crate::state::{PriceChange, User};
-use crate::utils::{get_price, mint_to};
+use crate::utils::{get_price, mint_to, update_user_tier};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use std::convert::TryInto;
 
 #[derive(Accounts)]
-#[instruction(mint_bump: u8)]
 pub struct Stake<'info> {
     pub token_mint: Account<'info, Mint>,
     #[account(
         mut,
         seeds = [b"mint", token_mint.key().as_ref()],
-        bump = mint_bump
+        bump
     )]
     pub x_token_mint: Account<'info, Mint>,
     #[account(mut)]
@@ -45,12 +44,14 @@ pub struct Stake<'info> {
     pub token_program: Program<'info, Token>,
 }
 
-pub fn exe(ctx: Context<Stake>, mint_bump: u8, amount: u64) -> Result<()> {
+pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
     let total_token = ctx.accounts.token_vault.amount;
     let total_x_token = ctx.accounts.x_token_mint.supply;
     let old_price = get_price(&ctx.accounts.token_vault, &ctx.accounts.x_token_mint);
 
     ctx.accounts.user.staked_amount = ctx.accounts.user.staked_amount.checked_add(amount).unwrap();
+    let now = Clock::get().unwrap().unix_timestamp;
+    update_user_tier(&mut ctx.accounts.user, now);
 
     if total_token == 0 || total_x_token == 0 {
         mint_to(
@@ -58,7 +59,7 @@ pub fn exe(ctx: Context<Stake>, mint_bump: u8, amount: u64) -> Result<()> {
             &ctx.accounts.x_token_mint.to_account_info(),
             &ctx.accounts.x_token_to.to_account_info(),
             &ctx.accounts.token_mint.to_account_info(),
-            mint_bump,
+            *ctx.bumps.get("x_token_mint").unwrap(),
             amount,
         )?;
     } else {
@@ -74,7 +75,7 @@ pub fn exe(ctx: Context<Stake>, mint_bump: u8, amount: u64) -> Result<()> {
             &ctx.accounts.x_token_mint.to_account_info(),
             &ctx.accounts.x_token_to.to_account_info(),
             &ctx.accounts.token_mint.to_account_info(),
-            mint_bump,
+            *ctx.bumps.get("x_token_mint").unwrap(),
             what,
         )?;
     }

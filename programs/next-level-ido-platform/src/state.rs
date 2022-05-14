@@ -48,15 +48,32 @@ pub struct Pool {
     pub trailer: [u8; 31],
 }
 
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq)]
+pub enum StakeTier {
+    NoTier,
+    Brone = 1500,
+    Silver = 3000,
+    Gold = 5000,
+    Platium = 15000,
+    Dimond = 30000,
+}
+
+impl Default for StakeTier {
+    fn default() -> Self {
+        StakeTier::NoTier
+    }
+}
+
 #[account]
-#[derive(Default)]
 pub struct User {
     pub owner: Pubkey,
     pub staked_amount: u64,
+    pub tier: StakeTier,
+    pub last_stake_ts: i64,
 }
 
 impl User {
-    pub const SIZE: usize = 8 + 32 + 8;
+    pub const SIZE: usize = 8 + 32 + 8 + (1 + 4) + 8;
 }
 
 #[event]
@@ -71,4 +88,10 @@ pub struct PriceChange {
 pub struct Price {
     pub step_per_xstep_e9: u64,
     pub step_per_xstep: String,
+}
+
+#[event]
+pub struct Log {
+    pub message: String,
+    // pub value: ()
 }

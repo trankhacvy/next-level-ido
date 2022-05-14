@@ -1,3 +1,4 @@
+use crate::state::{StakeTier, User};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, TokenAccount};
 use std::convert::TryInto;
@@ -49,4 +50,33 @@ pub fn get_price<'info>(
 
     let price_float = (total_token as f64) / (total_x_token as f64);
     return (price_uint, price_float.to_string());
+}
+
+fn get_tier_by_amount(amount: u64) -> StakeTier {
+    // can we find a better way, ofcourse !!!
+    if amount >= (StakeTier::Dimond as u64) {
+        return StakeTier::Dimond;
+    }
+    if amount >= (StakeTier::Platium as u64) {
+        return StakeTier::Platium;
+    }
+    if amount >= (StakeTier::Gold as u64) {
+        return StakeTier::Gold;
+    }
+    if amount >= (StakeTier::Silver as u64) {
+        return StakeTier::Silver;
+    }
+    if amount >= (StakeTier::Brone as u64) {
+        return StakeTier::Brone;
+    }
+    StakeTier::NoTier
+}
+
+pub fn update_user_tier<'info>(user: &mut Account<'info, User>, current_ts: i64) {
+    let staked_amount = user.staked_amount;
+    let next_tier = get_tier_by_amount(staked_amount);
+    if next_tier != user.tier {
+        user.tier = next_tier;
+        user.last_stake_ts = current_ts;
+    }
 }

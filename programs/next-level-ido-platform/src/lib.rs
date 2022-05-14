@@ -22,11 +22,11 @@ pub mod next_level_ido_platform {
         initialize_pool::exe(ctx)
     }
 
-    pub fn stake(ctx: Context<Stake>, mint_bump: u8, amount: u64) -> Result<()> {
-        stake::exe(ctx, mint_bump, amount)
+    pub fn stake(ctx: Context<Stake>, amount: u64) -> Result<()> {
+        stake::exe(ctx, amount)
     }
 
-    pub fn unstake(ctx: Context<Unstake>, vault_bump: u8, amount: u64) -> Result<()> {
-        unstake::exe(ctx, vault_bump, amount)
+    pub fn unstake(ctx: Context<Unstake>, amount: u64) -> Result<()> {
+        unstake::exe(ctx, amount)
     }
 }
