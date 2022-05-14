@@ -95,3 +95,31 @@ pub struct Log {
     pub message: String,
     // pub value: ()
 }
+
+#[derive(AnchorSerialize, AnchorDeserialize, Default, Clone, Copy)]
+pub struct IdoTimes {
+    pub start_ido: i64,
+    pub end_deposits: i64,
+    pub end_ido: i64,
+    pub end_escrow: i64,
+}
+
+#[account]
+pub struct IdoPool {
+    pub ido_name: [u8; 10], // Setting an arbitrary max of ten characters in the ido name.
+    pub ido_authority: Pubkey,
+
+    pub usdc_token_mint: Pubkey,
+    pub redeemable_token_mint: Pubkey,
+    pub ido_token_mint: Pubkey,
+
+    pub usdc_vault: Pubkey,
+    pub ido_token_vault: Pubkey,
+
+    pub ido_token_amount: u64,
+    pub ido_times: IdoTimes,
+}
+
+impl IdoPool {
+    pub const SIZE: usize = 8 + 1 * 10 + 32 + 32 + 32 + 32 + 32 + 32 + 8 + 8 * 4;
+}

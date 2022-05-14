@@ -11,5 +11,5 @@ cluster = "localnet"
 wallet = "/Users/khacvy/.config/solana/id.json"
 
 [scripts]
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
-seed = "yarn run ts-node tests/seed.ts"
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/ido_pool.ts"
+ido = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/ido_pool.ts"
