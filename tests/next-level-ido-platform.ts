@@ -10,35 +10,23 @@ describe("next-level-ido-platform", () => {
   // Configure the client to use the local cluster.
   const provider = anchor.Provider.env();
   anchor.setProvider(provider);
-
   const program = anchor.workspace.NextLevelIdoPlatform as Program<NextLevelIdoPlatform>;
 
   const payer = web3.Keypair.generate();
-  // const wallet = web3.Keypair.generate();
 
   // existing tokens
-  let mintPubkey: web3.PublicKey;
-
-  //the ecosystems corresponding xToken
-  let xMintPubkey: web3.PublicKey;
-  let mintBump;
-
+  let mintPubkey: web3.PublicKey; // LOTO token mint
+  let xMintPubkey: web3.PublicKey; // xLOTO token mint
   // token accounts
   let walletTokenAccount : web3.PublicKey;
   let walletXTokenAccount: web3.PublicKey;
-
   //the program's vault for stored collateral against xToken minting
   let vaultPubkey: web3.PublicKey;
-  let vaultBump;
 
   before(async() => {
-    console.log('payer', payer.publicKey.toBase58());
-    // console.log('wallet user', wallet.publicKey.toBase58());
-    // fund signer
-    const airdropSignature1 = await provider.connection.requestAirdrop(payer.publicKey, web3.LAMPORTS_PER_SOL);
-    // const airdropSignature2 = await provider.connection.requestAirdrop(wallet.publicKey, web3.LAMPORTS_PER_SOL);
+    // init payer
+    const airdropSignature1 = await provider.connection.requestAirdrop(payer.publicKey, web3.LAMPORTS_PER_SOL * 10);
     await provider.connection.confirmTransaction(airdropSignature1);
-    // await provider.connection.confirmTransaction(airdropSignature2);
     // create mint token
     mintPubkey = await createMint(
       provider.connection,
@@ -49,13 +37,13 @@ describe("next-level-ido-platform", () => {
     );
     console.log('Mint token created ', mintPubkey.toBase58());
     // find xMintPubkey
-    [xMintPubkey, mintBump] =
+    [xMintPubkey] =
       await web3.PublicKey.findProgramAddress(
         [Buffer.from("mint"), mintPubkey.toBuffer()],
         program.programId
       );
       console.log('xMintPubkey token founded ', xMintPubkey.toBase58());
-      [vaultPubkey, vaultBump] =
+      [vaultPubkey] =
       await web3.PublicKey.findProgramAddress(
         [Buffer.from("vault"), mintPubkey.toBuffer()],
         program.programId
@@ -89,18 +77,18 @@ describe("next-level-ido-platform", () => {
 
   it("Is initialized!", async () => {
 
-      await program.rpc.initialize(
+      await program.rpc.initializeStakePool(
         {
           accounts: {
             tokenMint: mintPubkey,
             xTokenMint: xMintPubkey,
             tokenVault: vaultPubkey,
-            initializer: payer.publicKey,
+            tokenAuthority: payer.publicKey,
             systemProgram: web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             rent: anchor.web3.SYSVAR_RENT_PUBKEY,
           },
-          signers: [payer]
+          signers: [payer],
         }
       );
 
@@ -134,7 +122,7 @@ describe("next-level-ido-platform", () => {
       tokenVault: vaultPubkey,
       xTokenTo: walletXTokenAccount,
       user: user,
-      initializer: payer.publicKey,
+      userAuthority: payer.publicKey,
       systemProgram: web3.SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
     })
@@ -166,11 +154,10 @@ describe("next-level-ido-platform", () => {
       tokenMint: mintPubkey,
       xTokenMint: xMintPubkey,
       tokenFrom: walletTokenAccount,
-      // tokenFromAuthority: wallet.publicKey,
       tokenVault: vaultPubkey,
       xTokenTo: walletXTokenAccount,
       user: user,
-      initializer: payer.publicKey,
+      userAuthority: payer.publicKey,
       systemProgram: web3.SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
     })

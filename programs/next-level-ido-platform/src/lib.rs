@@ -18,18 +18,8 @@ pub use utils::*;
 pub mod next_level_ido_platform {
     use super::*;
 
-    pub fn initialize(ctx: Context<InitializePool>) -> Result<()> {
-        initialize_pool::exe(ctx)
-    }
-
-    pub fn initialize_ido_pool(
-        ctx: Context<InitializeIdoPool>,
-        ido_name: String,
-        initial_token_amount: u64,
-        ido_times: IdoTimes,
-    ) -> Result<()> {
-        msg!("initialize_ido_pool");
-        initialize_ido_pool::exe(ctx, ido_name, initial_token_amount, ido_times)
+    pub fn initialize_stake_pool(ctx: Context<InitializeStakePool>) -> Result<()> {
+        initialize_stake_pool::exe(ctx)
     }
 
     pub fn stake(ctx: Context<Stake>, amount: u64) -> Result<()> {
@@ -38,5 +28,18 @@ pub mod next_level_ido_platform {
 
     pub fn unstake(ctx: Context<Unstake>, amount: u64) -> Result<()> {
         unstake::exe(ctx, amount)
+    }
+
+    pub fn initialize_ido_pool(
+        ctx: Context<InitializeIdoPool>,
+        ido_name: String,
+        initial_token_amount: u64,
+        ido_times: IdoTimes,
+    ) -> Result<()> {
+        initialize_ido_pool::exe(ctx, ido_name, initial_token_amount, ido_times)
+    }
+
+    pub fn participate_pool(ctx: Context<ParticipatePool>) -> Result<()> {
+        participate_pool::exe(ctx)
     }
 }

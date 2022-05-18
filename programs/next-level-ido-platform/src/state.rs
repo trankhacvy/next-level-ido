@@ -102,6 +102,7 @@ pub struct IdoTimes {
     pub end_deposits: i64,
     pub end_ido: i64,
     pub end_escrow: i64,
+    //
 }
 
 #[account]
@@ -115,11 +116,15 @@ pub struct IdoPool {
 
     pub usdc_vault: Pubkey,
     pub ido_token_vault: Pubkey,
+    pub ido_token_price: i64,
 
     pub ido_token_amount: u64,
     pub ido_times: IdoTimes,
+    pub participant_count: u16,
+    pub participants: Vec<Pubkey>, // 100 users
 }
 
 impl IdoPool {
-    pub const SIZE: usize = 8 + 1 * 10 + 32 + 32 + 32 + 32 + 32 + 32 + 8 + 8 * 4;
+    pub const SIZE: usize =
+        8 + 1 * 10 + 32 + 32 + 32 + 32 + 32 + 32 + 8 + 8 + 8 * 4 + 2 + (4 + 100 * 32);
 }

@@ -5,7 +5,6 @@ use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use std::convert::TryInto;
 
 #[derive(Accounts)]
-// #[instruction(vault_bump: u8)]
 pub struct Unstake<'info> {
     pub token_mint: Account<'info, Mint>,
 

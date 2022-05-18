@@ -1,7 +1,8 @@
-use crate::state::{StakeTier, User};
+use crate::state::{IdoPool, Log, StakeTier, User};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, TokenAccount};
 use std::convert::TryInto;
+use std::ops::Deref;
 
 pub fn mint_to<'info>(
     token_program: &AccountInfo<'info>,
@@ -78,5 +79,38 @@ pub fn update_user_tier<'info>(user: &mut Account<'info, User>, current_ts: i64)
     if next_tier != user.tier {
         user.tier = next_tier;
         user.last_stake_ts = current_ts;
+    }
+}
+
+pub trait TrimAsciiWhitespace {
+    /// Trim ascii whitespace (based on `is_ascii_whitespace()`) from the
+    /// start and end of a slice.
+    fn trim_ascii_whitespace(&self) -> &[u8];
+}
+
+impl<T: Deref<Target = [u8]>> TrimAsciiWhitespace for T {
+    fn trim_ascii_whitespace(&self) -> &[u8] {
+        let from = match self.iter().position(|x| !x.is_ascii_whitespace()) {
+            Some(i) => i,
+            None => return &self[0..0],
+        };
+        let to = self.iter().rposition(|x| !x.is_ascii_whitespace()).unwrap();
+        &self[from..=to]
+    }
+}
+
+pub fn calculate_token_allocation<'info>(
+    ido_pool: &Account<'info, IdoPool>,
+    program_id: &Pubkey,
+) {
+    let participants = &ido_pool.participants;
+    // let (pda, _bump_seed) = Pubkey::find_program_address(&[ESCROW_PDA_SEED], ctx.program_id);
+    for i in 0..participants.len() {
+        let seed = &[b"user", participants[i].as_ref()];
+        let (pda) = Pubkey::find_program_address(seed, program_id);
+        
+        emit!(Log {
+            message: format!("pda account {:?}", pda),
+        });
     }
 }

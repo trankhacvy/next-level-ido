@@ -15,8 +15,6 @@ pub struct Stake<'info> {
     pub x_token_mint: Account<'info, Mint>,
     #[account(mut)]
     pub token_from: Account<'info, TokenAccount>,
-    // #[account(mut)]
-    // pub token_from_authority: Signer<'info>,
     #[account(
         mut,
         seeds = [b"vault", token_mint.key().as_ref()],
@@ -28,17 +26,17 @@ pub struct Stake<'info> {
 
     #[account(
         init_if_needed,
-        payer = initializer,
+        payer = user_authority,
         space = User::SIZE,
         seeds = [
-           b"user", initializer.key.as_ref(),
+           b"user", user_authority.key.as_ref(),
         ],
         bump
     )]
     user: Box<Account<'info, User>>,
 
     #[account(mut)]
-    initializer: Signer<'info>,
+    user_authority: Signer<'info>,
     ///used by anchor for init of the above
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
@@ -49,6 +47,7 @@ pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
     let total_x_token = ctx.accounts.x_token_mint.supply;
     let old_price = get_price(&ctx.accounts.token_vault, &ctx.accounts.x_token_mint);
 
+    ctx.accounts.user.owner = ctx.accounts.user_authority.key();
     ctx.accounts.user.staked_amount = ctx.accounts.user.staked_amount.checked_add(amount).unwrap();
     let now = Clock::get().unwrap().unix_timestamp;
     update_user_tier(&mut ctx.accounts.user, now);
@@ -86,7 +85,7 @@ pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
         token::Transfer {
             from: ctx.accounts.token_from.to_account_info(),
             to: ctx.accounts.token_vault.to_account_info(),
-            authority: ctx.accounts.initializer.to_account_info(),
+            authority: ctx.accounts.user_authority.to_account_info(),
         },
     );
     token::transfer(cpi_ctx, amount)?;

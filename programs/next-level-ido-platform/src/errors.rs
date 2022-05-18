@@ -9,4 +9,7 @@ pub enum ErrorCode {
     IdoFuture,
     #[msg("IDO times are non-sequential")]
     SeqTimes,
+    // 
+    #[msg("Your are not whitelist")]
+    NotWhitelist,
 }

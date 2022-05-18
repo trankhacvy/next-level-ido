@@ -96,6 +96,7 @@ pub fn exe(
 
     ido_pool.ido_token_amount = initial_token_amount;
     ido_pool.ido_times = ido_times;
+    ido_pool.participant_count = 0;
 
     // Tranfer IDO Token from creator to IDO token vault
     let cpi_accounts = Transfer {
