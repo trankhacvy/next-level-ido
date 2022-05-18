@@ -51,11 +51,24 @@ pub struct Pool {
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq)]
 pub enum StakeTier {
     NoTier,
-    Brone = 1500,
-    Silver = 3000,
-    Gold = 5000,
-    Platium = 15000,
-    Dimond = 30000,
+    Brone,
+    Silver,
+    Gold,
+    Platium,
+    Dimond,
+}
+
+impl StakeTier {
+    pub fn value(&self) -> (u32, u8) {
+        match *self {
+            StakeTier::NoTier => (0, 0),
+            StakeTier::Brone => (1500, 1),
+            StakeTier::Silver => (3000, 3),
+            StakeTier::Gold => (5000, 6),
+            StakeTier::Platium => (15000, 20),
+            StakeTier::Dimond => (30000, 45),
+        }
+    }
 }
 
 impl Default for StakeTier {
@@ -93,7 +106,6 @@ pub struct Price {
 #[event]
 pub struct Log {
     pub message: String,
-    // pub value: ()
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Default, Clone, Copy)]
@@ -102,7 +114,12 @@ pub struct IdoTimes {
     pub end_deposits: i64,
     pub end_ido: i64,
     pub end_escrow: i64,
-    //
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Default, Clone, Copy)]
+pub struct Participant {
+    pub pubkey: Pubkey,
+    pub pool_weight: u8,
 }
 
 #[account]
@@ -118,13 +135,15 @@ pub struct IdoPool {
     pub ido_token_vault: Pubkey,
     pub ido_token_price: i64,
 
+    pub current_weight: u16,
+
     pub ido_token_amount: u64,
     pub ido_times: IdoTimes,
     pub participant_count: u16,
-    pub participants: Vec<Pubkey>, // 100 users
+    pub participants: Vec<Participant>, // 100 participants
 }
 
 impl IdoPool {
     pub const SIZE: usize =
-        8 + 1 * 10 + 32 + 32 + 32 + 32 + 32 + 32 + 8 + 8 + 8 * 4 + 2 + (4 + 100 * 32);
+        8 + 1 * 10 + 32 + 32 + 32 + 32 + 32 + 32 + 8 + 8 + 4 + 8 + 8 * 4 + 2 + (4 + 100 * (32 + 1));
 }

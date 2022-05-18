@@ -1,6 +1,6 @@
 use crate::errors::ErrorCode;
-use crate::state::{IdoPool, StakeTier, User};
-use crate::utils::{calculate_token_allocation, TrimAsciiWhitespace};
+use crate::state::{IdoPool, Participant, StakeTier, User};
+use crate::utils::TrimAsciiWhitespace;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
@@ -26,11 +26,10 @@ pub struct ParticipatePool<'info> {
 // join pool, can be lock some USDC
 pub fn exe(ctx: Context<ParticipatePool>) -> Result<()> {
     ctx.accounts.ido_account.participant_count = ctx.accounts.ido_account.participant_count + 1;
-    ctx.accounts
-        .ido_account
-        .participants
-        .push(ctx.accounts.user.owner);
-    //
-    calculate_token_allocation(&ctx.accounts.ido_account, &ctx.program_id);
+    ctx.accounts.ido_account.participants.push(Participant {
+        pubkey: ctx.accounts.user.owner,
+        pool_weight: ctx.accounts.user.tier.value().1,
+    });
+    ctx.accounts.ido_account.current_weight += ctx.accounts.user.tier.value().1 as u16;
     Ok(())
 }

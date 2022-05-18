@@ -1,4 +1,4 @@
-use crate::state::{IdoPool, Log, StakeTier, User};
+use crate::state::{StakeTier, User};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, TokenAccount};
 use std::convert::TryInto;
@@ -55,19 +55,19 @@ pub fn get_price<'info>(
 
 fn get_tier_by_amount(amount: u64) -> StakeTier {
     // can we find a better way, ofcourse !!!
-    if amount >= (StakeTier::Dimond as u64) {
+    if amount >= (StakeTier::Dimond.value().0 as u64) {
         return StakeTier::Dimond;
     }
-    if amount >= (StakeTier::Platium as u64) {
+    if amount >= (StakeTier::Platium.value().0 as u64) {
         return StakeTier::Platium;
     }
-    if amount >= (StakeTier::Gold as u64) {
+    if amount >= (StakeTier::Gold.value().0 as u64) {
         return StakeTier::Gold;
     }
-    if amount >= (StakeTier::Silver as u64) {
+    if amount >= (StakeTier::Silver.value().0 as u64) {
         return StakeTier::Silver;
     }
-    if amount >= (StakeTier::Brone as u64) {
+    if amount >= (StakeTier::Brone.value().0 as u64) {
         return StakeTier::Brone;
     }
     StakeTier::NoTier
@@ -99,18 +99,14 @@ impl<T: Deref<Target = [u8]>> TrimAsciiWhitespace for T {
     }
 }
 
-pub fn calculate_token_allocation<'info>(
-    ido_pool: &Account<'info, IdoPool>,
-    program_id: &Pubkey,
-) {
-    let participants = &ido_pool.participants;
-    // let (pda, _bump_seed) = Pubkey::find_program_address(&[ESCROW_PDA_SEED], ctx.program_id);
-    for i in 0..participants.len() {
-        let seed = &[b"user", participants[i].as_ref()];
-        let (pda) = Pubkey::find_program_address(seed, program_id);
-        
-        emit!(Log {
-            message: format!("pda account {:?}", pda),
-        });
-    }
-}
+// pub fn calculate_token_allocation<'info>(ido_pool: &Account<'info, IdoPool>, program_id: &Pubkey) {
+//     let participants = &ido_pool.participants;
+//     // let (pda, _bump_seed) = Pubkey::find_program_address(&[ESCROW_PDA_SEED], ctx.program_id);
+//     for i in 0..participants.len() {
+//         let seed = &[b"user", participants[i].pubkey.as_ref()];
+//         let (pda) = Pubkey::find_program_address(seed, program_id);
+//         emit!(Log {
+//             message: format!("pda account {:?}", pda),
+//         });
+//     }
+// }

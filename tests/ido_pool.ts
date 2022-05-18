@@ -3,7 +3,7 @@ import * as anchor from "@project-serum/anchor";
 import { Program, web3, Provider, BN } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID, createMint, mintTo, Account, getAccount, createAssociatedTokenAccount } from '@solana/spl-token';
 import { NextLevelIdoPlatform } from "../target/types/next_level_ido_platform";
-import { handleAirdrop } from './utils'
+import { handleAirdrop, createUserAndTokenAccount } from './utils'
 
 const DECIMALS = 10**9
 
@@ -21,8 +21,8 @@ describe("next-level-ido-platform", () => {
 
     const initialIdoToken = new BN(1000);
     const payer = web3.Keypair.generate();
-    const user1 = web3.Keypair.generate();
-    const user2 = web3.Keypair.generate();
+    let user1Object = null;
+    let user2Object = null;
 
     let usdcTokenMint: web3.PublicKey;
     let idoTokenMint: web3.PublicKey;
@@ -32,19 +32,11 @@ describe("next-level-ido-platform", () => {
     let mintPubkey: web3.PublicKey; // LOTO token mint
     let xMintPubkey: web3.PublicKey; // xLOTO token mint
     // token accounts
-    let walletTokenPubkey : web3.PublicKey;
-    let user1WalletTokenPubkey : web3.PublicKey;
-    let user2WalletTokenPubkey : web3.PublicKey;
-    let walletXTokenPubkey: web3.PublicKey;
-    let user1WalletXTokenPubkey: web3.PublicKey;
-    let user2WalletXTokenPubkey: web3.PublicKey;
     let stakeVaultPubkey: web3.PublicKey;
 
     before(async() => {
         // init payer
         await handleAirdrop(provider, payer.publicKey, web3.LAMPORTS_PER_SOL * 2);
-        await handleAirdrop(provider, user1.publicKey, web3.LAMPORTS_PER_SOL * 2);
-        await handleAirdrop(provider, user2.publicKey, web3.LAMPORTS_PER_SOL * 2);
         
         usdcTokenMint = await createMint(
             provider.connection,
@@ -120,73 +112,15 @@ describe("next-level-ido-platform", () => {
           } catch (error) {
             console.error(error);
           }
-          
-          walletTokenPubkey = await createAssociatedTokenAccount(
-            provider.connection,
-            payer,
-            mintPubkey,
-            payer.publicKey,
-          );
-          user1WalletTokenPubkey = await createAssociatedTokenAccount(
-            provider.connection,
-            user1,
-            mintPubkey,
-            user1.publicKey,
-          );
-          user2WalletTokenPubkey = await createAssociatedTokenAccount(
-            provider.connection,
-            user2,
-            mintPubkey,
-            user2.publicKey,
-          );
-          // mint 100k LOTO for walletTokenPubkey 
-          await mintTo(
-            provider.connection,
-            payer,
-            mintPubkey,
-            walletTokenPubkey,
-            payer,
-            100000,
-          ); 
-          
-          await mintTo(
-            provider.connection,
-            user1,
-            mintPubkey,
-            user1WalletTokenPubkey,
-            payer,
-            100000,
-          ); 
-          
-          await mintTo(
-            provider.connection,
-            user2,
-            mintPubkey,
-            user2WalletTokenPubkey,
-            payer,
-            100000,
-          ); 
-          walletXTokenPubkey = await createAssociatedTokenAccount(
-            provider.connection,
-            payer,
-            xMintPubkey,
-            payer.publicKey,
-          );
 
-          user1WalletXTokenPubkey = await createAssociatedTokenAccount(
-            provider.connection,
-            user1,
-            xMintPubkey,
-            user1.publicKey,
-          );
+          user1Object = await createUserAndTokenAccount(
+            provider, mintPubkey, payer, xMintPubkey
+          )
 
-          user2WalletXTokenPubkey = await createAssociatedTokenAccount(
-            provider.connection,
-            user2,
-            xMintPubkey,
-            user2.publicKey,
-          );
-
+          user2Object = await createUserAndTokenAccount(
+            provider, mintPubkey, payer, xMintPubkey
+          )
+          
       //setup logging event listeners
       // program.addEventListener('Log', (message) => {
       //   console.log('Log: ', message);
@@ -259,7 +193,7 @@ describe("next-level-ido-platform", () => {
         // init user
         const [user1Pda] =
         await web3.PublicKey.findProgramAddress(
-            [Buffer.from("user"), user1.publicKey.toBuffer()],
+            [Buffer.from("user"), user1Object.user.publicKey.toBuffer()],
             program.programId
         );
         const stakeAmount = 1500;    
@@ -269,47 +203,47 @@ describe("next-level-ido-platform", () => {
         .accounts({
             tokenMint: mintPubkey,
             xTokenMint: xMintPubkey,
-            tokenFrom: user1WalletTokenPubkey,
+            tokenFrom: user1Object.userTokenPubkey,
             tokenVault: stakeVaultPubkey,
-            xTokenTo: user1WalletXTokenPubkey,
+            xTokenTo: user1Object.userTokenXPubkey,
             user: user1Pda,
-            userAuthority: user1.publicKey,
+            userAuthority: user1Object.user.publicKey,
             systemProgram: web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
         })
-        .signers([user1])
+        .signers([user1Object.user])
         .rpc();
        } catch (error) {
          console.error(error)
        }
-        console.log('user 1 stake successfully ', user1.publicKey.toBase58());
+        console.log('user 1 stake successfully ', user1Object.user.publicKey.toBase58());
 
         const [user2Pda] =
         await web3.PublicKey.findProgramAddress(
-            [Buffer.from("user"), user2.publicKey.toBuffer()],
+            [Buffer.from("user"), user2Object.user.publicKey.toBuffer()],
             program.programId
         );
         
         try {
-          await program.methods.stake(new BN(stakeAmount))
+          await program.methods.stake(new BN(3000))
             .accounts({
                 tokenMint: mintPubkey,
                 xTokenMint: xMintPubkey,
-                tokenFrom: user2WalletTokenPubkey,
+                tokenFrom: user2Object.userTokenPubkey,
                 tokenVault: stakeVaultPubkey,
-                xTokenTo: user2WalletXTokenPubkey,
+                xTokenTo: user2Object.userTokenXPubkey,
                 user: user2Pda,
-                userAuthority: user2.publicKey,
+                userAuthority: user2Object.user.publicKey,
                 systemProgram: web3.SystemProgram.programId,
                 tokenProgram: TOKEN_PROGRAM_ID,
             })
-            .signers([user2])
+            .signers([user2Object.user])
             .rpc();
         } catch (error) {
           console.error(error)
         }
             
-        console.log('user 2 stake successfully ', user2.publicKey.toBase58());
+        console.log('user 2 stake successfully ', user2Object.user.publicKey.toBase58());
 
         const [idoPool] = await anchor.web3.PublicKey.findProgramAddress(
             [Buffer.from(idoName)],
@@ -320,26 +254,27 @@ describe("next-level-ido-platform", () => {
             await program.methods.participatePool()
                 .accounts({
                     user: user1Pda,
-                    userAuthority: user1.publicKey,
+                    userAuthority: user1Object.user.publicKey,
                     idoAccount: idoPool
                 })
-                .signers([user1])
+                .signers([user1Object.user])
                 .rpc();
 
                 await program.methods.participatePool()
                 .accounts({
                     user: user2Pda,
-                    userAuthority: user2.publicKey,
+                    userAuthority: user2Object.user.publicKey,
                     idoAccount: idoPool
                 })
-                .signers([user2])
+                .signers([user2Object.user])
                 .rpc();
         } catch (error) {
             console.error(error);
         }
 
         let idoPoolAcc = await program.account.idoPool.fetch(idoPool);
-        expect(idoPoolAcc.participantCount.toString()).to.eq('2', "check participant count");
+        expect(idoPoolAcc.participantCount.toString()).to.eq('2', "check participants count");
+        expect(idoPoolAcc.currentWeight.toString()).to.eq('4', "check current pool weight");
 
     })
 
