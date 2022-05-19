@@ -1,5 +1,5 @@
-use crate::state::{PriceChange, User};
-use crate::utils::{get_price, mint_to, update_user_tier};
+use crate::state::User;
+use crate::utils::{mint_to, update_user_tier};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use std::convert::TryInto;
@@ -45,10 +45,10 @@ pub struct Stake<'info> {
 pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
     let total_token = ctx.accounts.token_vault.amount;
     let total_x_token = ctx.accounts.x_token_mint.supply;
-    let old_price = get_price(&ctx.accounts.token_vault, &ctx.accounts.x_token_mint);
 
     ctx.accounts.user.owner = ctx.accounts.user_authority.key();
     ctx.accounts.user.staked_amount = ctx.accounts.user.staked_amount.checked_add(amount).unwrap();
+    
     let now = Clock::get().unwrap().unix_timestamp;
     update_user_tier(&mut ctx.accounts.user, now);
 
@@ -69,6 +69,7 @@ pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
             .unwrap()
             .try_into()
             .unwrap();
+
         mint_to(
             &ctx.accounts.token_program.to_account_info(),
             &ctx.accounts.x_token_mint.to_account_info(),
@@ -89,18 +90,6 @@ pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
         },
     );
     token::transfer(cpi_ctx, amount)?;
-
-    (&mut ctx.accounts.token_vault).reload()?;
-    (&mut ctx.accounts.x_token_mint).reload()?;
-
-    let new_price = get_price(&ctx.accounts.token_vault, &ctx.accounts.x_token_mint);
-
-    emit!(PriceChange {
-        old_step_per_xstep_e9: old_price.0,
-        old_step_per_xstep: old_price.1,
-        new_step_per_xstep_e9: new_price.0,
-        new_step_per_xstep: new_price.1,
-    });
 
     Ok(())
 }

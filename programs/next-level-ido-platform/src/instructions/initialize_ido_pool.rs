@@ -67,6 +67,20 @@ pub struct InitializeIdoPool<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
+// impl<'a, 'b, 'c, 'info> From<&mut InitializeIdoPool<'info>>
+//     for CpiContext<'a, 'b, 'c, 'info, Transfer<'info>>
+// {
+//     fn from(accounts: &mut InitializeIdoPool<'info>) -> CpiContext<'a, 'b, 'c, 'info, Transfer<'info>> {
+//         let cpi_accounts = Transfer {
+//             from: accounts.ido_authority_token.to_account_info(),
+//             to: accounts.ido_token_vault.to_account_info(),
+//             authority: accounts.ido_authority.to_account_info().clone(),
+//         };
+//         let cpi_program = accounts.token_program.to_account_info();
+//         CpiContext::new(cpi_program, cpi_accounts)
+//     }
+// }
+
 #[access_control(validate_ido_times(ido_times))]
 pub fn exe(
     ctx: Context<InitializeIdoPool>,

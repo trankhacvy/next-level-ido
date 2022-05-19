@@ -118,7 +118,6 @@ describe("next-level-ido-platform", () => {
       tokenMint: mintPubkey,
       xTokenMint: xMintPubkey,
       tokenFrom: walletTokenAccount,
-      // tokenFromAuthority: wallet.publicKey,
       tokenVault: vaultPubkey,
       xTokenTo: walletXTokenAccount,
       user: user,
@@ -128,7 +127,6 @@ describe("next-level-ido-platform", () => {
     })
     .signers([payer])
     .rpc();
-
     // user token account amount
     const tokenAmount = parseInt((await provider.connection.getTokenAccountBalance(walletTokenAccount)).value.amount);
     expect(tokenAmount).to.eq(DEFAULT_TOKEN_AMOUNT - stakeAmount, "remaining balance");
