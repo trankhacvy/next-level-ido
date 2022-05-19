@@ -17,7 +17,6 @@ pub struct InitializeIdoPool<'info> {
         constraint = ido_authority_token.mint == ido_token_mint.key())]
     pub ido_authority_token: Box<Account<'info, TokenAccount>>,
 
-    // IDO Accounts
     #[account(
         init,
         payer = ido_authority,
@@ -28,7 +27,7 @@ pub struct InitializeIdoPool<'info> {
     pub ido_pool: Box<Account<'info, IdoPool>>,
 
     // ido token
-    // #[account(constraint = watermelon_mint.key() == ido_authority_watermelon.mint)]
+    #[account(constraint = ido_token_mint.key() == ido_authority_token.mint)]
     pub ido_token_mint: Box<Account<'info, Mint>>,
     // vault to hold ido token
     #[account(init,
@@ -53,7 +52,6 @@ pub struct InitializeIdoPool<'info> {
     // TODO Confirm USDC mint address on mainnet or leave open as an option for other stables
     #[account(constraint = usdc_mint.decimals == DECIMALS)]
     pub usdc_mint: Box<Account<'info, Mint>>,
-
     #[account(init,
         token::mint = usdc_mint,
         token::authority = ido_pool,

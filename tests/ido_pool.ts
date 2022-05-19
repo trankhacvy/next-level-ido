@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import * as anchor from "@project-serum/anchor";
 import { Program, web3, Provider, BN } from "@project-serum/anchor";
-import { TOKEN_PROGRAM_ID, createMint, mintTo, Account, getAccount, createAssociatedTokenAccount } from '@solana/spl-token';
+import { TOKEN_PROGRAM_ID, createMint, mintTo, Account, getAccount, createAssociatedTokenAccount, getOrCreateAssociatedTokenAccount } from '@solana/spl-token';
 import { NextLevelIdoPlatform } from "../target/types/next_level_ido_platform";
 import { handleAirdrop, createUserAndTokenAccount } from './utils'
 
@@ -27,6 +27,7 @@ describe("next-level-ido-platform", () => {
     let usdcTokenMint: web3.PublicKey;
     let idoTokenMint: web3.PublicKey;
     let creatorIdoTokenAccount: web3.PublicKey;
+    let user1IdoTokenAccount: web3.PublicKey;
 
     // stake related accounts
     let mintPubkey: web3.PublicKey; // LOTO token mint
@@ -114,14 +115,24 @@ describe("next-level-ido-platform", () => {
           }
 
           user1Object = await createUserAndTokenAccount(
-            provider, mintPubkey, payer, xMintPubkey
+            provider, mintPubkey, payer, xMintPubkey, usdcTokenMint
           )
 
           user2Object = await createUserAndTokenAccount(
-            provider, mintPubkey, payer, xMintPubkey
+            provider, mintPubkey, payer, xMintPubkey, usdcTokenMint
           )
+
+          // 
+          user1IdoTokenAccount = await createAssociatedTokenAccount(
+            provider.connection,
+            user1Object.user,
+            idoTokenMint,
+            user1Object.user.publicKey,
+          );
+
+          console.log('user1IdoTokenAccount', user1IdoTokenAccount.toBase58())
           
-      //setup logging event listeners
+      // setup logging event listeners
       // program.addEventListener('Log', (message) => {
       //   console.log('Log: ', message);
       // });
@@ -171,9 +182,9 @@ describe("next-level-ido-platform", () => {
             idoPool,
             idoTokenMint,
             idoTokenVault,
-            redeemableMint: redeemableMint,
+            redeemableMint,
             usdcMint: usdcTokenMint,
-            usdcVault: usdcVault,
+            usdcVault,
             systemProgram: anchor.web3.SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             rent: anchor.web3.SYSVAR_RENT_PUBKEY,
@@ -225,7 +236,7 @@ describe("next-level-ido-platform", () => {
         );
         
         try {
-          await program.methods.stake(new BN(3000))
+          await program.methods.stake(new BN(12000))
             .accounts({
                 tokenMint: mintPubkey,
                 xTokenMint: xMintPubkey,
@@ -245,37 +256,129 @@ describe("next-level-ido-platform", () => {
             
         console.log('user 2 stake successfully ', user2Object.user.publicKey.toBase58());
 
-        const [idoPool] = await anchor.web3.PublicKey.findProgramAddress(
+        const [idoAccount] = await anchor.web3.PublicKey.findProgramAddress(
             [Buffer.from(idoName)],
             program.programId
         );
 
+        const [userRedeemable] = await anchor.web3.PublicKey.findProgramAddress(
+          [(user1Object.user.publicKey as web3.PublicKey).toBuffer(), Buffer.from(idoName), Buffer.from("user_redeemable")],
+          program.programId
+      );
+
+      const [usdcVault] = await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from(idoName), Buffer.from("usdc_vault")],
+        program.programId
+    );
+
+    const [redeemableMint] =
+        await anchor.web3.PublicKey.findProgramAddress(
+            [Buffer.from(idoName), Buffer.from("redeemable_mint")],
+            program.programId
+        );
+
         try {
-            await program.methods.participatePool()
+            await program.methods.participatePool(new BN(1000))
                 .accounts({
                     user: user1Pda,
                     userAuthority: user1Object.user.publicKey,
-                    idoAccount: idoPool
+                    idoAccount,
+                    usdcMint: usdcTokenMint,
+                    userUsdc: user1Object.userTokenUsdcPubkey,
+                    userRedeemable,
+                    redeemableMint,
+                    usdcVault,
+                    systemProgram: anchor.web3.SystemProgram.programId,
+                    tokenProgram: TOKEN_PROGRAM_ID,
+                    rent: anchor.web3.SYSVAR_RENT_PUBKEY,
                 })
                 .signers([user1Object.user])
                 .rpc();
 
-                await program.methods.participatePool()
-                .accounts({
-                    user: user2Pda,
-                    userAuthority: user2Object.user.publicKey,
-                    idoAccount: idoPool
-                })
-                .signers([user2Object.user])
-                .rpc();
+                // await program.methods.participatePool(new BN(2000))
+                // .accounts({
+                //     user: user2Pda,
+                //     userAuthority: user2Object.user.publicKey,
+                //     idoAccount
+                // })
+                // .signers([user2Object.user])
+                // .rpc();
         } catch (error) {
             console.error(error);
         }
 
-        let idoPoolAcc = await program.account.idoPool.fetch(idoPool);
-        expect(idoPoolAcc.participantCount.toString()).to.eq('2', "check participants count");
-        expect(idoPoolAcc.currentWeight.toString()).to.eq('4', "check current pool weight");
+        let idoPoolAcc = await program.account.idoPool.fetch(idoAccount);
+        const user1TokenUsdcPubkey = user1Object.userTokenUsdcPubkey;
+        const user1TokenUsdcAccount = await getAccount(provider.connection, user1TokenUsdcPubkey)
+        // console.log('idoPoolAcc', idoPoolAcc);
+        console.log('user1TokenUsdcAccount', user1TokenUsdcAccount.amount.toString());
 
+        const user1RedeemableAccount = await getAccount(provider.connection, userRedeemable);
+        console.log('user1RedeemableAccount', user1RedeemableAccount.amount.toString());
+        // expect(idoPoolAcc.participantCount.toString()).to.eq('2', "check participants count");
+        expect(user1RedeemableAccount.amount.toString()).to.eq('1000', "check redeemable");
+
+    })
+
+    it('claim reward', async () => {
+      const [idoPool] =
+        await anchor.web3.PublicKey.findProgramAddress(
+            [Buffer.from(idoName)],
+            program.programId
+        );
+
+        const [idoTokenVault] =
+            await anchor.web3.PublicKey.findProgramAddress(
+                [Buffer.from(idoName), Buffer.from("ido_token_vault")],
+                program.programId
+            );
+
+      const [userPDA] =
+        await web3.PublicKey.findProgramAddress(
+            [Buffer.from("user"), user1Object.user.publicKey.toBuffer()],
+            program.programId
+        );
+
+      const [userRedeemable] = await anchor.web3.PublicKey.findProgramAddress(
+          [(user1Object.user.publicKey as web3.PublicKey).toBuffer(), Buffer.from(idoName), Buffer.from("user_redeemable")],
+          program.programId
+      );
+
+      const [redeemableMint] =
+        await anchor.web3.PublicKey.findProgramAddress(
+            [Buffer.from(idoName), Buffer.from("redeemable_mint")],
+            program.programId
+        );
+
+        try {
+          await program.methods.claimToken()
+          .accounts({
+                  payer: user1Object.user.publicKey,
+                  userAuthority: user1Object.user.publicKey,
+                  userRedeemable,
+                  idoAccount: idoPool,
+                  idoTokenMint,
+                  user: userPDA,
+                  idoTokenVault,
+                  userIdoToken: user1IdoTokenAccount,
+                  redeemableMint,
+                  tokenProgram: TOKEN_PROGRAM_ID,
+              })
+              .signers([user1Object.user])
+              .rpc();
+         
+              // const creatorTokenAccount = await getAccount(provider.connection, userIdoTokenPubkey);
+              // console.log('creatorTokenAccount', creatorTokenAccount.amount.toString());
+             
+      } catch (error) {
+          console.error(error);
+      }
+
+      // const user1RedeemableAccount = await getAccount(provider.connection, userRedeemable);
+      // console.log('user1RedeemableAccount', user1RedeemableAccount.amount.toString());
+      const userIdoTokenAccount = await getAccount(provider.connection, user1IdoTokenAccount);
+      console.log('user1IdoTokenAccount', userIdoTokenAccount.amount.toString());
+      expect(1 + 2).to.eq(3, "check add");
     })
 
 })

@@ -12,4 +12,7 @@ pub enum ErrorCode {
     // 
     #[msg("Your are not whitelist")]
     NotWhitelist,
+
+    #[msg("Insufficient USDC")]
+    LowUsdc,
 }

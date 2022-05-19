@@ -12,3 +12,6 @@ pub use initialize_ido_pool::*;
 
 pub mod participate_pool;
 pub use participate_pool::*;
+
+pub mod claim_token;
+pub use claim_token::*;

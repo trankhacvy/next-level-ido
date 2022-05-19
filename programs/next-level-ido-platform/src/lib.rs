@@ -39,7 +39,11 @@ pub mod next_level_ido_platform {
         initialize_ido_pool::exe(ctx, ido_name, initial_token_amount, ido_times)
     }
 
-    pub fn participate_pool(ctx: Context<ParticipatePool>) -> Result<()> {
-        participate_pool::exe(ctx)
+    pub fn participate_pool(ctx: Context<ParticipatePool>, amount: u64) -> Result<()> {
+        participate_pool::exe(ctx, amount)
+    }
+
+    pub fn claim_token(ctx: Context<ClaimToken>) -> Result<()> {
+        claim_token::exe(ctx)
     }
 }

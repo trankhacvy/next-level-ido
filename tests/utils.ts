@@ -12,11 +12,14 @@ export const createUserAndTokenAccount = async (
     provider: Provider,
     mint: web3.PublicKey,
     mintAuth: web3.Keypair,
-    mintX: web3.PublicKey
+    mintX: web3.PublicKey,
+    mintUsdc: web3.PublicKey,
 ) => {
     const user = web3.Keypair.generate();
     let userTokenPubkey;
     let userTokenXPubkey;
+    let userTokenUsdcPubkey;
+
     await handleAirdrop(provider, user.publicKey);
 
     try {
@@ -33,6 +36,13 @@ export const createUserAndTokenAccount = async (
             mintX,
             user.publicKey,
           );
+
+          userTokenUsdcPubkey = await createAssociatedTokenAccount(
+            provider.connection,
+            user,
+            mintUsdc,
+            user.publicKey,
+          );
     
         await mintTo(
             provider.connection,
@@ -41,18 +51,19 @@ export const createUserAndTokenAccount = async (
             userTokenPubkey,
             mintAuth,
             1000000,
-          );   
+          );
+          
+          await mintTo(
+            provider.connection,
+            user,
+            mintUsdc,
+            userTokenUsdcPubkey,
+            mintAuth,
+            1000000,
+          );
     } catch (error) {
         console.error(error)
     }
 
-    return {user, userTokenPubkey, userTokenXPubkey }  
+    return {user, userTokenPubkey, userTokenXPubkey, userTokenUsdcPubkey }  
 }
-
-// export const createUserTokenAccount = (
-//     provider: Provider,
-//     mint: web3.PublicKey
-// ) => {
-//     const user = web3.Keypair.generate();
-//     let user1WalletTokenPubkey : web3.PublicKey;
-// }
