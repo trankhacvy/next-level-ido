@@ -86,6 +86,8 @@ pub fn exe(
     ctx: Context<InitializeIdoPool>,
     ido_name: String,
     initial_token_amount: u64,
+    token_price_numerator: u8,
+    token_price_denominator: u8,
     ido_times: IdoTimes,
 ) -> Result<()> {
     msg!("INITIALIZE POOL");
@@ -107,6 +109,8 @@ pub fn exe(
     ido_pool.ido_token_vault = ctx.accounts.ido_token_vault.key();
 
     ido_pool.ido_token_amount = initial_token_amount;
+    ido_pool.ido_token_price_numerator = token_price_numerator;
+    ido_pool.ido_token_price_denominator = token_price_denominator;
     ido_pool.ido_times = ido_times;
     ido_pool.participant_count = 0;
 

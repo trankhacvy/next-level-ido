@@ -34,9 +34,18 @@ pub mod next_level_ido_platform {
         ctx: Context<InitializeIdoPool>,
         ido_name: String,
         initial_token_amount: u64,
+        token_price_numerator: u8,
+        token_price_denominator: u8,
         ido_times: IdoTimes,
     ) -> Result<()> {
-        initialize_ido_pool::exe(ctx, ido_name, initial_token_amount, ido_times)
+        initialize_ido_pool::exe(
+            ctx,
+            ido_name,
+            initial_token_amount,
+            token_price_numerator,
+            token_price_denominator,
+            ido_times,
+        )
     }
 
     pub fn participate_pool(ctx: Context<ParticipatePool>, amount: u64) -> Result<()> {

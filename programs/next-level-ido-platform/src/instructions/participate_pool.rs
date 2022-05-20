@@ -1,5 +1,5 @@
 use crate::errors::ErrorCode;
-use crate::state::{IdoPool, Participant, StakeTier, User};
+use crate::state::{IdoPool, IdoUser, Participant, StakeTier, User};
 use crate::utils::TrimAsciiWhitespace;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, MintTo, Token, TokenAccount, Transfer};
@@ -18,6 +18,17 @@ pub struct ParticipatePool<'info> {
         bump
     )]
     user: Box<Account<'info, User>>,
+
+    #[account(
+        init_if_needed,
+        payer = user_authority,
+        space = IdoUser::SIZE,
+        seeds = [
+           b"ido_user", user_authority.key.as_ref(),
+        ],
+        bump
+    )]
+    ido_user: Box<Account<'info, IdoUser>>,
 
     #[account(mut,
         constraint = user_usdc.owner == user_authority.key(),
@@ -74,6 +85,10 @@ pub fn exe(ctx: Context<ParticipatePool>, amount: u64) -> Result<()> {
         pool_weight: ctx.accounts.user.tier.value().1,
     });
     ctx.accounts.ido_account.current_weight += ctx.accounts.user.tier.value().1 as u16;
+
+    ctx.accounts.ido_user.owner = ctx.accounts.user.owner;
+    ctx.accounts.ido_user.tier = ctx.accounts.user.tier;
+    ctx.accounts.ido_user.deposit_amount = amount;
 
     // Transfer user's USDC to pool USDC account.
     let cpi_accounts = Transfer {

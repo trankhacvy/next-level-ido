@@ -47,20 +47,6 @@ impl User {
 }
 
 #[event]
-pub struct PriceChange {
-    pub old_step_per_xstep_e9: u64,
-    pub old_step_per_xstep: String,
-    pub new_step_per_xstep_e9: u64,
-    pub new_step_per_xstep: String,
-}
-
-#[event]
-pub struct Price {
-    pub step_per_xstep_e9: u64,
-    pub step_per_xstep: String,
-}
-
-#[event]
 pub struct Log {
     pub message: String,
 }
@@ -90,7 +76,8 @@ pub struct IdoPool {
 
     pub usdc_vault: Pubkey,
     pub ido_token_vault: Pubkey,
-    pub ido_token_price: i64,
+    pub ido_token_price_numerator: u8,
+    pub ido_token_price_denominator: u8,
 
     pub current_weight: u16,
 
@@ -103,4 +90,15 @@ pub struct IdoPool {
 impl IdoPool {
     pub const SIZE: usize =
         8 + 1 * 10 + 32 + 32 + 32 + 32 + 32 + 32 + 8 + 8 + 4 + 8 + 8 * 4 + 2 + (4 + 100 * (32 + 1));
+}
+
+#[account]
+pub struct IdoUser {
+    pub owner: Pubkey,
+    pub deposit_amount: u64,
+    pub tier: StakeTier,
+}
+
+impl IdoUser {
+    pub const SIZE: usize = 8 + 32 + 8 + (1 + 4);
 }

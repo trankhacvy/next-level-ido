@@ -20,6 +20,7 @@ describe("next-level-ido-platform", () => {
     const program = anchor.workspace.NextLevelIdoPlatform as Program<NextLevelIdoPlatform>;
 
     const initialIdoToken = new BN(1000);
+    const idoPrice = new BN(2);
     const payer = web3.Keypair.generate();
     let user1Object = null;
     let user2Object = null;
@@ -175,7 +176,7 @@ describe("next-level-ido-platform", () => {
         idoTimes.endEscrow = nowBn.add(new anchor.BN(16));
         
         try {
-            await program.methods.initializeIdoPool(idoName, initialIdoToken, idoTimes)
+            await program.methods.initializeIdoPool(idoName, initialIdoToken, new BN('7'), new BN('10'), idoTimes)
         .accounts({
             idoAuthority: payer.publicKey,
             idoAuthorityToken: creatorIdoTokenAccount,
@@ -234,6 +235,12 @@ describe("next-level-ido-platform", () => {
             [Buffer.from("user"), user2Object.user.publicKey.toBuffer()],
             program.programId
         );
+
+        const [idoUser] =
+        await web3.PublicKey.findProgramAddress(
+            [Buffer.from("ido_user"), user1Object.user.publicKey.toBuffer()],
+            program.programId
+        );
         
         try {
           await program.methods.stake(new BN(12000))
@@ -278,9 +285,10 @@ describe("next-level-ido-platform", () => {
         );
 
         try {
-            await program.methods.participatePool(new BN(1000))
+            await program.methods.participatePool(new BN(200))
                 .accounts({
                     user: user1Pda,
+                    idoUser: idoUser,
                     userAuthority: user1Object.user.publicKey,
                     idoAccount,
                     usdcMint: usdcTokenMint,
@@ -307,10 +315,10 @@ describe("next-level-ido-platform", () => {
             console.error(error);
         }
 
-        let idoPoolAcc = await program.account.idoPool.fetch(idoAccount);
+        let fetchedIdoUser = await program.account.idoUser.fetch(idoUser);
         const user1TokenUsdcPubkey = user1Object.userTokenUsdcPubkey;
         const user1TokenUsdcAccount = await getAccount(provider.connection, user1TokenUsdcPubkey)
-        // console.log('idoPoolAcc', idoPoolAcc);
+        console.log('fetchedIdoUser', fetchedIdoUser.depositAmount.toString());
         console.log('user1TokenUsdcAccount', user1TokenUsdcAccount.amount.toString());
 
         const user1RedeemableAccount = await getAccount(provider.connection, userRedeemable);
@@ -333,9 +341,9 @@ describe("next-level-ido-platform", () => {
                 program.programId
             );
 
-      const [userPDA] =
+        const [idoUser] =
         await web3.PublicKey.findProgramAddress(
-            [Buffer.from("user"), user1Object.user.publicKey.toBuffer()],
+            [Buffer.from("ido_user"), user1Object.user.publicKey.toBuffer()],
             program.programId
         );
 
@@ -358,7 +366,7 @@ describe("next-level-ido-platform", () => {
                   userRedeemable,
                   idoAccount: idoPool,
                   idoTokenMint,
-                  user: userPDA,
+                  idoUser: idoUser,
                   idoTokenVault,
                   userIdoToken: user1IdoTokenAccount,
                   redeemableMint,
