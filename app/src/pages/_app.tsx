@@ -21,16 +21,17 @@ import {
 import { clusterApiUrl } from "@solana/web3.js";
 
 const network = WalletAdapterNetwork.Devnet;
-const endpoint = clusterApiUrl(network);
+const endpoint = "http://localhost:8899"; //clusterApiUrl(network);
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const wallets = useMemo(
     () => [
-      new PhantomWalletAdapter(),
-      new GlowWalletAdapter(),
-      new SlopeWalletAdapter(),
-      new SolflareWalletAdapter({ network }),
-      new TorusWalletAdapter(),
+      // @ts-ignore
+      new SolflareWalletAdapter({ network: "localhost" }),
+      // new PhantomWalletAdapter(),
+      // new GlowWalletAdapter(),
+      // new SlopeWalletAdapter(),
+      // new TorusWalletAdapter(),
     ],
     [network]
   );

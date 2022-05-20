@@ -8,7 +8,7 @@ import {
 import { toast } from "components/Toast";
 import { LOTO_MINT_TOKEN, X_LOTO_MINT_TOKEN } from "common/token";
 import Button from "components/Button";
-import { useTokenBalance } from "hooks/useGetBalance";
+import { useGetATAToken } from "hooks/useGetBalance";
 import AppProgram from "libs/program";
 import { useState } from "react";
 
@@ -22,8 +22,8 @@ const StakeForm = ({ type = "stake" }: StakeFormProps) => {
   const anchorWallet = useAnchorWallet();
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState(0);
-  const { mutate: refreshLotoBalance } = useTokenBalance(LOTO_MINT_TOKEN);
-  const { mutate: refreshXLotoBalance } = useTokenBalance(X_LOTO_MINT_TOKEN);
+  const { mutate: refreshLotoBalance } = useGetATAToken(LOTO_MINT_TOKEN);
+  const { mutate: refreshXLotoBalance } = useGetATAToken(X_LOTO_MINT_TOKEN);
 
   const handleStake = async () => {
     try {

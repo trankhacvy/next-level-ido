@@ -21,7 +21,7 @@ class AppProgram {
     async stake(amount: number, sendTx: WalletContextState['sendTransaction']) {
       const wallet = this.provider.wallet;
 
-      const [xLotoTokenMint, mintBump] =
+      const [xLotoTokenMint] =
       await PublicKey.findProgramAddress(
         [Buffer.from("mint"), lotoPublicKey.toBuffer()],
         this.program.programId
@@ -51,16 +51,16 @@ class AppProgram {
         wallet.publicKey,
         sendTx
       );
-
-      await this.program.methods.stake(mintBump, new BN(amount).mul(new BN(10**9)))
+      
+      await this.program.methods.stake(new BN(amount).mul(new BN(10**9)))
       .accounts({
         tokenMint: lotoPublicKey,
         xTokenMint: xLotoTokenMint,
         tokenFrom: lotoTokenAccount.address,
         tokenVault: vaultPubkey,
         xTokenTo: xLotoTokenAccount.address,
-        user: user,
-        initializer: wallet.publicKey,
+        user,
+        userAuthority: wallet.publicKey,
         systemProgram: SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
@@ -75,15 +75,16 @@ class AppProgram {
         [Buffer.from("mint"), lotoPublicKey.toBuffer()],
         this.program.programId
       );
-      const [vaultPubkey, vaultBump] =
+      const [vaultPubkey] =
       await PublicKey.findProgramAddress(
         [Buffer.from("vault"), lotoPublicKey.toBuffer()],
         this.program.programId
       );
-      // const [user] = await PublicKey.findProgramAddress(
-      //   [Buffer.from("user"),wallet.publicKey.toBuffer() ],
-      //   this.program.programId
-      // );
+      
+      const [user] = await PublicKey.findProgramAddress(
+        [Buffer.from("user"),wallet.publicKey.toBuffer() ],
+        this.program.programId
+      );
 
       const lotoTokenAccount = await getOrCreateAssociatedTokenAccount(
         this.provider.connection,
@@ -101,7 +102,7 @@ class AppProgram {
         sendTx
       );
       
-      await this.program.methods.unstake(vaultBump, new BN(amount).mul(new BN(10**9)))
+      await this.program.methods.unstake(new BN(amount).mul(new BN(10**9)))
       .accounts({
         tokenMint: lotoPublicKey,
         xTokenMint: xLotoTokenMint,
@@ -109,8 +110,7 @@ class AppProgram {
         xTokenFromAuthority: wallet.publicKey,
         tokenVault: vaultPubkey,
         tokenTo: lotoTokenAccount.address,
-        // initializer: wallet.publicKey,
-        // systemProgram: SystemProgram.programId,
+        user,
         tokenProgram: TOKEN_PROGRAM_ID,
       })
       .rpc();

@@ -2,7 +2,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { PublicKey } from '@solana/web3.js'
 import useSWR from 'swr'
 import { BN } from '@project-serum/anchor'
-import { getAccount } from '@solana/spl-token'
+import { getAccount, getAssociatedTokenAddress } from '@solana/spl-token'
 
 export const useTokenBalance = (mintAddress: string) => {
     const { connected, publicKey } = useWallet();
@@ -32,6 +32,29 @@ export const useTokenBalance = (mintAddress: string) => {
 
     return {
         balance: BN.isBN(data) ? data : new BN(0),
+        isLoading,
+        mutate
+    }
+}
+
+export const useGetATAToken = (mintAddress: string) => {
+    const { connected, publicKey } = useWallet();
+    const { connection } = useConnection();
+    
+    const { data, isValidating: isLoading, mutate } = useSWR(connected ? ['token', mintAddress] : null , async() => {
+        try {
+            const tokenMint = new PublicKey(mintAddress)
+            const ataAddress = await getAssociatedTokenAddress(tokenMint, publicKey as PublicKey);
+            const tokenAccount = await getAccount(connection, ataAddress);
+            return tokenAccount;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    })
+
+    return {
+        token: data,
         isLoading,
         mutate
     }
