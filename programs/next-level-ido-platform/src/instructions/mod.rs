@@ -1,6 +1,9 @@
 pub mod initialize_stake_pool;
 pub use initialize_stake_pool::*;
 
+pub mod reclaim_mint_authority;
+pub use reclaim_mint_authority::*;
+
 pub mod stake;
 pub use stake::*;
 

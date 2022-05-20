@@ -1,5 +1,5 @@
 use crate::state::User;
-use crate::utils::{mint_to, update_user_tier};
+use crate::utils::update_user_tier;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use std::convert::TryInto;
@@ -9,8 +9,8 @@ pub struct Stake<'info> {
     pub token_mint: Account<'info, Mint>,
     #[account(
         mut,
-        seeds = [b"mint", token_mint.key().as_ref()],
-        bump
+        // seeds = [b"mint", token_mint.key().as_ref()],
+        // bump
     )]
     pub x_token_mint: Account<'info, Mint>,
     #[account(mut)]
@@ -48,19 +48,37 @@ pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
 
     ctx.accounts.user.owner = ctx.accounts.user_authority.key();
     ctx.accounts.user.staked_amount = ctx.accounts.user.staked_amount.checked_add(amount).unwrap();
-    
     let now = Clock::get().unwrap().unix_timestamp;
     update_user_tier(&mut ctx.accounts.user, now);
 
+    let token_mint_key = ctx.accounts.token_mint.key();
+    let seeds = &[
+        b"vault",
+        token_mint_key.as_ref(),
+        &[*ctx.bumps.get("token_vault").unwrap()],
+    ];
+    let signer = &[&seeds[..]];
+
+    // mint xToken to user
     if total_token == 0 || total_x_token == 0 {
-        mint_to(
-            &ctx.accounts.token_program.to_account_info(),
-            &ctx.accounts.x_token_mint.to_account_info(),
-            &ctx.accounts.x_token_to.to_account_info(),
-            &ctx.accounts.token_mint.to_account_info(),
-            *ctx.bumps.get("x_token_mint").unwrap(),
-            amount,
-        )?;
+        // mint_to(
+        //     &ctx.accounts.token_program.to_account_info(),
+        //     &ctx.accounts.x_token_mint.to_account_info(),
+        //     &ctx.accounts.x_token_to.to_account_info(),
+        //     &ctx.accounts.token_mint.to_account_info(),
+        //     *ctx.bumps.get("x_token_mint").unwrap(),
+        //     amount,
+        // )?;
+        let cpi_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            token::MintTo {
+                mint: ctx.accounts.x_token_mint.to_account_info(),
+                to: ctx.accounts.x_token_to.to_account_info(),
+                authority: ctx.accounts.token_vault.to_account_info(),
+            },
+            signer,
+        );
+        token::mint_to(cpi_ctx, amount)?;
     } else {
         let what: u64 = (amount as u128)
             .checked_mul(total_x_token as u128)
@@ -70,14 +88,25 @@ pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
             .try_into()
             .unwrap();
 
-        mint_to(
-            &ctx.accounts.token_program.to_account_info(),
-            &ctx.accounts.x_token_mint.to_account_info(),
-            &ctx.accounts.x_token_to.to_account_info(),
-            &ctx.accounts.token_mint.to_account_info(),
-            *ctx.bumps.get("x_token_mint").unwrap(),
-            what,
-        )?;
+        let cpi_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            token::MintTo {
+                mint: ctx.accounts.x_token_mint.to_account_info(),
+                to: ctx.accounts.x_token_to.to_account_info(),
+                authority: ctx.accounts.token_vault.to_account_info(),
+            },
+            signer,
+        );
+        token::mint_to(cpi_ctx, what)?;
+
+        // mint_to(
+        //     &ctx.accounts.token_program.to_account_info(),
+        //     &ctx.accounts.x_token_mint.to_account_info(),
+        //     &ctx.accounts.x_token_to.to_account_info(),
+        //     &ctx.accounts.token_mint.to_account_info(),
+        //     *ctx.bumps.get("x_token_mint").unwrap(),
+        //     what,
+        // )?;
     }
 
     //transfer the users tokens to the vault

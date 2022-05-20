@@ -7,18 +7,14 @@ use std::convert::TryInto;
 #[derive(Accounts)]
 pub struct Unstake<'info> {
     pub token_mint: Account<'info, Mint>,
-
     #[account(
         mut,
-        seeds = [ b"mint", token_mint.key().as_ref() ],
-        bump,
     )]
     pub x_token_mint: Account<'info, Mint>,
 
     #[account(mut)]
     //the token account to withdraw from
     pub x_token_from: Account<'info, TokenAccount>,
-
     //the authority allowed to transfer from x_token_from
     pub x_token_from_authority: Signer<'info>,
 

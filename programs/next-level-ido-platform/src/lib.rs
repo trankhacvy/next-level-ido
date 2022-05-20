@@ -22,6 +22,10 @@ pub mod next_level_ido_platform {
         initialize_stake_pool::exe(ctx)
     }
 
+    pub fn reclaim_mint_authority(ctx: Context<ReclaimMintAuthority>) -> Result<()> {
+        reclaim_mint_authority::exe(ctx)
+    }
+
     pub fn stake(ctx: Context<Stake>, amount: u64) -> Result<()> {
         stake::exe(ctx, amount)
     }

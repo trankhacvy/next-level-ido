@@ -4,6 +4,9 @@ import { Program, web3, Provider, BN } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID, createMint, mintTo, Account, getOrCreateAssociatedTokenAccount, createAssociatedTokenAccount } from '@solana/spl-token';
 import { NextLevelIdoPlatform } from "../target/types/next_level_ido_platform";
 
+// ARI mint =  H2G3mWnp982G8RjbTsnPNPqXamLQqpYGc1Lpadmgzeee
+// xARI mint =  5YEHFGR4RVKvnXQAubB9rbRvS6CrbUiwtMh8YjefE9do
+
 const DEFAULT_TOKEN_AMOUNT = 1_000_000;
 
 describe("next-level-ido-platform", () => {
