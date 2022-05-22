@@ -32,7 +32,7 @@ const Index = ({
 export const getStaticProps = async () => {
   try {
     const repo = new ProjectsRepositoty();
-    const projects = await repo.findByStatus("live", 6);
+    const projects = await repo.findOnHomeProjects();
     return {
       props: {
         projects: projects as Project[],

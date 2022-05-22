@@ -84,4 +84,13 @@ export class ProjectsRepositoty extends SupbaseRepository<Project> {
         if(error) throw error;
         return data;
     }
+
+    async findOnHomeProjects() {
+        // const now = new Date();
+        // const { data, error } = await this.findAll().or(`sale_end.is.null,sale_end.gt.${now.toISOString()}`).limit(6);
+        const { data, error } = await this.findAll().eq('is_featured', true).limit(6);
+        
+        if(error) throw error;
+        return data;
+    }
 }

@@ -34,7 +34,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           <div className="text-center">
             <div className="text-body1">Token Price</div>
             <div className="text-h5 font-bold">
-              ${token_price} {deposit_token.name}
+              ${token_price} {deposit_token.ticker}
             </div>
           </div>
         </div>
@@ -49,14 +49,14 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           <div className="text-left">
             <div className="text-body2">Pool Size</div>
             <div className="text-body1 font-semibold">
-              {numeral(token_amount).format("0,0")} {sale_token.name}
+              {numeral(token_amount).format("0,0")} {sale_token.ticker}
             </div>
           </div>
           <div className="text-right">
             <div className="text-body2">Hard Cap</div>
             <div className="text-body1 font-semibold">
               {numeral(token_amount * token_price).format("0,0")}{" "}
-              {deposit_token.name}
+              {deposit_token.ticker}
             </div>
           </div>
         </div>

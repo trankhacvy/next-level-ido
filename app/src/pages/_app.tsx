@@ -19,6 +19,10 @@ import {
   TorusWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 import { clusterApiUrl } from "@solana/web3.js";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const network = WalletAdapterNetwork.Devnet;
 const endpoint = "http://localhost:8899"; //clusterApiUrl(network);

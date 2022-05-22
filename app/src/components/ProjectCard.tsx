@@ -1,4 +1,5 @@
 import Link from "next/link";
+import numeral from "numeral";
 import {
   FaTelegramPlane,
   FaDiscord,
@@ -35,7 +36,9 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
         <div className="flex justify-between">
           <div>
             <div className="text-caption">Total Raise</div>
-            <div className="text-body1 font-semibold">{token_amount} SOL</div>
+            <div className="text-body1 font-semibold">
+              {numeral(token_amount).format("0,0")} SOL
+            </div>
           </div>
           <div>
             <div className="text-caption">Status</div>

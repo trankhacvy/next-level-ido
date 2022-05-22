@@ -22,13 +22,13 @@ const ProjectPage = ({
       </Head>
       <div className="lg:flex lg:space-x-10">
         <ProjectCard project={project} />
-        <IDOTimeline />
+        <IDOTimeline project={project} />
       </div>
       <div className="lg:flex lg:space-x-10 mt-10">
-        <SaleInfo />
-        <TokenInformation />
+        <SaleInfo project={project} />
+        <TokenInformation project={project} />
       </div>
-      <ProjectDetail />
+      <ProjectDetail project={project} />
     </main>
   );
 };
