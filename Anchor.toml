@@ -11,6 +11,4 @@ cluster = "localnet"
 wallet = "/Users/khacvy/.config/solana/id.json"
 
 [scripts]
-# test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/ido_pool.ts"
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/case1.ts"
-# test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/next-level-ido-platform.ts"
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/next-level-ido-platform.ts"

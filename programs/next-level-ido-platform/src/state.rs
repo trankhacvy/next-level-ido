@@ -1,9 +1,7 @@
 use anchor_lang::prelude::*;
 
 #[account]
-pub struct StakePool {
-    
-}
+pub struct StakePool {}
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq)]
 pub enum StakeTier {
@@ -67,29 +65,42 @@ pub struct Participant {
 
 #[account]
 pub struct IdoPool {
-    pub ido_name: [u8; 10], // Setting an arbitrary max of ten characters in the ido name.
-    pub ido_authority: Pubkey,
+    pub ido_name: String,      // UUID 4 + max size 20
+    pub ido_authority: Pubkey, // 32
 
-    pub usdc_token_mint: Pubkey,
-    pub redeemable_token_mint: Pubkey,
-    pub ido_token_mint: Pubkey,
+    pub usdc_token_mint: Pubkey,       // 32
+    pub redeemable_token_mint: Pubkey, // 32
+    pub ido_token_mint: Pubkey,        // 32
 
-    pub usdc_vault: Pubkey,
-    pub ido_token_vault: Pubkey,
-    pub ido_token_price_numerator: u8,
-    pub ido_token_price_denominator: u8,
+    pub usdc_vault: Pubkey,              // 32
+    pub ido_token_vault: Pubkey,         // 32
+    pub ido_token_price_numerator: u8,   // 1
+    pub ido_token_price_denominator: u8, // 1
 
-    pub current_weight: u16,
+    pub current_weight: u16, // 2
 
-    pub ido_token_amount: u64,
-    pub ido_times: IdoTimes,
-    pub participant_count: u16,
-    pub participants: Vec<Participant>, // 100 participants
+    pub ido_token_amount: u64,          // 8
+    pub ido_times: IdoTimes,            // 8 * 4
+    pub participant_count: u16,         // 2
+    pub participants: Vec<Participant>, //4 + 100 * (32 + 1)  // 100 participants
 }
 
 impl IdoPool {
-    pub const SIZE: usize =
-        8 + 1 * 10 + 32 + 32 + 32 + 32 + 32 + 32 + 8 + 8 + 4 + 8 + 8 * 4 + 2 + (4 + 100 * (32 + 1));
+    pub const SIZE: usize = 8
+        + (4 + 20)
+        + 32
+        + 32
+        + 32
+        + 32
+        + 32
+        + 32
+        + 1
+        + 1
+        + 2
+        + 8
+        + 8 * 4
+        + 2
+        + (4 + 100 * (32 + 1));
 }
 
 #[account]

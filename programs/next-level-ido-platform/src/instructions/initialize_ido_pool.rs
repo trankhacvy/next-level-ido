@@ -3,7 +3,7 @@ use crate::state::{IdoPool, IdoTimes};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 
-const DECIMALS: u8 = 9;
+const DECIMALS: u8 = 6;
 
 #[derive(Accounts)]
 #[instruction(ido_name: String)]
@@ -67,20 +67,6 @@ pub struct InitializeIdoPool<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-// impl<'a, 'b, 'c, 'info> From<&mut InitializeIdoPool<'info>>
-//     for CpiContext<'a, 'b, 'c, 'info, Transfer<'info>>
-// {
-//     fn from(accounts: &mut InitializeIdoPool<'info>) -> CpiContext<'a, 'b, 'c, 'info, Transfer<'info>> {
-//         let cpi_accounts = Transfer {
-//             from: accounts.ido_authority_token.to_account_info(),
-//             to: accounts.ido_token_vault.to_account_info(),
-//             authority: accounts.ido_authority.to_account_info().clone(),
-//         };
-//         let cpi_program = accounts.token_program.to_account_info();
-//         CpiContext::new(cpi_program, cpi_accounts)
-//     }
-// }
-
 #[access_control(validate_ido_times(ido_times))]
 pub fn exe(
     ctx: Context<InitializeIdoPool>,
@@ -94,11 +80,11 @@ pub fn exe(
 
     let ido_pool = &mut ctx.accounts.ido_pool;
 
-    let name_bytes = ido_name.as_bytes();
-    let mut name_data = [b' '; 10];
-    name_data[..name_bytes.len()].copy_from_slice(name_bytes);
+    // let name_bytes = ido_name.as_bytes();
+    // let mut name_data = [b' '; 10];
+    // name_data[..name_bytes.len()].copy_from_slice(name_bytes);
 
-    ido_pool.ido_name = name_data;
+    ido_pool.ido_name = ido_name;
     ido_pool.ido_authority = ctx.accounts.ido_authority.key();
 
     ido_pool.usdc_token_mint = ctx.accounts.usdc_mint.key();

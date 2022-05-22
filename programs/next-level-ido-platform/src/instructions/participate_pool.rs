@@ -1,6 +1,5 @@
 use crate::errors::ErrorCode;
 use crate::state::{IdoPool, IdoUser, Participant, StakeTier, User};
-use crate::utils::TrimAsciiWhitespace;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, MintTo, Token, TokenAccount, Transfer};
 
@@ -40,32 +39,32 @@ pub struct ParticipatePool<'info> {
         init_if_needed,
         payer = user_authority,
         token::mint = redeemable_mint,
-        token::authority = ido_account,
+        token::authority = ido_pool,
         seeds = [user_authority.key().as_ref(),
-            ido_account.ido_name.as_ref().trim_ascii_whitespace(),
+            ido_pool.ido_name.as_bytes(),
             b"user_redeemable"],
         bump
     )]
     pub user_redeemable: Box<Account<'info, TokenAccount>>,
     #[account(mut,
-        seeds = [ido_account.ido_name.as_ref().trim_ascii_whitespace(), b"redeemable_mint"],
+        seeds = [ido_pool.ido_name.as_bytes(), b"redeemable_mint"],
         bump
     )]
     pub redeemable_mint: Box<Account<'info, Mint>>,
 
     #[account(
         mut,
-        seeds = [ido_account.ido_name.as_ref().trim_ascii_whitespace(), b"usdc_vault"],
+        seeds = [ido_pool.ido_name.as_bytes(), b"usdc_vault"],
         bump,
     )]
     pub usdc_vault: Box<Account<'info, TokenAccount>>,
 
     #[account(
         mut,
-        seeds = [ido_account.ido_name.as_ref().trim_ascii_whitespace()],
+        seeds = [ido_pool.ido_name.as_bytes()],
         bump
     )]
-    pub ido_account: Box<Account<'info, IdoPool>>,
+    pub ido_pool: Box<Account<'info, IdoPool>>,
 
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
@@ -79,12 +78,12 @@ pub fn exe(ctx: Context<ParticipatePool>, amount: u64) -> Result<()> {
         return err!(ErrorCode::LowUsdc);
     }
 
-    ctx.accounts.ido_account.participant_count = ctx.accounts.ido_account.participant_count + 1;
-    ctx.accounts.ido_account.participants.push(Participant {
+    ctx.accounts.ido_pool.participant_count = ctx.accounts.ido_pool.participant_count + 1;
+    ctx.accounts.ido_pool.participants.push(Participant {
         pubkey: ctx.accounts.user.owner,
         pool_weight: ctx.accounts.user.tier.value().1,
     });
-    ctx.accounts.ido_account.current_weight += ctx.accounts.user.tier.value().1 as u16;
+    ctx.accounts.ido_pool.current_weight += ctx.accounts.user.tier.value().1 as u16;
 
     ctx.accounts.ido_user.owner = ctx.accounts.user.owner;
     ctx.accounts.ido_user.tier = ctx.accounts.user.tier;
@@ -101,16 +100,15 @@ pub fn exe(ctx: Context<ParticipatePool>, amount: u64) -> Result<()> {
     token::transfer(cpi_ctx, amount)?;
 
     // Mint Redeemable to user Redeemable account.
-    let ido_name = ctx.accounts.ido_account.ido_name.as_ref();
     let seeds = &[
-        ido_name.trim_ascii_whitespace(),
-        &[*ctx.bumps.get("ido_account").unwrap()],
+        ctx.accounts.ido_pool.ido_name.as_bytes(),
+        &[*ctx.bumps.get("ido_pool").unwrap()],
     ];
     let signer = &[&seeds[..]];
     let cpi_accounts = MintTo {
         mint: ctx.accounts.redeemable_mint.to_account_info(),
         to: ctx.accounts.user_redeemable.to_account_info(),
-        authority: ctx.accounts.ido_account.to_account_info(),
+        authority: ctx.accounts.ido_pool.to_account_info(),
     };
     let cpi_program = ctx.accounts.token_program.to_account_info();
     let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);

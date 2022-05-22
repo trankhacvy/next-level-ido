@@ -1,6 +1,5 @@
 use crate::errors::ErrorCode;
 use crate::state::{IdoPool, IdoUser, StakeTier};
-use crate::utils::TrimAsciiWhitespace;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Burn, CloseAccount, Mint, Token, TokenAccount, Transfer};
 
@@ -29,14 +28,14 @@ pub struct ClaimToken<'info> {
         mut,
         seeds = [
             user_authority.key().as_ref(),
-            ido_account.ido_name.as_ref().trim_ascii_whitespace(),
+            ido_account.ido_name.as_bytes(),
             b"user_redeemable"],
         bump
     )]
     pub user_redeemable: Box<Account<'info, TokenAccount>>,
 
     #[account(
-        seeds = [ido_account.ido_name.as_ref().trim_ascii_whitespace()],
+        seeds = [ido_account.ido_name.as_bytes()],
         bump,
         has_one = ido_token_mint
     )]
@@ -45,12 +44,12 @@ pub struct ClaimToken<'info> {
     // vault to hold ido token
     #[account(
         mut,
-        seeds = [ido_account.ido_name.as_ref().trim_ascii_whitespace(), b"ido_token_vault"],
+        seeds = [ido_account.ido_name.as_bytes(), b"ido_token_vault"],
         bump
     )]
     pub ido_token_vault: Box<Account<'info, TokenAccount>>,
     #[account(mut,
-        seeds = [ido_account.ido_name.as_ref().trim_ascii_whitespace(), b"redeemable_mint"],
+        seeds = [ido_account.ido_name.as_bytes(), b"redeemable_mint"],
         bump
     )]
     pub redeemable_mint: Box<Account<'info, Mint>>,
@@ -84,11 +83,8 @@ pub fn exe(ctx: Context<ClaimToken>) -> Result<()> {
         actual_allocation = token_allocation;
     }
 
-    let ido_name = ctx.accounts.ido_account.ido_name.as_ref();
-    let seeds = &[
-        ido_name.trim_ascii_whitespace(),
-        &[*ctx.bumps.get("ido_account").unwrap()],
-    ];
+    let ido_name = ctx.accounts.ido_account.ido_name.as_bytes();
+    let seeds = &[ido_name, &[*ctx.bumps.get("ido_account").unwrap()]];
     let signer = &[&seeds[..]];
 
     // Burn the user's redeemable tokens.
