@@ -1,17 +1,14 @@
-import { expect, assert } from 'chai'
+import { assert } from 'chai'
 import * as anchor from "@project-serum/anchor";
-import { Program, web3, Provider, BN } from "@project-serum/anchor";
-import { TOKEN_PROGRAM_ID, createMint, mintTo, Account, getOrCreateAssociatedTokenAccount, createAssociatedTokenAccount } from '@solana/spl-token';
+import { Program, web3, BN } from "@project-serum/anchor";
+import { TOKEN_PROGRAM_ID, createMint, mintTo, createAssociatedTokenAccount } from '@solana/spl-token';
 import { NextLevelIdoPlatform } from "../target/types/next_level_ido_platform";
 import { handleAirdrop, getKeypairFromFile, getTokenBalance } from './utils'
-
-// ARI mint =  H2G3mWnp982G8RjbTsnPNPqXamLQqpYGc1Lpadmgzeee
-// xARI mint =  5YEHFGR4RVKvnXQAubB9rbRvS6CrbUiwtMh8YjefE9do
 
 const DECIMALS = 6
 
 describe("next-level-ido-platform", () => {
-    const provider = anchor.Provider.env();
+    const provider = anchor.AnchorProvider.env();
     anchor.setProvider(provider);
     const program = anchor.workspace.NextLevelIdoPlatform as Program<NextLevelIdoPlatform>;
 
@@ -318,7 +315,8 @@ describe("next-level-ido-platform", () => {
             );
 
         try {
-            await program.methods.initializeIdoPool(idoName, new BN(5000), new BN('7'), new BN('10'), idoTimes)
+            // @ts-ignore
+            await program.methods.initializeIdoPool(idoName, new BN('5000'), new BN('7'), new BN('10'), idoTimes)
             .accounts({
                 idoAuthority: payer.publicKey,
                 idoAuthorityToken: idoTokenAccount,

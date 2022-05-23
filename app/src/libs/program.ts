@@ -5,7 +5,9 @@ import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { getOrCreateAssociatedTokenAccount } from './token'
 import idl from '../config/idl.json'
 import { NextLevelIdoPlatform } from 'types/program'
-import { lotoPublicKey } from 'common/token';
+import { ARIPublicKey, xARIPublicKey } from 'common/token';
+import { ARI_DECIMALS } from 'common/constants';
+import { getAriTokenVault, getUserPDA } from 'utils/solana';
 
 const PROGRAM_KEY = new PublicKey(process.env.NEXT_PUBLIC_PROGRAM_ID as string)
 
@@ -21,44 +23,33 @@ class AppProgram {
     async stake(amount: number, sendTx: WalletContextState['sendTransaction']) {
       const wallet = this.provider.wallet;
 
-      const [xLotoTokenMint] =
-      await PublicKey.findProgramAddress(
-        [Buffer.from("mint"), lotoPublicKey.toBuffer()],
-        this.program.programId
-      );
-      const [vaultPubkey] =
-      await PublicKey.findProgramAddress(
-        [Buffer.from("vault"), lotoPublicKey.toBuffer()],
-        this.program.programId
-      );
-      const [user] = await PublicKey.findProgramAddress(
-        [Buffer.from("user"),wallet.publicKey.toBuffer() ],
-        this.program.programId
-      );
+      const [vaultPubkey] = await getAriTokenVault(this.program.programId);
 
-      const lotoTokenAccount = await getOrCreateAssociatedTokenAccount(
+      const [user] = await getUserPDA(wallet.publicKey, this.program.programId);
+
+      const ARITokenAccount = await getOrCreateAssociatedTokenAccount(
         this.provider.connection,
         wallet.publicKey,
-        lotoPublicKey,
+        ARIPublicKey,
         wallet.publicKey,
         sendTx,
       );
       
-      const xLotoTokenAccount = await getOrCreateAssociatedTokenAccount(
+      const xARITokenAccount = await getOrCreateAssociatedTokenAccount(
         this.provider.connection,
         wallet.publicKey,
-        xLotoTokenMint,
+        xARIPublicKey,
         wallet.publicKey,
         sendTx
       );
       
-      await this.program.methods.stake(new BN(amount).mul(new BN(10**9)))
+      await this.program.methods.stake(new BN(amount).mul(new BN(10**ARI_DECIMALS)))
       .accounts({
-        tokenMint: lotoPublicKey,
-        xTokenMint: xLotoTokenMint,
-        tokenFrom: lotoTokenAccount.address,
+        tokenMint: ARIPublicKey,
+        xTokenMint: xARIPublicKey,
+        tokenFrom: ARITokenAccount.address,
         tokenVault: vaultPubkey,
-        xTokenTo: xLotoTokenAccount.address,
+        xTokenTo: xARITokenAccount.address,
         user,
         userAuthority: wallet.publicKey,
         systemProgram: SystemProgram.programId,
@@ -69,27 +60,13 @@ class AppProgram {
 
     async unstake(amount: number, sendTx: WalletContextState['sendTransaction']) {
       const wallet = this.provider.wallet;
-
-      const [xLotoTokenMint] =
-      await PublicKey.findProgramAddress(
-        [Buffer.from("mint"), lotoPublicKey.toBuffer()],
-        this.program.programId
-      );
-      const [vaultPubkey] =
-      await PublicKey.findProgramAddress(
-        [Buffer.from("vault"), lotoPublicKey.toBuffer()],
-        this.program.programId
-      );
-      
-      const [user] = await PublicKey.findProgramAddress(
-        [Buffer.from("user"),wallet.publicKey.toBuffer() ],
-        this.program.programId
-      );
+      const [vaultPubkey] = await getAriTokenVault(this.program.programId);
+      const [user] = await getUserPDA(wallet.publicKey, this.program.programId);
 
       const lotoTokenAccount = await getOrCreateAssociatedTokenAccount(
         this.provider.connection,
         wallet.publicKey,
-        lotoPublicKey,
+        ARIPublicKey,
         wallet.publicKey,
         sendTx,
       );
@@ -97,15 +74,15 @@ class AppProgram {
       const xLotoTokenAccount = await getOrCreateAssociatedTokenAccount(
         this.provider.connection,
         wallet.publicKey,
-        xLotoTokenMint,
+        xARIPublicKey,
         wallet.publicKey,
         sendTx
       );
       
-      await this.program.methods.unstake(new BN(amount).mul(new BN(10**9)))
+      await this.program.methods.unstake(new BN(amount).mul(new BN(10**ARI_DECIMALS)))
       .accounts({
-        tokenMint: lotoPublicKey,
-        xTokenMint: xLotoTokenMint,
+        tokenMint: ARIPublicKey,
+        xTokenMint: xARIPublicKey,
         xTokenFrom: xLotoTokenAccount.address,
         xTokenFromAuthority: wallet.publicKey,
         tokenVault: vaultPubkey,

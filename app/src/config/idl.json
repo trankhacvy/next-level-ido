@@ -11,11 +11,6 @@
           "isSigner": false
         },
         {
-          "name": "xTokenMint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "tokenVault",
           "isMut": true,
           "isSigner": false
@@ -37,6 +32,37 @@
         },
         {
           "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "reclaimMintAuthority",
+      "accounts": [
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "xTokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenAuthority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
         }
@@ -278,7 +304,7 @@
           "isSigner": false
         },
         {
-          "name": "idoAccount",
+          "name": "idoPool",
           "isMut": true,
           "isSigner": false
         },
@@ -403,12 +429,7 @@
         "fields": [
           {
             "name": "idoName",
-            "type": {
-              "array": [
-                "u8",
-                10
-              ]
-            }
+            "type": "string"
           },
           {
             "name": "idoAuthority",

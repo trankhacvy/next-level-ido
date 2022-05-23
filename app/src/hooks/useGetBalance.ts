@@ -3,35 +3,29 @@ import { PublicKey } from '@solana/web3.js'
 import useSWR from 'swr'
 import { BN } from '@project-serum/anchor'
 import { getAccount, getAssociatedTokenAddress } from '@solana/spl-token'
+import { ARI_DECIMALS } from "common/constants"
 
 export const useTokenBalance = (mintAddress: string) => {
     const { connected, publicKey } = useWallet();
     const { connection } = useConnection();
-    const { data, isValidating: isLoading, mutate } = useSWR(connected ? mintAddress : null , async() => {
+    const { data, isValidating: isLoading, mutate } = useSWR(connected ? ['balance', mintAddress] : null , async() => {
         try {
             const tokenMint = new PublicKey(mintAddress)
-            const { value } = await connection.getParsedTokenAccountsByOwner(
-                publicKey as PublicKey,
-                {
-                    mint: tokenMint
-                }
-            );
-            if(value && Array.isArray(value) && value.length > 0) {
-                const pubkey = value[0]?.pubkey;
-                if(pubkey) {
-                    const tokenAccount = await getAccount(connection, pubkey);
-                    const amount = tokenAccount.amount;
-                    return new BN(amount.toString()).div(new BN(10**9));
-                }
+            const ataAddress = await getAssociatedTokenAddress(tokenMint, publicKey as PublicKey);
+            const tokenAccount = await getAccount(connection, ataAddress);
+            if(tokenAccount) {
+                return  new BN(tokenAccount.amount.toString()).div(new BN(10**ARI_DECIMALS));
             } 
             return new BN(0);
         } catch (error) {
+            console.error(error);
             throw error;
         }
     })
 
     return {
         balance: BN.isBN(data) ? data : new BN(0),
+        balanceNumber: BN.isBN(data) ? data.toNumber() : 0,
         isLoading,
         mutate
     }

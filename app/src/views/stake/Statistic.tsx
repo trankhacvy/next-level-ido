@@ -1,25 +1,13 @@
 import CountUp from "react-countup";
-import { useGetATAToken } from "hooks/useGetBalance";
-import { LOTO_MINT_TOKEN, X_LOTO_MINT_TOKEN } from "common/token";
 import { BN } from "@project-serum/anchor";
-import { bigintToBN } from "utils/number";
+import { useBalanceContext } from "context/balanceContext";
 
 const Statistic = () => {
-  const { token: ariTokenAccount } = useGetATAToken(LOTO_MINT_TOKEN);
-  const { token: xAriTokenAccount } = useGetATAToken(X_LOTO_MINT_TOKEN);
-
+  const { ariBalance, xAriBalance } = useBalanceContext();
   return (
     <div className="w-full card p-8 space-y-10">
-      <Item
-        balance={bigintToBN(ariTokenAccount?.amount)}
-        token="$LOTO"
-        bottomText="Available to lock"
-      />
-      <Item
-        balance={bigintToBN(xAriTokenAccount?.amount)}
-        token="$xLOTO"
-        bottomText="Amount locked"
-      />
+      <Item balance={ariBalance} token="$LOTO" bottomText="Available to lock" />
+      <Item balance={xAriBalance} token="$xLOTO" bottomText="Amount locked" />
     </div>
   );
 };

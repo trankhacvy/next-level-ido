@@ -5,46 +5,66 @@
 import { NextLevelIdoPlatform } from "../target/types/next_level_ido_platform";
 import { Program, setProvider, workspace, web3 } from "@project-serum/anchor";
 import { handleAirdrop } from '../tests/utils'
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { TOKEN_PROGRAM_ID, createMint, getOrCreateAssociatedTokenAccount, mintTo } from '@solana/spl-token';
 
 const { PublicKey } = web3
-
-const NEXT_PUBLIC_LOTO_MINT_TOKEN = "9SroHSrW2wNqorK41Fy2Pe3ztNA826TJUYosAzc23D2o"
-const NEXT_PUBLIC_X_LOTO_MINT_TOKEN = "BhEtKLfDqPSwCFkaunirEdgDZWAsdk5HCYHzVZDP7hYK"
 
 module.exports = async function (provider) {
   console.log('run migration');
   // Configure client to use the provider.
   setProvider(provider);
 
-  // Add your deploy script here.
-
   const program = workspace.NextLevelIdoPlatform as Program<NextLevelIdoPlatform>;
 
   const payer = web3.Keypair.generate();
   await handleAirdrop(provider, payer.publicKey);
 
-  const ariTokenMintPubkey = new PublicKey(NEXT_PUBLIC_LOTO_MINT_TOKEN);
+  const ariTokenMintPubkey = await createMint(
+      provider.connection,
+      payer,
+      payer.publicKey,
+      null,
+      6,
+  );
+  console.log('ariTokenMintPubkey', ariTokenMintPubkey.toBase58())  
+  const walletATA = await getOrCreateAssociatedTokenAccount(
+    provider.connection,
+    payer,
+    ariTokenMintPubkey,
+    new PublicKey("63EEC9FfGyksm7PkVC6z8uAmqozbQcTzbkWJNsgqjkFs"),
+);
+  console.log('walletATA', walletATA.address.toBase58())  
 
-  const [xAriTokenMintPubkey] =
-      await web3.PublicKey.findProgramAddress(
-        [Buffer.from("mint"), ariTokenMintPubkey.toBuffer()],
-        program.programId
-      );
-  console.log('xAriTokenMintPubkey', xAriTokenMintPubkey.toBase58())      
-  const [vaultPubkey] =
-      await web3.PublicKey.findProgramAddress(
-        [Buffer.from("vault"), ariTokenMintPubkey.toBuffer()],
-        program.programId
-      );
+  await mintTo(
+    provider.connection,
+    payer,
+    ariTokenMintPubkey,
+    walletATA.address,
+    payer,
+    1000 * 10**6,
+);
+
+  const ariXTokenMintPubkey = await createMint(
+    provider.connection,
+    payer,
+    payer.publicKey,
+    null,
+    6,
+  );
+  console.log('ariXTokenMintPubkey', ariXTokenMintPubkey.toBase58())  
+  
+  const [stakePoolAriVault] =
+  await web3.PublicKey.findProgramAddress(
+      [Buffer.from("vault"), ariTokenMintPubkey.toBuffer()],
+      program.programId
+  );    
 
   try {
     await program.rpc.initializeStakePool(
       {
         accounts: {
           tokenMint: ariTokenMintPubkey,
-          xTokenMint: xAriTokenMintPubkey,
-          tokenVault: vaultPubkey,
+          tokenVault: stakePoolAriVault,
           tokenAuthority: payer.publicKey,
           systemProgram: web3.SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
@@ -53,8 +73,23 @@ module.exports = async function (provider) {
         signers: [payer],
       }
     );
+    console.log('initializeStakePool success')  
+    await program.rpc.reclaimMintAuthority(
+      {
+          accounts: {
+              tokenMint: ariTokenMintPubkey,
+              xTokenMint: ariXTokenMintPubkey,
+              tokenVault: stakePoolAriVault,
+              tokenAuthority: payer.publicKey,
+              tokenProgram: TOKEN_PROGRAM_ID,
+          },
+          signers: [payer],
+      }
+  );
+  console.log('reclaimMintAuthority success')  
   } catch (error) {
     console.error(error)
   }
+
 
 };

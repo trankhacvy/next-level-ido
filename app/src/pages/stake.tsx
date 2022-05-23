@@ -3,17 +3,13 @@ import Statistic from "views/stake/Statistic";
 import StakeTab from "views/stake/StakeTab";
 import TierCard from "components/TierCard";
 import { tiersData } from "common/tier";
-import { useGetATAToken } from "hooks/useGetBalance";
-import { X_LOTO_MINT_TOKEN } from "common/token";
 import numeral from "numeral";
 import { getTierProps } from "utils/tiers";
-import { bigintToBN } from "utils/number";
+import { useBalanceContext } from "context/balanceContext";
 
 const Stake = () => {
-  const { token: xAriTokenAccount } = useGetATAToken(X_LOTO_MINT_TOKEN);
-  const tierProps = getTierProps(
-    bigintToBN(xAriTokenAccount?.amount).toNumber()
-  );
+  const { xAriBalance } = useBalanceContext();
+  const tierProps = getTierProps(xAriBalance.toNumber());
 
   return (
     <main className="container mx-auto px-5 pt-24 pb-20 lg:pt-36 lg:pb-[120px]">
@@ -37,13 +33,9 @@ const Stake = () => {
       </div>
       <div className="mt-20">
         <h6 className="heading-h6 mb-8">
-          {`Your $LOTO power is`}{" "}
+          {`Your $xARI power is`}{" "}
           <span className="text-primary">
-            $
-            {numeral(bigintToBN(xAriTokenAccount?.amount).toNumber()).format(
-              ""
-            )}
-            .
+            ${numeral(xAriBalance.toNumber()).format("")}.
           </span>{" "}
           {tierProps.tier ? (
             <>

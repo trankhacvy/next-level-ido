@@ -5,7 +5,7 @@
     "build": "anchor build && node scripts/copy_idl.js"
   },
   "dependencies": {
-    "@project-serum/anchor": "^0.23.0",
+    "@project-serum/anchor": "^0.24.2",
     "@solana/spl-token": "^0.2.0",
     "bip39": "^3.0.4"
   },

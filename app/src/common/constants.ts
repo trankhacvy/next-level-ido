@@ -1,1 +1,1 @@
-export const ARI_DECIMAL = 6
+export const ARI_DECIMALS = 6

@@ -21,11 +21,20 @@ import {
 // import { clusterApiUrl } from "@solana/web3.js";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { useTokenBalance } from "hooks/useGetBalance";
+import { ARI_MINT_TOKEN, X_ARI_MINT_TOKEN } from "common/token";
+import { BalanceContextProvider } from "context/balanceContext";
 
 dayjs.extend(utc);
 
 const network = WalletAdapterNetwork.Devnet;
 const endpoint = "http://localhost:8899"; //clusterApiUrl(network);
+
+// function GlobalHooks() {
+//   useTokenBalance(ARI_MINT_TOKEN);
+//   useTokenBalance(X_ARI_MINT_TOKEN);
+//   return null;
+// }
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const wallets = useMemo(
@@ -43,11 +52,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>
-          <Header />
-          <Component {...pageProps} />
-          <Footer />
-        </WalletModalProvider>
+        <BalanceContextProvider>
+          <WalletModalProvider>
+            <Header />
+            <Component {...pageProps} />
+            <Footer />
+          </WalletModalProvider>
+        </BalanceContextProvider>
       </WalletProvider>
       <Toaster />
     </ConnectionProvider>

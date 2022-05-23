@@ -11,11 +11,6 @@ export type NextLevelIdoPlatform = {
           "isSigner": false
         },
         {
-          "name": "xTokenMint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "tokenVault",
           "isMut": true,
           "isSigner": false
@@ -37,6 +32,37 @@ export type NextLevelIdoPlatform = {
         },
         {
           "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "reclaimMintAuthority",
+      "accounts": [
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "xTokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenAuthority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
         }
@@ -278,7 +304,7 @@ export type NextLevelIdoPlatform = {
           "isSigner": false
         },
         {
-          "name": "idoAccount",
+          "name": "idoPool",
           "isMut": true,
           "isSigner": false
         },
@@ -403,12 +429,7 @@ export type NextLevelIdoPlatform = {
         "fields": [
           {
             "name": "idoName",
-            "type": {
-              "array": [
-                "u8",
-                10
-              ]
-            }
+            "type": "string"
           },
           {
             "name": "idoAuthority",
@@ -616,11 +637,6 @@ export const IDL: NextLevelIdoPlatform = {
           "isSigner": false
         },
         {
-          "name": "xTokenMint",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "tokenVault",
           "isMut": true,
           "isSigner": false
@@ -642,6 +658,37 @@ export const IDL: NextLevelIdoPlatform = {
         },
         {
           "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "reclaimMintAuthority",
+      "accounts": [
+        {
+          "name": "tokenMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "xTokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenAuthority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
         }
@@ -883,7 +930,7 @@ export const IDL: NextLevelIdoPlatform = {
           "isSigner": false
         },
         {
-          "name": "idoAccount",
+          "name": "idoPool",
           "isMut": true,
           "isSigner": false
         },
@@ -1008,12 +1055,7 @@ export const IDL: NextLevelIdoPlatform = {
         "fields": [
           {
             "name": "idoName",
-            "type": {
-              "array": [
-                "u8",
-                10
-              ]
-            }
+            "type": "string"
           },
           {
             "name": "idoAuthority",
