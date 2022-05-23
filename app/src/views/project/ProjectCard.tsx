@@ -1,14 +1,13 @@
 import Button from "components/Button";
 import numeral from "numeral";
-import { FaTelegram, FaDiscord, FaTwitter, FaMedium } from "react-icons/fa";
+import {
+  FaTelegramPlane,
+  FaDiscord,
+  FaTwitter,
+  FaMediumM,
+  FaFacebook,
+} from "react-icons/fa";
 import { Project } from "types/common";
-
-const socialNetworks = [
-  { name: "Telegram", icon: FaTelegram, href: "https://google.com" },
-  { name: "Discord", icon: FaDiscord, href: "https://google.com" },
-  { name: "Twitter", icon: FaTwitter, href: "https://google.com" },
-  { name: "Medium", icon: FaMedium, href: "https://google.com" },
-];
 
 export type ProjectCardProps = {
   project: Project;
@@ -23,7 +22,46 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
     token_amount,
     sale_token,
     deposit_token,
+    telegram_channel_username,
+    discord,
+    twitter_username,
+    medium_username,
+    facebook_url,
   } = project;
+
+  const socials = [
+    {
+      name: "Telegram",
+      visible: !!telegram_channel_username,
+      href: `https://t.me/${telegram_channel_username}`,
+      icon: <FaTelegramPlane className="w-5 h-5" />,
+    },
+    {
+      name: "Discord",
+      visible: !!discord,
+      href: discord,
+      icon: <FaDiscord className="w-5 h-5" />,
+    },
+    {
+      name: "Twitter",
+      visible: !!twitter_username,
+      href: `https://twitter.com/${twitter_username}`,
+      icon: <FaTwitter className="w-5 h-5" />,
+    },
+    {
+      name: "Medium",
+      visible: !!medium_username,
+      href: medium_username,
+      icon: <FaMediumM className="w-5 h-5" />,
+    },
+    {
+      name: "Facebook",
+      visible: !!facebook_url,
+      href: facebook_url,
+      icon: <FaFacebook className="w-5 h-5" />,
+    },
+  ];
+
   return (
     <div className="w-full lg:w-auto lg:flex-1 min-h-[600px] lg:self-stretch card">
       <div className="p-8">
@@ -67,7 +105,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
 
       <hr className="divider" />
       <div className="flex space-x-4 p-8 text-primary">
-        {socialNetworks.map((item) => (
+        {/* {socialNetworks.map((item) => (
           <a
             href={item.href}
             className="p-2 inline-block cursor-pointer rounded-full hover:bg-gray-600/10"
@@ -77,7 +115,20 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           >
             <item.icon className="w-5 h-5" />
           </a>
-        ))}
+        ))} */}
+        {socials
+          .filter((item) => item.visible)
+          .map((item) => (
+            <a
+              key={item.name}
+              href={item.href as string}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 inline-block cursor-pointer rounded-full hover:bg-gray-600/10"
+            >
+              {item.icon}
+            </a>
+          ))}
       </div>
     </div>
   );

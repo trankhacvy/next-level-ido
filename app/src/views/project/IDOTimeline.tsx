@@ -7,11 +7,19 @@ export type IDOTimelineProps = {
 };
 
 const IDOTimeline = ({ project }: IDOTimelineProps) => {
-  const { claim_start, sale_start, vote_end, whitelist_end } = project;
+  const { claim_start, sale_start, vote_end, whitelist_start, whitelist_end } =
+    project;
+  const now = dayjs();
+
+  const whitelisting =
+    dayjs(whitelist_start).isAfter(now) && dayjs(now).isBefore(whitelist_end);
+
   return (
     <div className="w-full lg:w-auto lg:flex-1">
       <div className="text-right">
-        <p className="text-body2">Distribution ends in</p>
+        <p className="text-body2">
+          Distribution ends in {whitelisting ? "whitelisting" : "none"}
+        </p>
         <div className="text-h5 font-semibold">20:00:21:34</div>
         <div className="mt-8">
           <TimelineItem text="Preparation" status="Done" />

@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import { Project } from 'types/common'
+import { Project, ProjectStatus } from 'types/common'
 
 interface BaseRepository<T> {
     create(item: Omit<T, 'id'>): Promise<T>
@@ -77,10 +77,17 @@ export class ProjectsRepositoty extends SupbaseRepository<Project> {
         super('projects');
     }
 
-    async findByStatus(status: 'upcoming' | 'live' | 'finished', limit : number = 10) {
-        const amount = status === 'upcoming' ? 50000 : ( status === 'live' ? 10000 : 0 );
+    async findByStatus(status: ProjectStatus, limit : number = 10) {
+        let builder = this.findAll();
+        if(status === 'upcoming') {
+            builder = builder.is('whitelist_start', null);
+        } else if (status === 'ended') {
+            builder = builder.eq('is_closed', true);
+        } else if (status === 'live') {
+            builder = builder.not('whitelist_start', 'is', null).eq('is_closed', false);
+        }
+        const { data, error } = await builder.limit(limit);
         
-        const { data, error } = await this.findAll().gt('token_amount', amount).limit(limit);
         if(error) throw error;
         return data;
     }

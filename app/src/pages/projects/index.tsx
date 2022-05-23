@@ -7,7 +7,7 @@ import { useMemo } from "react";
 const ProjectsPage = () => {
   const { projects: upcomingProjects, isLoading } = useGetProjects("upcoming");
   const { projects: liveProjects } = useGetProjects("live");
-  const { projects: finishedProjects } = useGetProjects("finished");
+  const { projects: finishedProjects } = useGetProjects("ended");
 
   const tabsData = useMemo(
     () => [
@@ -16,7 +16,7 @@ const ProjectsPage = () => {
         content: (
           <ProjectsList
             isLoading={isLoading}
-            projects={upcomingProjects}
+            projects={liveProjects}
             className="mt-10"
           />
         ),
@@ -26,7 +26,7 @@ const ProjectsPage = () => {
         content: (
           <ProjectsList
             isLoading={isLoading}
-            projects={liveProjects}
+            projects={upcomingProjects}
             className="mt-10"
           />
         ),

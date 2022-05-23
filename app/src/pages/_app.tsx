@@ -18,7 +18,7 @@ import {
   SolflareWalletAdapter,
   TorusWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
-import { clusterApiUrl } from "@solana/web3.js";
+// import { clusterApiUrl } from "@solana/web3.js";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 
@@ -32,10 +32,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     () => [
       // @ts-ignore
       new SolflareWalletAdapter({ network: "localhost" }),
-      // new PhantomWalletAdapter(),
-      // new GlowWalletAdapter(),
-      // new SlopeWalletAdapter(),
-      // new TorusWalletAdapter(),
+      new PhantomWalletAdapter(),
+      new GlowWalletAdapter(),
+      new SlopeWalletAdapter(),
+      new TorusWalletAdapter(),
     ],
     [network]
   );

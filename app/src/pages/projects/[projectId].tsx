@@ -1,11 +1,13 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import Head from "next/head";
+import { FaChevronRight } from "react-icons/fa";
 import ProjectCard from "views/project/ProjectCard";
 import ProjectDetail from "views/project/ProjectDetail";
 import SaleInfo from "views/project/SaleInfo";
 import TokenInformation from "views/project/TokenInformation";
 import IDOTimeline from "views/project/IDOTimeline";
 import { ProjectsRepositoty } from "libs/supabase";
+import Link from "next/link";
 
 const ProjectPage = ({
   project,
@@ -20,6 +22,21 @@ const ProjectPage = ({
           content={`${name} | The Next Level IDO Platform`}
         />
       </Head>
+      <nav className="mb-10">
+        <ol className="flex flex-wrap items-center">
+          <li className="">
+            <Link href="/projects">
+              <a className="text-body1 hover:underline" href="/projects">
+                Projects
+              </a>
+            </Link>
+          </li>
+          <li className="mx-2">
+            <FaChevronRight className="text-body1 text-gray-500 w-4 h-4" />
+          </li>
+          <li className="text-body1 text-gray-500">{name}</li>
+        </ol>
+      </nav>
       <div className="lg:flex lg:space-x-10">
         <ProjectCard project={project} />
         <IDOTimeline project={project} />

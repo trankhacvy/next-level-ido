@@ -1,8 +1,8 @@
 import { ProjectsRepositoty } from 'libs/supabase'
-import { Project } from 'types/common'
+import { Project, ProjectStatus } from 'types/common'
 import { useFetchWithCache } from './useFetchWithCache'
 
-export const useGetProjects = (status: 'upcoming' | 'live' | 'finished') => {
+export const useGetProjects = (status: ProjectStatus) => {
   const { data, isFirstLoading, error } = useFetchWithCache<Project[]>(
     ['getProjects', status],
     () => new ProjectsRepositoty().findByStatus(status, 10),
