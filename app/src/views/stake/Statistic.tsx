@@ -28,7 +28,7 @@ const Item = ({ balance, token, bottomText }: ItemProps) => {
         height={64}
       />
       <div className="heading-h3 mt-6 mb-2 space-x-2">
-        <CountUp end={balance.toNumber()} separator="," duration={3} />
+        <CountUp end={balance.toNumber()} separator="," duration={1.5} />
         <span>{token}</span>
       </div>
       <div className="text-body1">{bottomText}</div>

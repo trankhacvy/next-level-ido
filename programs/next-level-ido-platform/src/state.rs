@@ -65,7 +65,7 @@ pub struct Participant {
 
 #[account]
 pub struct IdoPool {
-    pub ido_name: String,      // UUID 4 + max size 20
+    pub ido_name: String,      // UUID 4 + max size 50
     pub ido_authority: Pubkey, // 32
 
     pub usdc_token_mint: Pubkey,       // 32
@@ -87,7 +87,7 @@ pub struct IdoPool {
 
 impl IdoPool {
     pub const SIZE: usize = 8
-        + (4 + 20)
+        + (4 + 50)
         + 32
         + 32
         + 32

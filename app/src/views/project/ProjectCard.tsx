@@ -1,5 +1,15 @@
+import { useState } from "react";
+import {
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+  AnchorWallet,
+} from "@solana/wallet-adapter-react";
 import Button from "components/Button";
+import { toast } from "components/Toast";
 import numeral from "numeral";
+import { AnchorProvider } from "@project-serum/anchor";
+import AppProgram from "libs/program";
 import {
   FaTelegramPlane,
   FaDiscord,
@@ -8,6 +18,8 @@ import {
   FaFacebook,
 } from "react-icons/fa";
 import { Project } from "types/common";
+import { useGetIDOPool, useGetUserIDO } from "hooks/useGetIdoPool";
+import { useAnchorProvider } from "hooks/useProvider";
 
 export type ProjectCardProps = {
   project: Project;
@@ -28,6 +40,14 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
     medium_username,
     facebook_url,
   } = project;
+
+  const [loading, setLoading] = useState(false);
+  const provider = useAnchorProvider();
+  const { connection } = useConnection();
+  const { sendTransaction } = useWallet();
+  const anchorWallet = useAnchorWallet();
+  const { pool } = useGetIDOPool(name, provider);
+  const { userIdoAccount } = useGetUserIDO();
 
   const socials = [
     {
@@ -61,6 +81,31 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
       icon: <FaFacebook className="w-5 h-5" />,
     },
   ];
+
+  const handleCommitFund = async () => {
+    try {
+      const amount = 1000;
+      setLoading(true);
+      const provider = new AnchorProvider(
+        connection,
+        anchorWallet as AnchorWallet,
+        AnchorProvider.defaultOptions()
+      );
+      const program = new AppProgram(provider);
+      await program.commitFund(name, amount, sendTransaction);
+      setLoading(false);
+      toast.success({
+        title: `Successfully`,
+      });
+    } catch (error: any) {
+      console.error(error);
+      toast.error({
+        title: `Join error`,
+        message: error?.message,
+      });
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full lg:w-auto lg:flex-1 min-h-[600px] lg:self-stretch card">
@@ -98,24 +143,33 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
             </div>
           </div>
         </div>
-        <Button fullWidth size="large" className="mt-8">
-          Participate
-        </Button>
+        {!userIdoAccount && (
+          <Button
+            disabled={!pool}
+            onClick={handleCommitFund}
+            fullWidth
+            size="large"
+            className="mt-8"
+            loading={loading}
+          >
+            Participate
+          </Button>
+        )}
       </div>
 
       <hr className="divider" />
+      {userIdoAccount && (
+        <>
+          <div className="flex items-center justify-between p-8">
+            <h5 className="heading-h5">Fund committed</h5>
+            <h5 className="heading-h5">
+              {numeral(userIdoAccount.depositAmount.toNumber()).format("0,0")}
+            </h5>
+          </div>
+          <hr className="divider" />
+        </>
+      )}
       <div className="flex space-x-4 p-8 text-primary">
-        {/* {socialNetworks.map((item) => (
-          <a
-            href={item.href}
-            className="p-2 inline-block cursor-pointer rounded-full hover:bg-gray-600/10"
-            key={item.name}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <item.icon className="w-5 h-5" />
-          </a>
-        ))} */}
         {socials
           .filter((item) => item.visible)
           .map((item) => (
