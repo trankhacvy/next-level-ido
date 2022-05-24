@@ -64,7 +64,7 @@ const StakeForm = ({ type = "stake" }: StakeFormProps) => {
           />
         </div>
         <span className="heading-h6 hidden md:inline-block font-bold">
-          {type === "stake" ? "$LOTO" : "$xLOTO"}
+          {type === "stake" ? "$ARI" : "$xARI"}
         </span>
         <div className="flex-1">
           <input

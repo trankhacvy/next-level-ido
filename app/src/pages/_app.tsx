@@ -21,11 +21,11 @@ import {
 // import { clusterApiUrl } from "@solana/web3.js";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { useTokenBalance } from "hooks/useGetBalance";
-import { ARI_MINT_TOKEN, X_ARI_MINT_TOKEN } from "common/token";
+import isBetween from "dayjs/plugin/isBetween";
 import { BalanceContextProvider } from "context/balanceContext";
 
 dayjs.extend(utc);
+dayjs.extend(isBetween);
 
 const network = WalletAdapterNetwork.Devnet;
 const endpoint = "http://localhost:8899"; //clusterApiUrl(network);

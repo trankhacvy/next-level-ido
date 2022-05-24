@@ -12,7 +12,7 @@ const Hero = () => {
               The Next-Level <br /> <b>IDO Platform</b>
             </h1>
             <p className="mt-10 text-gray-600 leading-relaxed">
-              Loto is the next-level IDO platform built on Solana with the needs
+              Ari is the next-level IDO platform built on Solana with the needs
               of both projects and investors alike.
             </p>
             <div className="text-center mt-10 space-x-4 lg:flex space-y-6 lg:space-y-0">
@@ -23,7 +23,7 @@ const Hero = () => {
                   href="/stake"
                   as="a"
                 >
-                  Stake $LOTO
+                  Stake $ARI
                 </Button>
               </Link>
               <Link href="/">

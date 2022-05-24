@@ -27,6 +27,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
     twitter_username,
     medium_username,
     facebook_url,
+    sale_token,
   } = project;
   const status = getProjectStatus(project);
 
@@ -82,7 +83,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           <div>
             <div className="text-caption">Total Raise</div>
             <div className="text-body1 font-semibold">
-              {numeral(token_amount).format("0,0")} SOL
+              {numeral(token_amount).format("0,0")} {sale_token.ticker}
             </div>
           </div>
           <div>

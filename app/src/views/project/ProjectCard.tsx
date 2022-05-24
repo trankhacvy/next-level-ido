@@ -39,6 +39,10 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
     twitter_username,
     medium_username,
     facebook_url,
+    is_closed,
+    ath_roi,
+    curr_roi,
+    last_price,
   } = project;
 
   const [loading, setLoading] = useState(false);
@@ -143,7 +147,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
             </div>
           </div>
         </div>
-        {!userIdoAccount && (
+        {!userIdoAccount && !is_closed && (
           <Button
             disabled={!pool}
             onClick={handleCommitFund}
@@ -165,6 +169,28 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
             <h5 className="heading-h5">
               {numeral(userIdoAccount.depositAmount.toNumber()).format("0,0")}
             </h5>
+          </div>
+          <hr className="divider" />
+        </>
+      )}
+      {is_closed && (
+        <>
+          <h3 className="heading-h3 text-center text-primary mt-8">
+            {name} public sale has finished!
+          </h3>
+          <div className="flex items-center justify-between p-8">
+            <div>
+              <div className="text-body2">ROI (ATH)</div>
+              <h5 className="heading-h5">{ath_roi}</h5>
+            </div>
+            <div className="text-center">
+              <div className="text-body2">ROI (ATH)</div>
+              <h5 className="heading-h5">{curr_roi}</h5>
+            </div>
+            <div className="text-right">
+              <div className="text-body2">Last Price</div>
+              <h5 className="heading-h5">{last_price}</h5>
+            </div>
           </div>
           <hr className="divider" />
         </>

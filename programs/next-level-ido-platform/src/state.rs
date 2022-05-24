@@ -51,10 +51,6 @@ pub struct Log {
 
 #[derive(AnchorSerialize, AnchorDeserialize, Default, Clone, Copy)]
 pub struct IdoTimes {
-    // pub start_ido: i64,
-    // pub end_deposits: i64,
-    // pub end_ido: i64,
-    // pub end_escrow: i64,
     pub whitelist_start: i64,
     pub whitelist_end: i64,
     pub sale_start: i64,

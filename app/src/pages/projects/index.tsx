@@ -57,8 +57,7 @@ const ProjectsPage = () => {
       <div className="container mx-auto px-5 pt-24 pb-20 lg:pt-36 lg:pb-[120px]">
         <h2 className="heading-h2">Projects</h2>
         <div className="mt-6 text-gray-600 text-body1 mb-12">
-          Nullam tincidunt adipiscing enim. Mauris sollicitudin fermentum
-          libero.
+          Here are all the projects of Ari.
         </div>
         <Tabbar tabs={tabsData} />
       </div>

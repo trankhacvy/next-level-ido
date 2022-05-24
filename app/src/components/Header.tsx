@@ -10,9 +10,8 @@ import Link from "next/link";
 const Menus = [
   { text: "Projects", href: "/projects", activeRoutes: ["/", "/projects"] },
   { text: "Stake", href: "/stake", activeRoutes: ["/stake"] },
-  { text: "Team", href: "/", activeRoutes: ["/team"] },
-  { text: "Token", href: "/", activeRoutes: ["/token"] },
-  { text: "Contact", href: "/", activeRoutes: ["/contact"] },
+  { text: "Swap", href: "/", activeRoutes: ["/team"] },
+  { text: "Dashboard", href: "/", activeRoutes: ["/token"] },
 ];
 
 const Header = () => {

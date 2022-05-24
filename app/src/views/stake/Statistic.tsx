@@ -6,8 +6,8 @@ const Statistic = () => {
   const { ariBalance, xAriBalance } = useBalanceContext();
   return (
     <div className="w-full card p-8 space-y-10">
-      <Item balance={ariBalance} token="$LOTO" bottomText="Available to lock" />
-      <Item balance={xAriBalance} token="$xLOTO" bottomText="Amount locked" />
+      <Item balance={ariBalance} token="$ARI" bottomText="Available to lock" />
+      <Item balance={xAriBalance} token="$xARI" bottomText="Amount locked" />
     </div>
   );
 };

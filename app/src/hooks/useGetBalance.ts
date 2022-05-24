@@ -18,7 +18,7 @@ export const useTokenBalance = (mintAddress: string) => {
             } 
             return new BN(0);
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             throw error;
         }
     })
@@ -42,7 +42,7 @@ export const useGetATAToken = (mintAddress: string) => {
             const tokenAccount = await getAccount(connection, ataAddress);
             return tokenAccount;
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             throw error;
         }
     })

@@ -20,9 +20,9 @@ const Stake = () => {
           content="Stake | The Next Level IDO Platform"
         />
       </Head>
-      <h2 className="heading-h2">Stake $LOTO</h2>
+      <h2 className="heading-h2">Stake $ARI</h2>
       <div className="mt-6 body-1 text-gray-600">
-        Receive Allocations from Loto Projects
+        Receive Allocations from Ari Projects
       </div>
       <div className="body1 text-gray-600 mb-12">
         The amount of allocation will depend on the amount locked.
@@ -43,7 +43,7 @@ const Stake = () => {
               <span className="text-primary">{tierProps.tier}</span>
             </>
           ) : (
-            `You don't have a Loto Tier yet`
+            `You don't have a Ari Tier yet`
           )}
         </h6>
         <div className="flex flex-wrap justify-center w-[calc(100%+2rem)] -ml-8 -mt-8 mb-20">

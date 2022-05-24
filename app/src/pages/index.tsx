@@ -14,10 +14,10 @@ const Index = ({
   return (
     <main>
       <Head>
-        <title>Loto | The Next Level IDO Platform</title>
+        <title>Ari | The Next Level IDO Platform</title>
         <meta
           property="og:title"
-          content="Loto | The Next Level IDO Platform"
+          content="Ari | The Next Level IDO Platform"
         />
       </Head>
       <Hero />

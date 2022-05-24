@@ -8,17 +8,11 @@ import TokenInformation from "views/project/TokenInformation";
 import IDOTimeline from "views/project/IDOTimeline";
 import { ProjectsRepositoty } from "libs/supabase";
 import Link from "next/link";
-import { useGetIDOPool, useGetUserIDO } from "hooks/useGetIdoPool";
-import { useAnchorProvider } from "hooks/useProvider";
 
 const ProjectPage = ({
   project,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const name = project.name;
-
-  const provider = useAnchorProvider();
-  // useGetIDOPool(name, provider);
-  const { userIdoAccount } = useGetUserIDO();
 
   return (
     <main className="container mx-auto px-5 pt-40 pb-20">
