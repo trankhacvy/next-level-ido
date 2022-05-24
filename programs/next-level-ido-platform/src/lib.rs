@@ -14,6 +14,8 @@ pub use errors::*;
 pub mod utils;
 pub use utils::*;
 
+pub mod access_control;
+
 #[program]
 pub mod next_level_ido_platform {
     use super::*;
@@ -43,6 +45,24 @@ pub mod next_level_ido_platform {
         ido_times: IdoTimes,
     ) -> Result<()> {
         initialize_ido_pool::exe(
+            ctx,
+            ido_name,
+            initial_token_amount,
+            token_price_numerator,
+            token_price_denominator,
+            ido_times,
+        )
+    }
+
+    pub fn update_ido_pool(
+        ctx: Context<UpdateIdoPool>,
+        ido_name: String,
+        initial_token_amount: Option<u64>,
+        token_price_numerator: Option<u8>,
+        token_price_denominator: Option<u8>,
+        ido_times: Option<IdoTimes>,
+    ) -> Result<()> {
+        update_ido_pool::exe(
             ctx,
             ido_name,
             initial_token_amount,

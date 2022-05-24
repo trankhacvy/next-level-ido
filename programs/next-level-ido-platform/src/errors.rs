@@ -9,10 +9,16 @@ pub enum ErrorCode {
     IdoFuture,
     #[msg("IDO times are non-sequential")]
     SeqTimes,
-    // 
+    #[msg("Whitelist has not started")]
+    StartWhitelistTime,
+    #[msg("Whitelist has ended")]
+    EndWhitelistTime,
+    #[msg("IDO has not finished yet")]
+    IdoNotOver,
     #[msg("Your are not whitelist")]
     NotWhitelist,
-
     #[msg("Insufficient USDC")]
     LowUsdc,
+    #[msg("Invalid IDO Name")]
+    InvalidIdoName,
 }

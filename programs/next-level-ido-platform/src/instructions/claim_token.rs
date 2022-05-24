@@ -1,3 +1,4 @@
+use crate::access_control::*;
 use crate::errors::ErrorCode;
 use crate::state::{IdoPool, IdoUser, StakeTier};
 use anchor_lang::prelude::*;
@@ -58,6 +59,7 @@ pub struct ClaimToken<'info> {
     pub token_program: Program<'info, Token>,
 }
 
+#[access_control(ido_over(&ctx.accounts.ido_account))]
 pub fn exe(ctx: Context<ClaimToken>) -> Result<()> {
     let total_token = ctx.accounts.ido_account.ido_token_amount;
     let total_weight = ctx.accounts.ido_account.current_weight;

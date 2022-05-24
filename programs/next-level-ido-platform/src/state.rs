@@ -51,10 +51,15 @@ pub struct Log {
 
 #[derive(AnchorSerialize, AnchorDeserialize, Default, Clone, Copy)]
 pub struct IdoTimes {
-    pub start_ido: i64,
-    pub end_deposits: i64,
-    pub end_ido: i64,
-    pub end_escrow: i64,
+    // pub start_ido: i64,
+    // pub end_deposits: i64,
+    // pub end_ido: i64,
+    // pub end_escrow: i64,
+    pub whitelist_start: i64,
+    pub whitelist_end: i64,
+    pub sale_start: i64,
+    pub sale_end: i64,
+    pub claim_start: i64,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Default, Clone, Copy)]
@@ -80,7 +85,7 @@ pub struct IdoPool {
     pub current_weight: u16, // 2
 
     pub ido_token_amount: u64,          // 8
-    pub ido_times: IdoTimes,            // 8 * 4
+    pub ido_times: IdoTimes,            // 8 * 9
     pub participant_count: u16,         // 2
     pub participants: Vec<Participant>, //4 + 100 * (32 + 1)  // 100 participants
 }
@@ -98,7 +103,7 @@ impl IdoPool {
         + 1
         + 2
         + 8
-        + 8 * 4
+        + 8 * 9
         + 2
         + (4 + 100 * (32 + 1));
 }

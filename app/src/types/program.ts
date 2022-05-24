@@ -261,6 +261,53 @@ export type NextLevelIdoPlatform = {
       ]
     },
     {
+      "name": "updateIdoPool",
+      "accounts": [
+        {
+          "name": "idoAuthority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "idoPool",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "idoName",
+          "type": "string"
+        },
+        {
+          "name": "initialTokenAmount",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "tokenPriceNumerator",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "tokenPriceDenominator",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "idoTimes",
+          "type": {
+            "option": {
+              "defined": "IdoTimes"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "participatePool",
       "accounts": [
         {
@@ -522,19 +569,23 @@ export type NextLevelIdoPlatform = {
         "kind": "struct",
         "fields": [
           {
-            "name": "startIdo",
+            "name": "whitelistStart",
             "type": "i64"
           },
           {
-            "name": "endDeposits",
+            "name": "whitelistEnd",
             "type": "i64"
           },
           {
-            "name": "endIdo",
+            "name": "saleStart",
             "type": "i64"
           },
           {
-            "name": "endEscrow",
+            "name": "saleEnd",
+            "type": "i64"
+          },
+          {
+            "name": "claimStart",
             "type": "i64"
           }
         ]
@@ -613,13 +664,33 @@ export type NextLevelIdoPlatform = {
     },
     {
       "code": 6003,
+      "name": "StartWhitelistTime",
+      "msg": "Whitelist has not started"
+    },
+    {
+      "code": 6004,
+      "name": "EndWhitelistTime",
+      "msg": "Whitelist has ended"
+    },
+    {
+      "code": 6005,
+      "name": "IdoNotOver",
+      "msg": "IDO has not finished yet"
+    },
+    {
+      "code": 6006,
       "name": "NotWhitelist",
       "msg": "Your are not whitelist"
     },
     {
-      "code": 6004,
+      "code": 6007,
       "name": "LowUsdc",
       "msg": "Insufficient USDC"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidIdoName",
+      "msg": "Invalid IDO Name"
     }
   ]
 };
@@ -887,6 +958,53 @@ export const IDL: NextLevelIdoPlatform = {
       ]
     },
     {
+      "name": "updateIdoPool",
+      "accounts": [
+        {
+          "name": "idoAuthority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "idoPool",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "idoName",
+          "type": "string"
+        },
+        {
+          "name": "initialTokenAmount",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "tokenPriceNumerator",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "tokenPriceDenominator",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "idoTimes",
+          "type": {
+            "option": {
+              "defined": "IdoTimes"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "participatePool",
       "accounts": [
         {
@@ -1148,19 +1266,23 @@ export const IDL: NextLevelIdoPlatform = {
         "kind": "struct",
         "fields": [
           {
-            "name": "startIdo",
+            "name": "whitelistStart",
             "type": "i64"
           },
           {
-            "name": "endDeposits",
+            "name": "whitelistEnd",
             "type": "i64"
           },
           {
-            "name": "endIdo",
+            "name": "saleStart",
             "type": "i64"
           },
           {
-            "name": "endEscrow",
+            "name": "saleEnd",
+            "type": "i64"
+          },
+          {
+            "name": "claimStart",
             "type": "i64"
           }
         ]
@@ -1239,13 +1361,33 @@ export const IDL: NextLevelIdoPlatform = {
     },
     {
       "code": 6003,
+      "name": "StartWhitelistTime",
+      "msg": "Whitelist has not started"
+    },
+    {
+      "code": 6004,
+      "name": "EndWhitelistTime",
+      "msg": "Whitelist has ended"
+    },
+    {
+      "code": 6005,
+      "name": "IdoNotOver",
+      "msg": "IDO has not finished yet"
+    },
+    {
+      "code": 6006,
       "name": "NotWhitelist",
       "msg": "Your are not whitelist"
     },
     {
-      "code": 6004,
+      "code": 6007,
       "name": "LowUsdc",
       "msg": "Insufficient USDC"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidIdoName",
+      "msg": "Invalid IDO Name"
     }
   ]
 };

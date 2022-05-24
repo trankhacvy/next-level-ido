@@ -1,4 +1,5 @@
 import { assert } from 'chai'
+import dayjs from 'dayjs';
 import * as anchor from "@project-serum/anchor";
 import { Program, web3, BN } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID, createMint, mintTo, createAssociatedTokenAccount } from '@solana/spl-token';
@@ -283,12 +284,18 @@ describe("next-level-ido-platform", () => {
     })
 
     it('initialize_ido_pool', async () => {
+        const wls = '2022-05-21 12:00:00+00';
+        const wle = '2022-05-22 12:00:00+00';
+        const ss = '2022-05-23 17:00:00+00';
+        const se = '2022-05-28 14:00:00+00';
+        const claim = '2022-05-21 14:00:00+00';
+        
         idoTimes = new IdoTimes();
-        const nowBn = new anchor.BN(Date.now() / 1000);
-        idoTimes.startIdo = nowBn.add(new anchor.BN(5));
-        idoTimes.endDeposits = nowBn.add(new anchor.BN(10));
-        idoTimes.endIdo = nowBn.add(new anchor.BN(15));
-        idoTimes.endEscrow = nowBn.add(new anchor.BN(16));
+        idoTimes.whitelistStart = new BN(new Date(wls).getTime() / 1000);
+        idoTimes.whitelistEnd = new BN(new Date(wle).getTime() / 1000);
+        idoTimes.saleStart = new BN(new Date(ss).getTime() / 1000);
+        idoTimes.saleEnd = new BN(new Date(se).getTime() / 1000);
+        idoTimes.claimStart = new BN(new Date(claim).getTime() / 1000);
 
         let [idoPool] =
         await anchor.web3.PublicKey.findProgramAddress(
@@ -336,12 +343,31 @@ describe("next-level-ido-platform", () => {
             console.log(error);
         }
         
-        const idoPoolAccount = await program.account.idoPool.fetch(idoPool);
+        let idoPoolAccount = await program.account.idoPool.fetch(idoPool);
+        console.log('idoPoolAccount', idoPoolAccount.idoTokenAmount.toString())
         assert.strictEqual(idoPoolAccount.idoName, idoName);
         assert.strictEqual(idoPoolAccount.participantCount, 0);
 
         const tokenVaultBalance = await getTokenBalance(idoTokenVault, provider);    
         assert.strictEqual(tokenVaultBalance, 5000);
+
+        // try {
+        //     // @ts-ignore
+        //     await program.methods.updateIdoPool(idoName, new BN('2000'), new BN('1'), new BN('10'), null)
+        //     .accounts({
+        //         idoAuthority: payer.publicKey,
+        //         idoPool,
+        //     })
+        //     .signers([payer])
+        //     .rpc();
+        // } catch (error) {
+        //     console.log(error);
+        // }
+
+        // idoPoolAccount = await program.account.idoPool.fetch(idoPool);
+        // console.log('idoPoolAccount refetch', idoPoolAccount.idoTokenAmount.toString())
+        // console.log('idoPoolAccount time', idoPoolAccount.idoTimes)
+        
     })
 
     it('participate_pool', async () => {
@@ -490,8 +516,9 @@ describe("next-level-ido-platform", () => {
 })
 
 function IdoTimes() {
-    this.startIdo;
-    this.endDeposts;
-    this.endIdo;
-    this.endEscrow;
+    this.whitelistStart;
+    this.whitelistEnd;
+    this.saleStart;
+    this.saleEnd;
+    this.claimStart;
 }

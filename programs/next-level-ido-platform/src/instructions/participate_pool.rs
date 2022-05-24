@@ -1,3 +1,4 @@
+use crate::access_control::*;
 use crate::errors::ErrorCode;
 use crate::state::{IdoPool, IdoUser, Participant, StakeTier, User};
 use anchor_lang::prelude::*;
@@ -70,9 +71,10 @@ pub struct ParticipatePool<'info> {
     pub token_program: Program<'info, Token>,
     pub rent: Sysvar<'info, Rent>,
 }
-// join pool, can be lock some USDC
+
+#[access_control(whilelist_phase(&ctx.accounts.ido_pool))]
 pub fn exe(ctx: Context<ParticipatePool>, amount: u64) -> Result<()> {
-    msg!("EXCHANGE USDC FOR REDEEMABLE");
+    msg!("ParticipatePool");
 
     if ctx.accounts.user_usdc.amount < amount {
         return err!(ErrorCode::LowUsdc);

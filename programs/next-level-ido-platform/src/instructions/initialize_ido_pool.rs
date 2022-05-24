@@ -80,10 +80,6 @@ pub fn exe(
 
     let ido_pool = &mut ctx.accounts.ido_pool;
 
-    // let name_bytes = ido_name.as_bytes();
-    // let mut name_data = [b' '; 10];
-    // name_data[..name_bytes.len()].copy_from_slice(name_bytes);
-
     ido_pool.ido_name = ido_name;
     ido_pool.ido_authority = ctx.accounts.ido_authority.key();
 
@@ -115,12 +111,13 @@ pub fn exe(
 
 fn validate_ido_times(ido_times: IdoTimes) -> Result<()> {
     let clock = Clock::get()?;
-    if ido_times.start_ido <= clock.unix_timestamp {
+    if ido_times.whitelist_start <= clock.unix_timestamp {
         return err!(ErrorCode::IdoFuture);
     }
-    if !(ido_times.start_ido < ido_times.end_deposits
-        && ido_times.end_deposits < ido_times.end_ido
-        && ido_times.end_ido < ido_times.end_escrow)
+    if !(ido_times.whitelist_start < ido_times.whitelist_end
+        && ido_times.whitelist_end < ido_times.sale_start
+        && ido_times.sale_start < ido_times.sale_end
+        && ido_times.sale_end < ido_times.claim_start)
     {
         return err!(ErrorCode::SeqTimes);
     }
