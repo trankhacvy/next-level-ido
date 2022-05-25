@@ -123,7 +123,7 @@ module.exports = {
         z16: '-16px 16px 56px -8px rgba(145, 158, 171, 0.16)',
         z20: '-20px 20px 64px -8px rgba(145, 158, 171, 0.2)',
         z24: '-24px 24px 72px -8px rgba(145, 158, 171, 0.24)',
-      }
+      },
     },
   },
   plugins: [

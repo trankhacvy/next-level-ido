@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 const Menus = [
-  { text: "Projects", href: "/projects", activeRoutes: ["/", "/projects"] },
+  { text: "Projects", href: "/projects", activeRoutes: ["/projects"] },
   { text: "Stake", href: "/stake", activeRoutes: ["/stake"] },
   { text: "Swap", href: "/", activeRoutes: ["/team"] },
   { text: "Dashboard", href: "/", activeRoutes: ["/token"] },
@@ -60,7 +60,7 @@ const Header = () => {
                       className={cx(
                         "inline-block text-body2 font-medium px-4 py-2 text-gray-600 hover:opacity-70",
                         {
-                          "text-gray-800": active,
+                          "text-gray-800 font-semibold": active,
                         }
                       )}
                     >

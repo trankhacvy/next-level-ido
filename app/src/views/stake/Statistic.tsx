@@ -22,7 +22,7 @@ const Item = ({ balance, token, bottomText }: ItemProps) => {
   return (
     <div className="text-center">
       <img
-        src="/assets/images/pancake-swap-token.png"
+        src="/assets/images/ari.png"
         className="inline-flex"
         width={64}
         height={64}

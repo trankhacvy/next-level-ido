@@ -58,8 +58,8 @@ const StakeForm = ({ type = "stake" }: StakeFormProps) => {
       <div className="rounded-2xl bg-gray-500/10 hover:bg-gray-500/20 border flex items-center p-4 space-x-4">
         <div className="w-10 h-10">
           <img
-            src="/assets/images/pancake-swap-token.png"
-            width={40}
+            src="/assets/images/ari.png"
+            width={38}
             height={40}
           />
         </div>
