@@ -72,7 +72,7 @@ const Header = () => {
             );
           })}
           <li>
-            <WalletMultiButton className="text-button-medium font-semibold justify-center min-w-[148px] px-4 py-[6px] align-middle rounded-lg text-white bg-primary hover:!bg-primary-dark" />
+            <WalletMultiButton className="text-button-medium font-semibold justify-center min-w-[148px] px-4 py-[6px] align-middle rounded-lg text-white bg-primary disabled:bg-primary disabled:text-white disabled:font-semibold hover:!bg-primary-dark" />
           </li>
         </ul>
       </nav>
