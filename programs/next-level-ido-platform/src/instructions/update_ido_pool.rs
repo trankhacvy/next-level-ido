@@ -19,6 +19,7 @@ pub fn exe(
     ctx: Context<UpdateIdoPool>,
     ido_name: String,
     initial_token_amount: Option<u64>,
+    commit_fund: Option<u64>,
     token_price_numerator: Option<u8>,
     token_price_denominator: Option<u8>,
     ido_times: Option<IdoTimes>,
@@ -33,6 +34,10 @@ pub fn exe(
 
     if let Some(initial_token_amount) = initial_token_amount {
         ido_pool.ido_token_amount = initial_token_amount;
+    }
+
+    if let Some(commit_fund) = commit_fund {
+        ido_pool.commit_fund = commit_fund;
     }
 
     if let Some(token_price_numerator) = token_price_numerator {

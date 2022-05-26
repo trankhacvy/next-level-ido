@@ -1,6 +1,6 @@
 import "@solana/wallet-adapter-react-ui/styles.css";
 import "../styles/global.css";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { AppProps } from "next/app";
 import Header from "components/Header";
 import Footer from "components/Footer";
@@ -23,6 +23,8 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import isBetween from "dayjs/plugin/isBetween";
 import { BalanceContextProvider } from "context/balanceContext";
+import AppProgram from "libs/program";
+import { useAnchorProvider } from "hooks/useProvider";
 
 dayjs.extend(utc);
 dayjs.extend(isBetween);
@@ -30,11 +32,22 @@ dayjs.extend(isBetween);
 const network = WalletAdapterNetwork.Devnet;
 const endpoint = "http://localhost:8899"; //clusterApiUrl(network);
 
-// function GlobalHooks() {
-//   useTokenBalance(ARI_MINT_TOKEN);
-//   useTokenBalance(X_ARI_MINT_TOKEN);
-//   return null;
-// }
+function Wrapper({ children }: any) {
+  const provider = useAnchorProvider();
+  useEffect(() => {
+    const program = new AppProgram(provider);
+
+    const listener = program.program.addEventListener("Log", (event) => {
+      console.log("event", event);
+    });
+
+    return () => {
+      program.program.removeEventListener(listener);
+    };
+  }, []);
+
+  return <>{children}</>;
+}
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const wallets = useMemo(
@@ -54,9 +67,11 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       <WalletProvider wallets={wallets} autoConnect>
         <BalanceContextProvider>
           <WalletModalProvider>
-            <Header />
-            <Component {...pageProps} />
-            <Footer />
+            <Wrapper>
+              <Header />
+              <Component {...pageProps} />
+              <Footer />
+            </Wrapper>
           </WalletModalProvider>
         </BalanceContextProvider>
       </WalletProvider>

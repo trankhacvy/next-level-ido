@@ -72,12 +72,16 @@ pub struct ParticipatePool<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-#[access_control(whilelist_phase(&ctx.accounts.ido_pool))]
+// #[access_control(whilelist_phase(&ctx.accounts.ido_pool))]
 pub fn exe(ctx: Context<ParticipatePool>, amount: u64) -> Result<()> {
     msg!("ParticipatePool");
 
     if ctx.accounts.user_usdc.amount < amount {
         return err!(ErrorCode::LowUsdc);
+    }
+
+    if ctx.accounts.ido_pool.commit_fund > amount {
+        return err!(ErrorCode::LowCommitFund);
     }
 
     ctx.accounts.ido_pool.participant_count = ctx.accounts.ido_pool.participant_count + 1;
@@ -90,6 +94,10 @@ pub fn exe(ctx: Context<ParticipatePool>, amount: u64) -> Result<()> {
     ctx.accounts.ido_user.owner = ctx.accounts.user.owner;
     ctx.accounts.ido_user.tier = ctx.accounts.user.tier;
     ctx.accounts.ido_user.deposit_amount = amount;
+    ctx.accounts.ido_user.remaining_amount = amount;
+    ctx.accounts.ido_user.allocation = 0;
+    ctx.accounts.ido_user.deposited_allocation = 0;
+    ctx.accounts.ido_user.remaining_allocation = 0;
 
     // Transfer user's USDC to pool USDC account.
     let cpi_accounts = Transfer {

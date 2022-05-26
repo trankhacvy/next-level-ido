@@ -8,6 +8,9 @@ import TokenInformation from "views/project/TokenInformation";
 import IDOTimeline from "views/project/IDOTimeline";
 import { ProjectsRepositoty } from "libs/supabase";
 import Link from "next/link";
+import { useEffect } from "react";
+import AppProgram from "libs/program";
+import { useAnchorProvider } from "hooks/useProvider";
 
 const ProjectPage = ({
   project,

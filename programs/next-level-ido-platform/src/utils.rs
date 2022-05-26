@@ -1,6 +1,8 @@
-use crate::state::{StakeTier, User};
+use crate::constant::DECIMALS;
+use crate::state::{Log, StakeTier, User};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, TokenAccount};
+// use num_traits::checked_pow;
 use std::convert::TryInto;
 use std::ops::Deref;
 
@@ -75,7 +77,16 @@ fn get_tier_by_amount(amount: u64) -> StakeTier {
 
 pub fn update_user_tier<'info>(user: &mut Account<'info, User>, current_ts: i64) {
     let staked_amount = user.staked_amount;
+    //.checked_div(u32::pow(10, DECIMALS as u32) as u64)
+    //.unwrap();
+
     let next_tier = get_tier_by_amount(staked_amount);
+    emit!(Log {
+        message: format!(
+            "update_user_tier {}, next tier: {:?}, current tier: {:?}",
+            staked_amount, next_tier, user.tier
+        )
+    });
     if next_tier != user.tier {
         user.tier = next_tier;
         user.last_stake_ts = current_ts;

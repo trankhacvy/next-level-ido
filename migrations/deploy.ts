@@ -121,12 +121,19 @@ const initIDOPool = async (
   try {
     // init ido
     const idoName = "Moonfrost";
+
+    const wls = "2022-05-24 12:00:00+00";
+    const wle = "2022-05-25 12:00:00+00";
+    const ss = "2022-05-25 17:00:00+00";
+    const se = "2022-05-37 14:00:00+00";
+    const claim = "2022-06-01 14:00:00+00";
+
     const idoTimes = new IdoTimes();
-    const nowBn = new BN(Date.now() / 1000);
-    idoTimes.startIdo = nowBn.add(new BN(5));
-    idoTimes.endDeposits = nowBn.add(new BN(10));
-    idoTimes.endIdo = nowBn.add(new BN(15));
-    idoTimes.endEscrow = nowBn.add(new BN(16));
+    idoTimes.whitelistStart = new BN(new Date(wls).getTime() / 1000);
+    idoTimes.whitelistEnd = new BN(new Date(wle).getTime() / 1000);
+    idoTimes.saleStart = new BN(new Date(ss).getTime() / 1000);
+    idoTimes.saleEnd = new BN(new Date(se).getTime() / 1000);
+    idoTimes.claimStart = new BN(new Date(claim).getTime() / 1000);
 
     const programId = program.programId;
 
@@ -203,11 +210,13 @@ const initIDOPool = async (
     // @ts-ignore
     await program.methods
       .initializeIdoPool(
+        // @ts-ignore
         idoName,
-        new BN("180000"),
+        new BN("180000").mul(new BN(10 ** 6)),
+        new BN("2000").mul(new BN(10 ** 6)),
         new BN("3"),
         new BN("10"),
-        idoTimes
+        idoTimes as any
       )
       .accounts({
         idoAuthority: payer.publicKey,
@@ -225,6 +234,16 @@ const initIDOPool = async (
       .signers([payer])
       .rpc();
     console.log("initializeIdoPool success");
+
+    await program.methods
+      .simulatePoolPaticipants()
+      .accounts({
+        idoAuthority: payer.publicKey,
+        idoPool,
+      })
+      .signers([payer])
+      .rpc();
+    console.log("simulatePoolPaticipants success");
   } catch (error) {
     console.error(error);
   }

@@ -61,14 +61,6 @@ pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
 
     // mint xToken to user
     if total_token == 0 || total_x_token == 0 {
-        // mint_to(
-        //     &ctx.accounts.token_program.to_account_info(),
-        //     &ctx.accounts.x_token_mint.to_account_info(),
-        //     &ctx.accounts.x_token_to.to_account_info(),
-        //     &ctx.accounts.token_mint.to_account_info(),
-        //     *ctx.bumps.get("x_token_mint").unwrap(),
-        //     amount,
-        // )?;
         let cpi_ctx = CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
             token::MintTo {
@@ -98,15 +90,6 @@ pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
             signer,
         );
         token::mint_to(cpi_ctx, what)?;
-
-        // mint_to(
-        //     &ctx.accounts.token_program.to_account_info(),
-        //     &ctx.accounts.x_token_mint.to_account_info(),
-        //     &ctx.accounts.x_token_to.to_account_info(),
-        //     &ctx.accounts.token_mint.to_account_info(),
-        //     *ctx.bumps.get("x_token_mint").unwrap(),
-        //     what,
-        // )?;
     }
 
     //transfer the users tokens to the vault

@@ -19,6 +19,7 @@ export const BalanceContextProvider: React.FC<any> = ({ children }) => {
     useTokenBalance(X_ARI_MINT_TOKEN);
 
   const refetchBalance = useCallback(async () => {
+    console.log("refetchBalance");
     await refetchAriBalance();
     await refetchXAriBalance();
   }, [refetchAriBalance, refetchXAriBalance]);

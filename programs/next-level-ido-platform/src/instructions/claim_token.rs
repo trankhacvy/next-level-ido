@@ -7,6 +7,7 @@ use anchor_spl::token::{self, Burn, CloseAccount, Mint, Token, TokenAccount, Tra
 #[derive(Accounts)]
 pub struct ClaimToken<'info> {
     #[account(
+        mut,
         seeds = [
            b"ido_user", user_authority.key.as_ref(),
         ],
@@ -59,31 +60,34 @@ pub struct ClaimToken<'info> {
     pub token_program: Program<'info, Token>,
 }
 
-#[access_control(ido_over(&ctx.accounts.ido_account))]
+// #[access_control(ido_over(&ctx.accounts.ido_account))]
 pub fn exe(ctx: Context<ClaimToken>) -> Result<()> {
-    let total_token = ctx.accounts.ido_account.ido_token_amount;
-    let total_weight = ctx.accounts.ido_account.current_weight;
-    let user_weight = ctx.accounts.ido_user.tier.value().1;
-    let deposit_amount = ctx.accounts.ido_user.deposit_amount;
+    // let total_token = ctx.accounts.ido_account.ido_token_amount;
+    // let total_weight = ctx.accounts.ido_account.current_weight;
+    // let user_weight = ctx.accounts.ido_user.tier.value().1;
+    // let deposit_amount = ctx.accounts.ido_user.deposit_amount;
 
-    let token_allocation = total_token
-        .checked_mul(user_weight as u64)
-        .unwrap()
-        .checked_div(total_weight as u64)
-        .unwrap();
+    // let token_allocation = total_token
+    //     .checked_mul(user_weight as u64)
+    //     .unwrap()
+    //     .checked_div(total_weight as u64)
+    //     .unwrap();
 
-    let token_price_numerator = ctx.accounts.ido_account.ido_token_price_numerator;
-    let token_price_denominator = ctx.accounts.ido_account.ido_token_price_denominator;
+    // let token_price_numerator = ctx.accounts.ido_account.ido_token_price_numerator;
+    // let token_price_denominator = ctx.accounts.ido_account.ido_token_price_denominator;
 
-    let mut actual_allocation = deposit_amount
-        .checked_mul(token_price_denominator as u64)
-        .unwrap()
-        .checked_div(token_price_numerator as u64)
-        .unwrap();
+    // let mut actual_allocation = deposit_amount
+    //     .checked_mul(token_price_denominator as u64)
+    //     .unwrap()
+    //     .checked_div(token_price_numerator as u64)
+    //     .unwrap();
 
-    if actual_allocation > token_allocation {
-        actual_allocation = token_allocation;
-    }
+    // if actual_allocation > token_allocation {
+    //     actual_allocation = token_allocation;
+    // }
+
+    let allocation = ctx.accounts.ido_user.remaining_allocation;
+    let remaining_deposit = ctx.accounts.ido_user.deposit_amount;
 
     let ido_name = ctx.accounts.ido_account.ido_name.as_bytes();
     let seeds = &[ido_name, &[*ctx.bumps.get("ido_account").unwrap()]];
@@ -97,7 +101,7 @@ pub fn exe(ctx: Context<ClaimToken>) -> Result<()> {
     };
     let cpi_program = ctx.accounts.token_program.to_account_info();
     let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer);
-    token::burn(cpi_ctx, deposit_amount)?;
+    token::burn(cpi_ctx, remaining_deposit)?;
 
     // transfer ido token to user
     let cpi_ctx = CpiContext::new_with_signer(
@@ -109,7 +113,10 @@ pub fn exe(ctx: Context<ClaimToken>) -> Result<()> {
         },
         signer,
     );
-    token::transfer(cpi_ctx, actual_allocation)?;
+    token::transfer(cpi_ctx, allocation)?;
+
+    ctx.accounts.ido_user.deposit_amount = 0;
+    ctx.accounts.ido_user.remaining_allocation = 0;
 
     // Send rent back to user if account is empty
     ctx.accounts.user_redeemable.reload()?;

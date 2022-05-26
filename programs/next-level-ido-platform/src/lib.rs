@@ -15,6 +15,7 @@ pub mod utils;
 pub use utils::*;
 
 pub mod access_control;
+pub mod constant;
 
 #[program]
 pub mod next_level_ido_platform {
@@ -40,6 +41,7 @@ pub mod next_level_ido_platform {
         ctx: Context<InitializeIdoPool>,
         ido_name: String,
         initial_token_amount: u64,
+        commit_fund: u64,
         token_price_numerator: u8,
         token_price_denominator: u8,
         ido_times: IdoTimes,
@@ -48,6 +50,7 @@ pub mod next_level_ido_platform {
             ctx,
             ido_name,
             initial_token_amount,
+            commit_fund,
             token_price_numerator,
             token_price_denominator,
             ido_times,
@@ -58,6 +61,7 @@ pub mod next_level_ido_platform {
         ctx: Context<UpdateIdoPool>,
         ido_name: String,
         initial_token_amount: Option<u64>,
+        commit_fund: Option<u64>,
         token_price_numerator: Option<u8>,
         token_price_denominator: Option<u8>,
         ido_times: Option<IdoTimes>,
@@ -66,6 +70,7 @@ pub mod next_level_ido_platform {
             ctx,
             ido_name,
             initial_token_amount,
+            commit_fund,
             token_price_numerator,
             token_price_denominator,
             ido_times,
@@ -76,7 +81,23 @@ pub mod next_level_ido_platform {
         participate_pool::exe(ctx, amount)
     }
 
+    pub fn simulate_pool_paticipants(ctx: Context<SimulatePoolPaticipants>) -> Result<()> {
+        simulate_pool_paticipants::exe(ctx)
+    }
+
+    pub fn check_allocation(ctx: Context<CheckAllocation>) -> Result<()> {
+        check_allocation::exe(ctx)
+    }
+
+    pub fn claim_remaining_fund(ctx: Context<ClaimRemainingFund>) -> Result<()> {
+        claim_remaining_fund::exe(ctx)
+    }
+
     pub fn claim_token(ctx: Context<ClaimToken>) -> Result<()> {
         claim_token::exe(ctx)
+    }
+
+    pub fn refund(ctx: Context<Refund>) -> Result<()> {
+        refund::exe(ctx)
     }
 }

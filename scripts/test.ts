@@ -15,7 +15,7 @@ const run = async () => {
   //   preflightCommitment,
   //   commitment: "recent",
   // });
-  // console.log("url", provider);
+  console.log("url", "provider");
 };
 
 run();

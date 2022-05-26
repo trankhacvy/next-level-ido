@@ -14,14 +14,14 @@ pub enum StakeTier {
 }
 
 impl StakeTier {
-    pub fn value(&self) -> (u32, u8) {
+    pub fn value(&self) -> (u64, u8) {
         match *self {
             StakeTier::NoTier => (0, 0),
-            StakeTier::Brone => (1500, 1),
-            StakeTier::Silver => (3000, 3),
-            StakeTier::Gold => (5000, 6),
-            StakeTier::Platium => (15000, 20),
-            StakeTier::Dimond => (30000, 45),
+            StakeTier::Brone => (1500_000000, 1),
+            StakeTier::Silver => (3000_000000, 3),
+            StakeTier::Gold => (5000_000000, 6),
+            StakeTier::Platium => (15000_000000, 20),
+            StakeTier::Dimond => (30000_000000, 45),
         }
     }
 }
@@ -81,6 +81,7 @@ pub struct IdoPool {
     pub current_weight: u16, // 2
 
     pub ido_token_amount: u64,          // 8
+    pub commit_fund: u64,               // 8
     pub ido_times: IdoTimes,            // 8 * 9
     pub participant_count: u16,         // 2
     pub participants: Vec<Participant>, //4 + 100 * (32 + 1)  // 100 participants
@@ -99,6 +100,7 @@ impl IdoPool {
         + 1
         + 2
         + 8
+        + 8
         + 8 * 9
         + 2
         + (4 + 100 * (32 + 1));
@@ -108,9 +110,13 @@ impl IdoPool {
 pub struct IdoUser {
     pub owner: Pubkey,
     pub deposit_amount: u64,
+    pub remaining_amount: u64,
+    pub allocation: u64,
+    pub deposited_allocation: u64,
+    pub remaining_allocation: u64,
     pub tier: StakeTier,
 }
 
 impl IdoUser {
-    pub const SIZE: usize = 8 + 32 + 8 + (1 + 4);
+    pub const SIZE: usize = 8 + 32 + 8 + 8 + 8 + 8 + 8 + (1 + 4);
 }

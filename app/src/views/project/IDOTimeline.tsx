@@ -1,9 +1,10 @@
-import { MdKeyboardArrowDown } from "react-icons/md";
 import { Project } from "types/common";
 import dayjs from "dayjs";
 import { useCoutdownTimer } from "hooks/useCountdown";
 import { formatSeconds } from "utils/datetime";
 import { useIsMounted } from "usehooks-ts";
+import WhitelistItem from "./Whitelist";
+import SaleItem from "./Sale";
 
 export type IDOTimelineProps = {
   project: Project;
@@ -17,6 +18,7 @@ const IDOTimeline = ({ project }: IDOTimelineProps) => {
     whitelist_start,
     whitelist_end,
     is_closed,
+    created_at,
   } = project;
   const now = dayjs();
   const whitelisting =
@@ -24,12 +26,6 @@ const IDOTimeline = ({ project }: IDOTimelineProps) => {
 
   const { count, start } = useCoutdownTimer(claim_start);
   const isMounted = useIsMounted();
-
-  const whitelistStatus = dayjs(whitelist_start).isAfter(now)
-    ? "TBD"
-    : now.isBetween(dayjs(whitelist_start), dayjs(whitelist_end))
-    ? "On-Going"
-    : "Done";
 
   const saleStatus = dayjs(sale_start).isAfter(now)
     ? "TBD"
@@ -53,13 +49,15 @@ const IDOTimeline = ({ project }: IDOTimelineProps) => {
           <div className="text-h5 font-semibold">{formatSeconds(count)}</div>
         )}
         <div className="mt-8">
-          <TimelineItem text="Preparation" status="Done" />
-          <TimelineItem
+          <TimelineItem text="Preparation" date={created_at} status="Done" />
+          <WhitelistItem project={project} />
+          <SaleItem project={project} />
+          {/* <TimelineItem
             text="Whitelist"
             status={whitelistStatus}
             date={whitelist_start}
-          />
-          <TimelineItem text="Sale" status={saleStatus} date={sale_start} />
+          /> */}
+          {/* <TimelineItem text="Sale" status={saleStatus} date={sale_start} /> */}
           <TimelineItem
             text="Distribution"
             status={distributionStatus}
@@ -99,9 +97,6 @@ const TimelineItem = ({ date, text, status }: TimelineItemProps) => {
         <div className="text-2xl font-semibold">{text}</div>
         <div className="flex items-center space-x-2">
           <div className="text-xl font-semibold uppercase">{status}</div>
-          <button className="p-2">
-            <MdKeyboardArrowDown className="w-6 h-6" />
-          </button>
         </div>
       </div>
     </div>

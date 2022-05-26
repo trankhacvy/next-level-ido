@@ -19,6 +19,8 @@ pub enum ErrorCode {
     NotWhitelist,
     #[msg("Insufficient USDC")]
     LowUsdc,
+    #[msg("Insufficient Commit Fund")]
+    LowCommitFund,
     #[msg("Invalid IDO Name")]
     InvalidIdoName,
 }

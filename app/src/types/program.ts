@@ -245,6 +245,10 @@ export type NextLevelIdoPlatform = {
           "type": "u64"
         },
         {
+          "name": "commitFund",
+          "type": "u64"
+        },
+        {
           "name": "tokenPriceNumerator",
           "type": "u8"
         },
@@ -281,6 +285,12 @@ export type NextLevelIdoPlatform = {
         },
         {
           "name": "initialTokenAmount",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "commitFund",
           "type": {
             "option": "u64"
           }
@@ -379,11 +389,99 @@ export type NextLevelIdoPlatform = {
       ]
     },
     {
+      "name": "simulatePoolPaticipants",
+      "accounts": [
+        {
+          "name": "idoAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "idoPool",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "checkAllocation",
+      "accounts": [
+        {
+          "name": "idoUser",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "idoPool",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claimRemainingFund",
+      "accounts": [
+        {
+          "name": "idoUser",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "userUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "usdcVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userRedeemable",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "idoPool",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "redeemableMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "claimToken",
       "accounts": [
         {
           "name": "idoUser",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -419,6 +517,57 @@ export type NextLevelIdoPlatform = {
         {
           "name": "idoTokenVault",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "redeemableMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "refund",
+      "accounts": [
+        {
+          "name": "idoUser",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "userUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "usdcVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userRedeemable",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "idoPool",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -519,6 +668,10 @@ export type NextLevelIdoPlatform = {
             "type": "u64"
           },
           {
+            "name": "commitFund",
+            "type": "u64"
+          },
+          {
             "name": "idoTimes",
             "type": {
               "defined": "IdoTimes"
@@ -550,6 +703,22 @@ export type NextLevelIdoPlatform = {
           },
           {
             "name": "depositAmount",
+            "type": "u64"
+          },
+          {
+            "name": "remainingAmount",
+            "type": "u64"
+          },
+          {
+            "name": "allocation",
+            "type": "u64"
+          },
+          {
+            "name": "depositedAllocation",
+            "type": "u64"
+          },
+          {
+            "name": "remainingAllocation",
             "type": "u64"
           },
           {
@@ -689,6 +858,11 @@ export type NextLevelIdoPlatform = {
     },
     {
       "code": 6008,
+      "name": "LowCommitFund",
+      "msg": "Insufficient Commit Fund"
+    },
+    {
+      "code": 6009,
       "name": "InvalidIdoName",
       "msg": "Invalid IDO Name"
     }
@@ -942,6 +1116,10 @@ export const IDL: NextLevelIdoPlatform = {
           "type": "u64"
         },
         {
+          "name": "commitFund",
+          "type": "u64"
+        },
+        {
           "name": "tokenPriceNumerator",
           "type": "u8"
         },
@@ -978,6 +1156,12 @@ export const IDL: NextLevelIdoPlatform = {
         },
         {
           "name": "initialTokenAmount",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "commitFund",
           "type": {
             "option": "u64"
           }
@@ -1076,11 +1260,99 @@ export const IDL: NextLevelIdoPlatform = {
       ]
     },
     {
+      "name": "simulatePoolPaticipants",
+      "accounts": [
+        {
+          "name": "idoAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "idoPool",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "checkAllocation",
+      "accounts": [
+        {
+          "name": "idoUser",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "idoPool",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claimRemainingFund",
+      "accounts": [
+        {
+          "name": "idoUser",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "userUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "usdcVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userRedeemable",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "idoPool",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "redeemableMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "claimToken",
       "accounts": [
         {
           "name": "idoUser",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -1116,6 +1388,57 @@ export const IDL: NextLevelIdoPlatform = {
         {
           "name": "idoTokenVault",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "redeemableMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "refund",
+      "accounts": [
+        {
+          "name": "idoUser",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "userUsdc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "usdcVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userRedeemable",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "idoPool",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1216,6 +1539,10 @@ export const IDL: NextLevelIdoPlatform = {
             "type": "u64"
           },
           {
+            "name": "commitFund",
+            "type": "u64"
+          },
+          {
             "name": "idoTimes",
             "type": {
               "defined": "IdoTimes"
@@ -1247,6 +1574,22 @@ export const IDL: NextLevelIdoPlatform = {
           },
           {
             "name": "depositAmount",
+            "type": "u64"
+          },
+          {
+            "name": "remainingAmount",
+            "type": "u64"
+          },
+          {
+            "name": "allocation",
+            "type": "u64"
+          },
+          {
+            "name": "depositedAllocation",
+            "type": "u64"
+          },
+          {
+            "name": "remainingAllocation",
             "type": "u64"
           },
           {
@@ -1386,6 +1729,11 @@ export const IDL: NextLevelIdoPlatform = {
     },
     {
       "code": 6008,
+      "name": "LowCommitFund",
+      "msg": "Insufficient Commit Fund"
+    },
+    {
+      "code": 6009,
       "name": "InvalidIdoName",
       "msg": "Invalid IDO Name"
     }

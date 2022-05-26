@@ -1,7 +1,7 @@
 # Ignore artifacts:
-build
-coverage
-app
-.anchor
-target
-node_modules
+# build
+# coverage
+# app
+# .anchor
+# target
+# node_modules
