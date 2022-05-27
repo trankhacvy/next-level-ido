@@ -8,9 +8,6 @@ import TokenInformation from "views/project/TokenInformation";
 import IDOTimeline from "views/project/IDOTimeline";
 import { ProjectsRepositoty } from "libs/supabase";
 import Link from "next/link";
-import { useEffect } from "react";
-import AppProgram from "libs/program";
-import { useAnchorProvider } from "hooks/useProvider";
 
 const ProjectPage = ({
   project,
@@ -20,10 +17,10 @@ const ProjectPage = ({
   return (
     <main className="container mx-auto px-5 pt-40 pb-20">
       <Head>
-        <title>{name} | The Next Level IDO Platform</title>
+        <title>{name} | Ari</title>
         <meta
           property="og:title"
-          content={`${name} | The Next Level IDO Platform`}
+          content={`${name} | Ari`}
         />
       </Head>
       <nav className="mb-10">

@@ -12,25 +12,24 @@ import {
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import {
-  GlowWalletAdapter,
+  // GlowWalletAdapter,
   PhantomWalletAdapter,
-  SlopeWalletAdapter,
-  SolflareWalletAdapter,
-  TorusWalletAdapter,
+  // SlopeWalletAdapter,
+  // SolflareWalletAdapter,
+  // TorusWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
-// import { clusterApiUrl } from "@solana/web3.js";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import isBetween from "dayjs/plugin/isBetween";
 import { BalanceContextProvider } from "context/balanceContext";
 import AppProgram from "libs/program";
 import { useAnchorProvider } from "hooks/useProvider";
+import { getEndpoint } from "utils/network";
 
 dayjs.extend(utc);
 dayjs.extend(isBetween);
 
 const network = WalletAdapterNetwork.Devnet;
-const endpoint = "http://localhost:8899"; //clusterApiUrl(network);
 
 function Wrapper({ children }: any) {
   const provider = useAnchorProvider();
@@ -52,18 +51,18 @@ function Wrapper({ children }: any) {
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const wallets = useMemo(
     () => [
-      // @ts-ignore
-      new SolflareWalletAdapter({ network: "localhost" }),
       new PhantomWalletAdapter(),
-      new GlowWalletAdapter(),
-      new SlopeWalletAdapter(),
-      new TorusWalletAdapter(),
+      // @ts-ignore
+      // new SolflareWalletAdapter({ network: "localhost" }),
+      // new GlowWalletAdapter(),
+      // new SlopeWalletAdapter(),
+      // new TorusWalletAdapter(),
     ],
     [network]
   );
-
+  console.log("getEndpoint()", getEndpoint());
   return (
-    <ConnectionProvider endpoint={endpoint}>
+    <ConnectionProvider endpoint={getEndpoint()}>
       <WalletProvider wallets={wallets} autoConnect>
         <BalanceContextProvider>
           <WalletModalProvider>

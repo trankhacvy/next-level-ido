@@ -6,36 +6,16 @@ import { tiersData } from "common/tier";
 import numeral from "numeral";
 import { getTierProps } from "utils/tiers";
 import { useBalanceContext } from "context/balanceContext";
-import { useEffect } from "react";
-import { useAnchorProvider } from "hooks/useProvider";
-import AppProgram from "libs/program";
 
 const Stake = () => {
   const { xAriBalance } = useBalanceContext();
   const tierProps = getTierProps(xAriBalance.toNumber());
 
-  // const provider = useAnchorProvider();
-
-  // useEffect(() => {
-  //   const program = new AppProgram(provider);
-
-  //   const listener = program.program.addEventListener("Log", (event) => {
-  //     console.log("event", event);
-  //   });
-
-  //   return () => {
-  //     program.program.removeEventListener(listener);
-  //   };
-  // }, []);
-
   return (
     <main className="container mx-auto px-5 pt-24 pb-20 lg:pt-36 lg:pb-[120px]">
       <Head>
-        <title>Stake | The Next Level IDO Platform</title>
-        <meta
-          property="og:title"
-          content="Stake | The Next Level IDO Platform"
-        />
+        <title>Stake | Ari</title>
+        <meta property="og:title" content="Stake | Ari" />
       </Head>
       <h2 className="heading-h2">Stake $ARI</h2>
       <div className="mt-6 body-1 text-gray-600">

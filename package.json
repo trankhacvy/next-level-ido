@@ -4,7 +4,8 @@
   "scripts": {
     "build": "anchor build && node scripts/copy_idl.js",
     "done": "yarn build && anchor deploy && anchor migrate",
-    "seed": "npx ts-node migrations/test.ts"
+    "seed": "npx ts-node migrations/test.ts",
+    "testnet": "solana-test-validator --reset"
   },
   "dependencies": {
     "@project-serum/anchor": "^0.24.2",

@@ -48,11 +48,8 @@ const ProjectsPage = () => {
   return (
     <main>
       <Head>
-        <title>Projects | The Next Level IDO Platform</title>
-        <meta
-          property="og:title"
-          content="Projects | The Next Level IDO Platform"
-        />
+        <title>Projects | Ari</title>
+        <meta property="og:title" content="Projects | Ari" />
       </Head>
       <div className="container mx-auto px-5 pt-24 pb-20 lg:pt-36 lg:pb-[120px]">
         <h2 className="heading-h2">Projects</h2>

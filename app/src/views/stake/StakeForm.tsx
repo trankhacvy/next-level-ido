@@ -25,27 +25,51 @@ const StakeForm = ({ type = "stake" }: StakeFormProps) => {
     (type === "stake" && insufficientStake) ||
     (type === "unstake" && insufficientUnstake);
 
-  const handleStake = async (type: string) => {
+  const handleStake = async () => {
     try {
       if (amount === 0) return;
       setLoading(true);
       const program = new AppProgram(provider);
-      if (type === "stake") {
-        await program.stake(amount, sendTransaction);
-      } else {
-        await program.unstake(amount, sendTransaction);
-      }
+      // if (type === "stake") {
+      //   await program.stake(amount, sendTransaction);
+      // } else {
+      //   await program.unstake(amount, sendTransaction);
+      // }
+      await program.stake(amount, sendTransaction);
       await wait(1000);
       await refetchBalance();
       setAmount(0);
       setLoading(false);
       toast.success({
-        title: `${type === "stake" ? "Stake" : "Unstake"} successfully`,
+        title: "Stake successfully",
       });
     } catch (error: any) {
       console.error(error);
       toast.error({
-        title: `${type === "stake" ? "Stake" : "Unstake"} error`,
+        title: "Stake error",
+        message: error.message,
+      });
+      setLoading(false);
+    }
+  };
+
+  const handleUnstake = async () => {
+    try {
+      if (amount === 0) return;
+      setLoading(true);
+      const program = new AppProgram(provider);
+      await program.unstake(amount, sendTransaction);
+      await wait(1000);
+      await refetchBalance();
+      setAmount(0);
+      setLoading(false);
+      toast.success({
+        title: "Unstake successfully",
+      });
+    } catch (error: any) {
+      console.error(error);
+      toast.error({
+        title: "Unstake error",
         message: error.message,
       });
       setLoading(false);
@@ -89,7 +113,13 @@ const StakeForm = ({ type = "stake" }: StakeFormProps) => {
           loading={loading}
           disabled={loading || insufficientFund}
           size="large"
-          onClick={() => handleStake(type)}
+          onClick={() => {
+            if (type === "stake") {
+              handleStake();
+            } else {
+              handleUnstake();
+            }
+          }}
         >
           {insufficientFund
             ? "Insufficient Fund"

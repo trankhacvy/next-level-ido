@@ -8,54 +8,59 @@ import {
 } from "hooks/useGetIdoPool";
 import { toast } from "components/Toast";
 import numeral from "numeral";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useAnchorProvider } from "hooks/useProvider";
 import AppProgram from "libs/program";
 import { BN } from "bn.js";
 import { wait } from "utils/wait";
-import { bnDivDecimals } from "utils/number";
 import TimelineItem from "components/TimelineItem";
+import { useBoolean } from "usehooks-ts";
 
-type SaleItemProps = {
+type DistributionItemProps = {
   project: Project;
 };
 
-const SaleItem = ({ project }: SaleItemProps) => {
+const DistributionItem = ({ project }: DistributionItemProps) => {
   const now = dayjs();
 
-  const { name, sale_start, sale_end } = project;
+  const { name, claim_start, is_closed } = project;
+  const { value: checkingAllocation, setValue: setCheckingAllocation } =
+    useBoolean();
+  const { value: claimingToken, setValue: setClaimingToken } = useBoolean();
+  const { value: refunding, setValue: setRefunding } = useBoolean();
   const {
     isWhitelist,
     tier,
     isLoading: isLoadingStakeUser,
   } = useGetStakeUser();
+
   const {
     userIdoAccount,
     isLoading: isLoadingIDOUser,
     mutate,
   } = useGetUserIDO();
+
   const { isLoading: isLoadingPool, getClaimableToken } = useGetIDOPool(
     project.name
   );
-  const [loading, setLoading] = useState(false);
   const provider = useAnchorProvider();
   const { sendTransaction, connected } = useWallet();
 
-  const isUpcoming = dayjs(now).isBefore(sale_start);
-  const isEnded = dayjs(now).isAfter(sale_end);
-  const isOnGoing = dayjs(now).isBetween(sale_start, sale_end);
+  const isUpcoming = dayjs(now).isBefore(claim_start);
+  const isEnded = is_closed;
+  const isOnGoing = dayjs(now).isAfter(claim_start);
 
-  const saleStatus = isUpcoming ? "TBD" : isOnGoing ? "On-Going" : "Done";
+  const claimStatus = isUpcoming ? "TBD" : !is_closed ? "On-Going" : "Done";
 
   const checkAllocation = async () => {
     try {
-      setLoading(true);
+      setCheckingAllocation(true);
       const program = new AppProgram(provider);
       await program.checkAllocation(name);
       await wait(1000);
       await mutate();
-      setLoading(false);
+      setCheckingAllocation(false);
       toast.success({
         title: `Success`,
       });
@@ -65,39 +70,18 @@ const SaleItem = ({ project }: SaleItemProps) => {
         title: `Join error`,
         message: error?.message,
       });
-      setLoading(false);
-    }
-  };
-
-  const claimRemainingFund = async () => {
-    try {
-      setLoading(true);
-      const program = new AppProgram(provider);
-      await program.claimRemainingFund(name, sendTransaction);
-      await wait(1000);
-      await mutate();
-      setLoading(false);
-      toast.success({
-        title: `Success`,
-      });
-    } catch (error: any) {
-      console.error(error);
-      toast.error({
-        title: `Join error`,
-        message: error?.message,
-      });
-      setLoading(false);
+      setCheckingAllocation(false);
     }
   };
 
   const claimToken = async () => {
     try {
-      setLoading(true);
+      setClaimingToken(true);
       const program = new AppProgram(provider);
       await program.claimToken(name, sendTransaction);
       await wait(1000);
       await mutate();
-      setLoading(false);
+      setClaimingToken(false);
       toast.success({
         title: `Success`,
       });
@@ -107,7 +91,28 @@ const SaleItem = ({ project }: SaleItemProps) => {
         title: `Join error`,
         message: error?.message,
       });
-      setLoading(false);
+      setClaimingToken(false);
+    }
+  };
+
+  const refund = async () => {
+    try {
+      setRefunding(true);
+      const program = new AppProgram(provider);
+      await program.refund(name, sendTransaction);
+      await wait(1000);
+      await mutate();
+      setRefunding(false);
+      toast.success({
+        title: `Success`,
+      });
+    } catch (error: any) {
+      console.error(error);
+      toast.error({
+        title: `Refund error`,
+        message: error?.message,
+      });
+      setRefunding(false);
     }
   };
 
@@ -115,8 +120,10 @@ const SaleItem = ({ project }: SaleItemProps) => {
     if (!connected || isUpcoming) return null;
 
     const hasAllocation = userIdoAccount?.allocation.gt(new BN(0));
+    const hasRemainingAllocation = userIdoAccount?.remainingAllocation.gt(
+      new BN(0)
+    );
     const isCommited = !!userIdoAccount?.depositAmount;
-    const hasRemainingAmount = !!userIdoAccount?.remainingAmount;
 
     if (isWhitelist) {
       if (isEnded && !isCommited) {
@@ -126,7 +133,7 @@ const SaleItem = ({ project }: SaleItemProps) => {
       if (!hasAllocation) {
         return (
           <div className="text-right">
-            <Button loading={loading} onClick={checkAllocation}>
+            <Button loading={checkingAllocation} onClick={checkAllocation}>
               Check Allocation
             </Button>
           </div>
@@ -137,36 +144,28 @@ const SaleItem = ({ project }: SaleItemProps) => {
 
       return (
         <div>
-          {hasRemainingAmount && (
-            <div className="mb-6">
-              <div className="flex items-center justify-between">
-                <h5 className="text-body1 text-gray-600">Remaining Fund</h5>
-                <h5 className="heading-h5">
-                  {numeral(
-                    bnDivDecimals(userIdoAccount.remainingAmount).toNumber()
-                  ).format("0,0")}{" "}
-                  {project.deposit_token.ticker}
-                </h5>
-              </div>
-              {userIdoAccount.remainingAmount.gt(new BN("0")) && (
-                <div className="flex items-center justify-end mt-2">
-                  <Button loading={loading} onClick={claimRemainingFund}>
-                    Claim Fund
-                  </Button>
-                </div>
-              )}
-            </div>
-          )}
           <div className="flex items-center justify-between">
             <div className="text-body1 text-gray-600">Allocation</div>
             <h5 className="heading-h5">
               {numeral(allocation).format("0,0")} {project.sale_token.ticker}
             </h5>
           </div>
+          {hasRemainingAllocation && (
+            <div className="text-right space-x-4 mt-2">
+              <Button loading={claimingToken} onClick={claimToken}>
+                Claim
+              </Button>
+              <Button variant="secondary" loading={refunding} onClick={refund}>
+                Refund
+              </Button>
+            </div>
+          )}
         </div>
       );
     } else {
-      return <h5 className="heading-h5">You are not whitelisted</h5>;
+      return (
+        <h5 className="heading-h5 text-primary">You are not whitelisted</h5>
+      );
     }
   }, [
     isWhitelist,
@@ -175,21 +174,23 @@ const SaleItem = ({ project }: SaleItemProps) => {
     isEnded,
     connected,
     userIdoAccount,
-    loading,
     tier,
+    checkingAllocation,
+    claimingToken,
+    refunding,
     getClaimableToken,
     checkAllocation,
-    claimRemainingFund,
     claimToken,
+    refund,
   ]);
 
   const isLoading = isLoadingStakeUser || isLoadingIDOUser || isLoadingPool;
 
   return (
     <TimelineItem
-      title="Sale"
-      date={sale_start}
-      status={saleStatus}
+      title="Distribution"
+      date={claim_start}
+      status={claimStatus}
       disabled={isUpcoming || isLoading || !connected}
     >
       {!isLoading && saleSection}
@@ -197,4 +198,4 @@ const SaleItem = ({ project }: SaleItemProps) => {
   );
 };
 
-export default SaleItem;
+export default DistributionItem;

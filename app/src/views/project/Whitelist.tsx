@@ -1,6 +1,7 @@
 import { Project } from "types/common";
 import dayjs from "dayjs";
 import Button from "components/Button";
+import TimelineItem from "components/TimelineItem";
 import {
   useGetIDOPool,
   useGetStakeUser,
@@ -26,7 +27,6 @@ const WhitelistItem = ({ project }: WhitelistItemProps) => {
   const { name, whitelist_start, whitelist_end } = project;
   const { pool, isLoading: isLoadingIDOPool } = useGetIDOPool(project.name);
   const { isWhitelist, isLoading: isLoadingStakeUser } = useGetStakeUser();
-
   const {
     userIdoAccount,
     isLoading: isLoadingIDOUser,
@@ -36,14 +36,13 @@ const WhitelistItem = ({ project }: WhitelistItemProps) => {
   const provider = useAnchorProvider();
   const { sendTransaction, connected } = useWallet();
 
-  const fundNeeded = bnDivDecimals(pool?.commitFund)?.toNumber() ?? 0;
-  const fundCommitted = !!userIdoAccount?.depositAmount;
+  const isUpcoming = dayjs(now).isBefore(whitelist_start);
+  const isEnded = dayjs(now).isAfter(whitelist_end);
+  const isOnGoing = dayjs(now).isBetween(whitelist_start, whitelist_end);
 
-  const whitelistStatus = dayjs(whitelist_start).isAfter(now)
-    ? "TBD"
-    : now.isBetween(dayjs(whitelist_start), dayjs(whitelist_end))
-    ? "On-Going"
-    : "Done";
+  const fundNeeded = bnDivDecimals(pool?.commitFund)?.toNumber() ?? 0;
+
+  const whitelistStatus = isUpcoming ? "TBD" : isOnGoing ? "On-Going" : "Done";
 
   const handleCommitFund = async () => {
     try {
@@ -71,73 +70,63 @@ const WhitelistItem = ({ project }: WhitelistItemProps) => {
   };
 
   const whitelistSection = useMemo(() => {
-    if (!connected) return null;
+    if (!connected || isUpcoming) return null;
+    const isCommited = !!userIdoAccount?.depositAmount;
 
     if (isWhitelist) {
+      if (isEnded && !isCommited) {
+        return <h5 className="heading-h5 text-primary">NOT REGISTERED</h5>;
+      }
       return (
-        <div className="mt-10">
+        <>
           <div className="flex items-center justify-between">
-            <h5 className="heading-h5">
-              Fund {fundCommitted ? "Committed" : "Needed"}
+            <h5 className="text-body1 text-gray-600">
+              Fund {isCommited ? "Committed" : "Needed"}
             </h5>
             <h5 className="heading-h5">
               {numeral(
-                fundCommitted
+                isCommited
                   ? bnDivDecimals(userIdoAccount?.depositAmount).toNumber()
                   : fundNeeded
               ).format("0,0")}{" "}
               USDC
             </h5>
           </div>
-          {!fundCommitted && (
+          {!isCommited && (
             <div className="flex items-center justify-end mt-6">
               <Button loading={loading} onClick={handleCommitFund}>
                 Commit Fund
               </Button>
             </div>
           )}
-        </div>
+        </>
+      );
+    } else {
+      return (
+        <h5 className="heading-h5 text-primary">You are not whitelisted</h5>
       );
     }
-    return (
-      <div className="mt-10">
-        <h5 className="heading-h5">You are not whitelisted</h5>
-      </div>
-    );
-  }, [isWhitelist, connected, fundCommitted, userIdoAccount, loading]);
+  }, [
+    isWhitelist,
+    isUpcoming,
+    isEnded,
+    isOnGoing,
+    connected,
+    userIdoAccount,
+    loading,
+  ]);
 
-  if (isLoadingStakeUser || isLoadingIDOUser || isLoadingIDOPool)
-    return <h2>loading ...</h2>;
+  const isLoading = isLoadingStakeUser || isLoadingIDOUser || isLoadingIDOPool;
 
   return (
-    <div className="relative flex items-center py-4">
-      <div className="absolute w-1 border-l-[1.5px] border-l-primary/[0.8] border-dashed left-[40px] top-0 bottom-0 z-[-1]" />
-      <div className="mr-4 text-center card w-20 h-20 p-4 flex flex-col items-center justify-center">
-        {whitelist_start ? (
-          <>
-            <div className="text-caption font-medium">
-              {dayjs(whitelist_start).format("MMM")}
-            </div>
-            <div className="text-h3 font-semibold">
-              {dayjs(whitelist_start).format("DD")}
-            </div>
-          </>
-        ) : (
-          <div className="text-h3 font-semibold">TBD</div>
-        )}
-      </div>
-      <div className="card rounded-2xl flex-1 p-8">
-        <div className="flex items-center justify-between">
-          <div className="text-2xl font-semibold">Whitelist</div>
-          <div className="flex items-center space-x-2">
-            <div className="text-xl font-semibold uppercase">
-              {whitelistStatus}
-            </div>
-          </div>
-        </div>
-        {whitelistSection}
-      </div>
-    </div>
+    <TimelineItem
+      title="Whitelist"
+      date={whitelist_start}
+      status={whitelistStatus}
+      disabled={isUpcoming || !connected}
+    >
+      {!isLoading && whitelistSection}
+    </TimelineItem>
   );
 };
 

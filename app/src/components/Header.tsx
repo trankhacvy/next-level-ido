@@ -10,8 +10,8 @@ import Link from "next/link";
 const Menus = [
   { text: "Projects", href: "/projects", activeRoutes: ["/projects"] },
   { text: "Stake", href: "/stake", activeRoutes: ["/stake"] },
-  { text: "Swap", href: "/", activeRoutes: ["/team"] },
-  { text: "Dashboard", href: "/", activeRoutes: ["/token"] },
+  { text: "Swap", href: "/swap", activeRoutes: ["/swap"] },
+  { text: "Dashboard", href: "/dashboard", activeRoutes: ["/dashboard"] },
 ];
 
 const Header = () => {
@@ -51,7 +51,9 @@ const Header = () => {
         </button>
         <ul className="hidden lg:flex items-center lg:space-x-5">
           {Menus.map((item) => {
-            const active = item.activeRoutes.includes(asPath);
+            const active = item.activeRoutes.some((item) =>
+              asPath.startsWith(item)
+            );
             return (
               <li key={item.text}>
                 <Link href={item.href}>
