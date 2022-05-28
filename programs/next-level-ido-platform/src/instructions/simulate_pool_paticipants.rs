@@ -2,7 +2,6 @@ use crate::state::IdoPool;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
-// do validate time
 pub struct SimulatePoolPaticipants<'info> {
     pub ido_authority: Signer<'info>,
     #[account(
@@ -16,8 +15,6 @@ pub struct SimulatePoolPaticipants<'info> {
 
 // use this function for demo purpose
 pub fn exe(ctx: Context<SimulatePoolPaticipants>) -> Result<()> {
-    msg!("SimulatePoolPaticipants");
-
     ctx.accounts.ido_pool.participant_count = 100;
     ctx.accounts.ido_pool.current_weight = 1380;
 

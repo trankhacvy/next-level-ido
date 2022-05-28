@@ -18,10 +18,7 @@ const ProjectPage = ({
     <main className="container mx-auto px-5 pt-40 pb-20">
       <Head>
         <title>{name} | Ari</title>
-        <meta
-          property="og:title"
-          content={`${name} | Ari`}
-        />
+        <meta property="og:title" content={`${name} | Ari`} />
       </Head>
       <nav className="mb-10">
         <ol className="flex flex-wrap items-center">

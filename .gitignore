@@ -8,3 +8,5 @@ node_modules
 phantom_wallet.json
 
 test-ledger
+
+.env

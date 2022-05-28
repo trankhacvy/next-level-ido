@@ -117,13 +117,14 @@ const SaleItem = ({ project }: SaleItemProps) => {
     const hasAllocation = userIdoAccount?.allocation.gt(new BN(0));
     const isCommited = !!userIdoAccount?.depositAmount;
     const hasRemainingAmount = !!userIdoAccount?.remainingAmount;
+    const claimed = !!userIdoAccount?.claimed;
 
     if (isWhitelist) {
       if (isEnded && !isCommited) {
         return <h5 className="heading-h5 text-primary">NOT REGISTERED</h5>;
       }
 
-      if (!hasAllocation) {
+      if (!hasAllocation && !claimed) {
         return (
           <div className="text-right">
             <Button loading={loading} onClick={checkAllocation}>
@@ -184,7 +185,7 @@ const SaleItem = ({ project }: SaleItemProps) => {
   ]);
 
   const isLoading = isLoadingStakeUser || isLoadingIDOUser || isLoadingPool;
-
+  console.log("sale", userIdoAccount?.depositAmount.toNumber());
   return (
     <TimelineItem
       title="Sale"
@@ -198,3 +199,5 @@ const SaleItem = ({ project }: SaleItemProps) => {
 };
 
 export default SaleItem;
+// 2000000000
+// 2597402596

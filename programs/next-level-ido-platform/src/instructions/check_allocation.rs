@@ -1,6 +1,6 @@
 use crate::access_control::*;
 use crate::errors::ErrorCode;
-use crate::state::{IdoPool, IdoUser, Log, StakeTier};
+use crate::state::{IdoPool, IdoUser, StakeTier};
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
@@ -18,12 +18,11 @@ pub struct CheckAllocation<'info> {
     #[account(
         seeds = [ido_pool.ido_name.as_bytes()],
         bump,
-        // has_one = ido_token_mint
     )]
     pub ido_pool: Box<Account<'info, IdoPool>>,
 }
 
-// #[access_control(ido_over(&ctx.accounts.ido_account))]
+#[access_control(ido_over(&ctx.accounts.ido_pool))]
 pub fn exe(ctx: Context<CheckAllocation>) -> Result<()> {
     let total_token = ctx.accounts.ido_pool.ido_token_amount;
     let total_weight = ctx.accounts.ido_pool.current_weight;
@@ -38,37 +37,22 @@ pub fn exe(ctx: Context<CheckAllocation>) -> Result<()> {
         .checked_div(total_weight as u64)
         .unwrap();
 
-    emit!(Log {
-        message: format!("token_allocation: {}", token_allocation)
-    });
-
     let token_allocation_usdc = token_allocation
         .checked_mul(token_price_denominator as u64)
         .unwrap()
         .checked_div(token_price_numerator as u64)
         .unwrap();
 
-    emit!(Log {
-        message: format!("token_allocation_usdc: {}", token_allocation_usdc)
-    });
-
     let remaining_amount = std::cmp::max(deposit_amount - token_allocation_usdc, 0);
-    emit!(Log {
-        message: format!("remaining_amount: {}", remaining_amount)
-    });
 
     let deposited_allocation = deposit_amount
         .checked_mul(token_price_denominator as u64)
         .unwrap()
         .checked_div(token_price_numerator as u64)
         .unwrap();
-    emit!(Log {
-        message: format!("deposited_allocation: {}", deposited_allocation)
-    });
     ctx.accounts.ido_user.remaining_amount = remaining_amount;
     ctx.accounts.ido_user.allocation = token_allocation;
     ctx.accounts.ido_user.deposited_allocation = deposited_allocation;
     ctx.accounts.ido_user.remaining_allocation = token_allocation - deposited_allocation;
-    
     Ok(())
 }

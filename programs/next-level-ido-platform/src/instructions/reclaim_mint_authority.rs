@@ -4,7 +4,7 @@ use spl_token::instruction::AuthorityType;
 
 #[derive(Accounts)]
 pub struct ReclaimMintAuthority<'info> {
-    pub token_mint: Account<'info, Mint>, // ARI token mint
+    pub token_mint: Account<'info, Mint>,
     #[account(mut)]
     pub x_token_mint: Box<Account<'info, Mint>>,
     #[account(
@@ -15,7 +15,6 @@ pub struct ReclaimMintAuthority<'info> {
     pub token_vault: Account<'info, TokenAccount>,
     #[account(
         mut,
-        //only ARI's token authority can sign for this action
         address = token_mint.mint_authority.unwrap(),
     )]
     ///the mint authority of the ari token
@@ -36,7 +35,6 @@ pub fn exe(ctx: Context<ReclaimMintAuthority>) -> Result<()> {
     let cpi_ctx = CpiContext::new_with_signer(
         ctx.accounts.token_program.to_account_info(),
         token::SetAuthority {
-            // current_authority: ctx.accounts.token_vault.to_account_info(),
             current_authority: ctx.accounts.token_authority.to_account_info(),
             account_or_mint: ctx.accounts.x_token_mint.to_account_info(),
         },
@@ -45,8 +43,7 @@ pub fn exe(ctx: Context<ReclaimMintAuthority>) -> Result<()> {
     token::set_authority(
         cpi_ctx,
         AuthorityType::MintTokens,
-        // Some(ctx.accounts.token_mint.mint_authority.unwrap()),
-        Some(ctx.accounts.token_vault.key())
+        Some(ctx.accounts.token_vault.key()),
     )?;
 
     Ok(())

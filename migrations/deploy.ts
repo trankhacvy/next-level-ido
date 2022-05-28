@@ -1,7 +1,6 @@
 // Migrations are an early feature. Currently, they're nothing more than this
 // single deploy script that's invoked from the CLI, injecting a provider
 // configured from the workspace's Anchor.toml.
-
 import { NextLevelIdoPlatform } from "../target/types/next_level_ido_platform";
 import {
   Program,
@@ -13,19 +12,37 @@ import {
 } from "@project-serum/anchor";
 import { handleAirdrop } from "../tests/utils";
 import {
+  IDO_NAME,
+  IDO_TOTAL_TOKEN,
+  IDO_COMMIT_FUND,
+  IDO_PRICE_NUMBERATOR,
+  IDO_PRICE_DENOMINATOR,
+  getIdoTimes,
+  getPayer,
+} from "./utils";
+import {
   TOKEN_PROGRAM_ID,
-  createMint,
   getOrCreateAssociatedTokenAccount,
   mintTo,
 } from "@solana/spl-token";
-import { Keypair, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 
-function IdoTimes() {
-  this.startIdo;
-  this.endDeposts;
-  this.endIdo;
-  this.endEscrow;
-}
+const ariTokenMint = new web3.PublicKey(
+  "vjSoRemhpkcNc9yZABGXTHVwvMBqtnByY3qZvUXERvr"
+);
+const ariXTokenMint = new web3.PublicKey(
+  "2qP8RuF293tZNS544HD5sDbLy6KwcRoFMNanSFNkWtLH"
+);
+const idoTokenMint = new web3.PublicKey(
+  "9y4EtyUji8VNoCY59oTVHuwj7XZJ8Y4Dzx4EV3vTb5Jh"
+);
+const usdcTokenMint = new web3.PublicKey(
+  "Au4q2YPeAKrSEH6CSN8mbovGK8mo4cDz5FfvycUgSGt7"
+);
+
+const userWallet = new PublicKey(
+  "63EEC9FfGyksm7PkVC6z8uAmqozbQcTzbkWJNsgqjkFs"
+);
 
 module.exports = async function (provider) {
   console.log("run migration");
@@ -35,78 +52,41 @@ module.exports = async function (provider) {
   const program =
     workspace.NextLevelIdoPlatform as Program<NextLevelIdoPlatform>;
 
-  const payer = web3.Keypair.generate();
-  await handleAirdrop(provider, payer.publicKey);
-  const walletPubkey = new PublicKey(
-    "63EEC9FfGyksm7PkVC6z8uAmqozbQcTzbkWJNsgqjkFs"
-  );
-  await handleAirdrop(provider, walletPubkey);
-
-  const ariTokenMintPubkey = await createMint(
-    provider.connection,
-    payer,
-    payer.publicKey,
-    null,
-    6
-  );
-  console.log("ariTokenMintPubkey", ariTokenMintPubkey.toBase58());
-  const walletATA = await getOrCreateAssociatedTokenAccount(
-    provider.connection,
-    payer,
-    ariTokenMintPubkey,
-    walletPubkey
-  );
-
-  await mintTo(
-    provider.connection,
-    payer,
-    ariTokenMintPubkey,
-    walletATA.address,
-    payer,
-    50_000 * 10 ** 6
-  );
-
-  const ariXTokenMintPubkey = await createMint(
-    provider.connection,
-    payer,
-    payer.publicKey,
-    null,
-    6
-  );
-  console.log("ariXTokenMintPubkey", ariXTokenMintPubkey.toBase58());
+  await handleAirdrop(provider, userWallet);
 
   const [stakePoolAriVault] = await web3.PublicKey.findProgramAddress(
-    [Buffer.from("vault"), ariTokenMintPubkey.toBuffer()],
+    [Buffer.from("vault"), ariTokenMint.toBuffer()],
     program.programId
   );
 
   try {
     await program.rpc.initializeStakePool({
       accounts: {
-        tokenMint: ariTokenMintPubkey,
+        tokenMint: ariTokenMint,
         tokenVault: stakePoolAriVault,
-        tokenAuthority: payer.publicKey,
+        tokenAuthority: provider.wallet.publicKey,
         systemProgram: web3.SystemProgram.programId,
         tokenProgram: TOKEN_PROGRAM_ID,
         rent: web3.SYSVAR_RENT_PUBKEY,
       },
-      signers: [payer],
+      signers: [],
     });
     console.log("initializeStakePool success");
+
     await program.rpc.reclaimMintAuthority({
       accounts: {
-        tokenMint: ariTokenMintPubkey,
-        xTokenMint: ariXTokenMintPubkey,
+        tokenMint: ariTokenMint,
+        xTokenMint: ariXTokenMint,
         tokenVault: stakePoolAriVault,
-        tokenAuthority: payer.publicKey,
+        tokenAuthority: provider.wallet.publicKey,
         tokenProgram: TOKEN_PROGRAM_ID,
       },
-      signers: [payer],
+      signers: [],
     });
     console.log("reclaimMintAuthority success");
 
     // init ido
-    initIDOPool(provider, program, payer, walletPubkey);
+    initIDOPool(provider, program, userWallet);
   } catch (error) {
     console.error(error);
   }
@@ -115,42 +95,20 @@ module.exports = async function (provider) {
 const initIDOPool = async (
   provider: AnchorProvider,
   program: Program<NextLevelIdoPlatform>,
-  payer: Keypair,
   walletPubkey: PublicKey
 ) => {
   try {
+    const payer = getPayer();
     // init ido
-    const idoName = "Moonfrost";
-
-    const wls = "2022-05-24 12:00:00+00";
-    const wle = "2022-05-25 12:00:00+00";
-    const ss = "2022-05-25 17:00:00+00";
-    const se = "2022-05-37 14:00:00+00";
-    const claim = "2022-06-01 14:00:00+00";
-
-    const idoTimes = new IdoTimes();
-    idoTimes.whitelistStart = new BN(new Date(wls).getTime() / 1000);
-    idoTimes.whitelistEnd = new BN(new Date(wle).getTime() / 1000);
-    idoTimes.saleStart = new BN(new Date(ss).getTime() / 1000);
-    idoTimes.saleEnd = new BN(new Date(se).getTime() / 1000);
-    idoTimes.claimStart = new BN(new Date(claim).getTime() / 1000);
+    const idoTimes = getIdoTimes();
 
     const programId = program.programId;
 
     let [idoPool] = await web3.PublicKey.findProgramAddress(
-      [Buffer.from(idoName)],
+      [Buffer.from(IDO_NAME)],
       programId
     );
 
-    // create ido token
-    const idoTokenMint = await createMint(
-      provider.connection,
-      payer,
-      payer.publicKey,
-      null,
-      6
-    );
-    console.log("idoTokenMint", idoTokenMint.toBase58());
     const idoTokenAccount = await getOrCreateAssociatedTokenAccount(
       provider.connection,
       payer,
@@ -166,15 +124,6 @@ const initIDOPool = async (
       payer,
       1_000_000 * 10 ** 6
     );
-
-    const usdcTokenMint = await createMint(
-      provider.connection,
-      payer,
-      payer.publicKey,
-      null,
-      6
-    );
-    console.log("usdcTokenMint", usdcTokenMint.toBase58());
 
     const walletUSDCTokenAccount = await getOrCreateAssociatedTokenAccount(
       provider.connection,
@@ -193,29 +142,28 @@ const initIDOPool = async (
     );
 
     const [redeemableMint] = await web3.PublicKey.findProgramAddress(
-      [Buffer.from(idoName), Buffer.from("redeemable_mint")],
+      [Buffer.from(IDO_NAME), Buffer.from("redeemable_mint")],
       programId
     );
 
     const [idoTokenVault] = await web3.PublicKey.findProgramAddress(
-      [Buffer.from(idoName), Buffer.from("ido_token_vault")],
+      [Buffer.from(IDO_NAME), Buffer.from("ido_token_vault")],
       programId
     );
 
     const [usdcVault] = await web3.PublicKey.findProgramAddress(
-      [Buffer.from(idoName), Buffer.from("usdc_vault")],
+      [Buffer.from(IDO_NAME), Buffer.from("usdc_vault")],
       programId
     );
 
-    // @ts-ignore
     await program.methods
       .initializeIdoPool(
         // @ts-ignore
-        idoName,
-        new BN("180000").mul(new BN(10 ** 6)),
-        new BN("2000").mul(new BN(10 ** 6)),
-        new BN("3"),
-        new BN("10"),
+        IDO_NAME,
+        new BN(IDO_TOTAL_TOKEN).mul(new BN(10 ** 6)),
+        new BN(IDO_COMMIT_FUND).mul(new BN(10 ** 6)),
+        new BN(IDO_PRICE_NUMBERATOR),
+        new BN(IDO_PRICE_DENOMINATOR),
         idoTimes as any
       )
       .accounts({

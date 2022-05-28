@@ -7,11 +7,7 @@ use std::convert::TryInto;
 #[derive(Accounts)]
 pub struct Stake<'info> {
     pub token_mint: Account<'info, Mint>,
-    #[account(
-        mut,
-        // seeds = [b"mint", token_mint.key().as_ref()],
-        // bump
-    )]
+    #[account(mut)]
     pub x_token_mint: Account<'info, Mint>,
     #[account(mut)]
     pub token_from: Account<'info, TokenAccount>,

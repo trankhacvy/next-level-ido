@@ -726,6 +726,10 @@
             "type": {
               "defined": "StakeTier"
             }
+          },
+          {
+            "name": "claimed",
+            "type": "bool"
           }
         ]
       }

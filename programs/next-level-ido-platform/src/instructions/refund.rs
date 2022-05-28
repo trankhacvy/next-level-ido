@@ -53,7 +53,7 @@ pub struct Refund<'info> {
     pub token_program: Program<'info, Token>,
 }
 
-// #[access_control(ido_over(&ctx.accounts.ido_account))]
+#[access_control(ido_over(&ctx.accounts.ido_pool))]
 pub fn exe(ctx: Context<Refund>) -> Result<()> {
     let remaining_usdc = ctx.accounts.ido_user.deposit_amount;
 

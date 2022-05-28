@@ -115,8 +115,9 @@ pub struct IdoUser {
     pub deposited_allocation: u64,
     pub remaining_allocation: u64,
     pub tier: StakeTier,
+    pub claimed: bool
 }
 
 impl IdoUser {
-    pub const SIZE: usize = 8 + 32 + 8 + 8 + 8 + 8 + 8 + (1 + 4);
+    pub const SIZE: usize = 8 + 32 + 8 + 8 + 8 + 8 + 8 + (1 + 4) + 1;
 }

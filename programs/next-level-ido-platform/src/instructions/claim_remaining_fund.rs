@@ -53,7 +53,7 @@ pub struct ClaimRemainingFund<'info> {
     pub token_program: Program<'info, Token>,
 }
 
-// #[access_control(ido_over(&ctx.accounts.ido_account))]
+#[access_control(ido_over(&ctx.accounts.ido_pool))]
 pub fn exe(ctx: Context<ClaimRemainingFund>) -> Result<()> {
     let remaining_fund = ctx.accounts.ido_user.remaining_amount;
 

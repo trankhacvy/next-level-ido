@@ -726,6 +726,10 @@ export type NextLevelIdoPlatform = {
             "type": {
               "defined": "StakeTier"
             }
+          },
+          {
+            "name": "claimed",
+            "type": "bool"
           }
         ]
       }
@@ -1597,6 +1601,10 @@ export const IDL: NextLevelIdoPlatform = {
             "type": {
               "defined": "StakeTier"
             }
+          },
+          {
+            "name": "claimed",
+            "type": "bool"
           }
         ]
       }

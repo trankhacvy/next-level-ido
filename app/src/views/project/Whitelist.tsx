@@ -41,7 +41,6 @@ const WhitelistItem = ({ project }: WhitelistItemProps) => {
   const isOnGoing = dayjs(now).isBetween(whitelist_start, whitelist_end);
 
   const fundNeeded = bnDivDecimals(pool?.commitFund)?.toNumber() ?? 0;
-
   const whitelistStatus = isUpcoming ? "TBD" : isOnGoing ? "On-Going" : "Done";
 
   const handleCommitFund = async () => {

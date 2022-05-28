@@ -5,7 +5,6 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, MintTo, Token, TokenAccount, Transfer};
 
 #[derive(Accounts)]
-// do validate time
 pub struct ParticipatePool<'info> {
     #[account(mut)]
     pub user_authority: Signer<'info>,
@@ -72,7 +71,7 @@ pub struct ParticipatePool<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-// #[access_control(whilelist_phase(&ctx.accounts.ido_pool))]
+#[access_control(whilelist_phase(&ctx.accounts.ido_pool))]
 pub fn exe(ctx: Context<ParticipatePool>, amount: u64) -> Result<()> {
     msg!("ParticipatePool");
 
@@ -98,6 +97,7 @@ pub fn exe(ctx: Context<ParticipatePool>, amount: u64) -> Result<()> {
     ctx.accounts.ido_user.allocation = 0;
     ctx.accounts.ido_user.deposited_allocation = 0;
     ctx.accounts.ido_user.remaining_allocation = 0;
+    ctx.accounts.ido_user.claimed = false;
 
     // Transfer user's USDC to pool USDC account.
     let cpi_accounts = Transfer {

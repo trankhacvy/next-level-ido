@@ -124,13 +124,14 @@ const DistributionItem = ({ project }: DistributionItemProps) => {
       new BN(0)
     );
     const isCommited = !!userIdoAccount?.depositAmount;
+    const claimed = !!userIdoAccount?.claimed;
 
     if (isWhitelist) {
       if (isEnded && !isCommited) {
         return <h5 className="heading-h5 text-primary">NOT REGISTERED</h5>;
       }
 
-      if (!hasAllocation) {
+      if (!hasAllocation && !claimed) {
         return (
           <div className="text-right">
             <Button loading={checkingAllocation} onClick={checkAllocation}>
@@ -150,7 +151,7 @@ const DistributionItem = ({ project }: DistributionItemProps) => {
               {numeral(allocation).format("0,0")} {project.sale_token.ticker}
             </h5>
           </div>
-          {hasRemainingAllocation && (
+          {hasRemainingAllocation && !claimed ? (
             <div className="text-right space-x-4 mt-2">
               <Button loading={claimingToken} onClick={claimToken}>
                 Claim
@@ -159,6 +160,10 @@ const DistributionItem = ({ project }: DistributionItemProps) => {
                 Refund
               </Button>
             </div>
+          ) : (
+            <p className="text-body1 text-right text-primary font-semibold mt-2">
+              Claimed
+            </p>
           )}
         </div>
       );

@@ -7,7 +7,6 @@ use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 #[derive(Accounts)]
 #[instruction(ido_name: String)]
 pub struct InitializeIdoPool<'info> {
-    // IDO Authority accounts
     #[account(mut)]
     pub ido_authority: Signer<'info>,
 
@@ -48,7 +47,6 @@ pub struct InitializeIdoPool<'info> {
     )]
     pub redeemable_mint: Box<Account<'info, Mint>>,
 
-    // TODO Confirm USDC mint address on mainnet or leave open as an option for other stables
     #[account(constraint = usdc_mint.decimals == DECIMALS)]
     pub usdc_mint: Box<Account<'info, Mint>>,
     #[account(init,
@@ -66,7 +64,7 @@ pub struct InitializeIdoPool<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-// #[access_control(validate_ido_times(ido_times))]
+#[access_control(validate_ido_times(ido_times))]
 pub fn exe(
     ctx: Context<InitializeIdoPool>,
     ido_name: String,
