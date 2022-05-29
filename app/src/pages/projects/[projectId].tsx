@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
-import useSWR, { SWRConfig } from "swr";
+import useSWR from "swr";
 import Head from "next/head";
 import { FaChevronRight } from "react-icons/fa";
 import ProjectCard from "views/project/ProjectCard";
