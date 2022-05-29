@@ -1,4 +1,5 @@
 import { Project } from "types/common";
+import useSWR from "swr";
 import dayjs from "dayjs";
 import { useCoutdownTimer } from "hooks/useCountdown";
 import { formatSeconds } from "utils/datetime";
@@ -13,8 +14,10 @@ export type IDOTimelineProps = {
 };
 
 const IDOTimeline = ({ project }: IDOTimelineProps) => {
+  const { data: proj } = useSWR(["project", project.id]);
+
   const { sale_start, sale_end, whitelist_start, whitelist_end, created_at } =
-    project;
+    proj;
   const now = dayjs();
 
   const isWhitelisting = now.isBetween(
@@ -52,9 +55,9 @@ const IDOTimeline = ({ project }: IDOTimelineProps) => {
               This project is in preparation phase. Stay tuned.
             </p>
           </TimelineItem>
-          <WhitelistItem project={project} />
-          <SaleItem project={project} />
-          <DistributionItem project={project} />
+          <WhitelistItem project={proj} />
+          <SaleItem project={proj} />
+          <DistributionItem project={proj} />
         </div>
       </div>
     </div>

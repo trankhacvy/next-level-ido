@@ -1,4 +1,5 @@
 import numeral from "numeral";
+import useSWR from "swr";
 import {
   FaTelegramPlane,
   FaDiscord,
@@ -13,6 +14,8 @@ export type ProjectCardProps = {
 };
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
+  const { data: proj } = useSWR(["project", project.id]);
+
   const {
     name,
     logo,
@@ -30,7 +33,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
     ath_roi,
     curr_roi,
     last_price,
-  } = project;
+  } = proj;
 
   const socials = [
     {

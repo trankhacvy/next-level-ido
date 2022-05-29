@@ -60,7 +60,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     ],
     [network]
   );
-  console.log("getEndpoint()", getEndpoint());
+  
   return (
     <ConnectionProvider endpoint={getEndpoint()}>
       <WalletProvider wallets={wallets} autoConnect>
