@@ -1,5 +1,4 @@
 import { Project } from "types/common";
-import useSWR from "swr";
 import dayjs from "dayjs";
 import numeral from "numeral";
 
@@ -8,7 +7,6 @@ export type SaleInfoProps = {
 };
 
 const SaleInfo = ({ project }: SaleInfoProps) => {
-  const { data: proj } = useSWR(["project", project.id]);
   const {
     token_amount,
     token_price,
@@ -16,7 +14,7 @@ const SaleInfo = ({ project }: SaleInfoProps) => {
     is_vested,
     sale_start,
     sale_end,
-  } = proj;
+  } = project;
   return (
     <div className="w-full lg:self-stretch">
       <h4 className="text-2xl font-semibold">IDO Info</h4>
