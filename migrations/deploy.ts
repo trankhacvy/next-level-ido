@@ -28,16 +28,16 @@ import {
 import { PublicKey } from "@solana/web3.js";
 
 const ariTokenMint = new web3.PublicKey(
-  "vjSoRemhpkcNc9yZABGXTHVwvMBqtnByY3qZvUXERvr"
+  "623Vgz64SPimZ7B32B7kp8R93YvJ9o6hMJgjx8fS96AF"
 );
 const ariXTokenMint = new web3.PublicKey(
-  "2qP8RuF293tZNS544HD5sDbLy6KwcRoFMNanSFNkWtLH"
+  "8737ZzSsXVWNaNMwYvpqEuctkEhhXM5d5WbsKPYWPime"
 );
 const idoTokenMint = new web3.PublicKey(
-  "9y4EtyUji8VNoCY59oTVHuwj7XZJ8Y4Dzx4EV3vTb5Jh"
+  "Ehyo3QckgcGJ21DW27gq9HcCb7zRXKLyGhD5VGo9wYdB"
 );
 const usdcTokenMint = new web3.PublicKey(
-  "Au4q2YPeAKrSEH6CSN8mbovGK8mo4cDz5FfvycUgSGt7"
+  "3Yqpn9ji8XySsu3BeweE9817pRyLRkQioHnmP8b8Z1Ke"
 );
 
 const userWallet = new PublicKey(

@@ -49,10 +49,11 @@ pub struct Refund<'info> {
         bump
     )]
     pub redeemable_mint: Box<Account<'info, Mint>>,
-    ///used by anchor for init of the above
+
     pub token_program: Program<'info, Token>,
 }
 
+// TODO need different access control, right?
 #[access_control(ido_over(&ctx.accounts.ido_pool))]
 pub fn exe(ctx: Context<Refund>) -> Result<()> {
     let remaining_usdc = ctx.accounts.ido_user.deposit_amount;

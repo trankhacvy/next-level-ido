@@ -1,24 +1,18 @@
-import {
-  web3,
-} from "@project-serum/anchor";
+import { web3 } from "@project-serum/anchor";
 import {
   createMint,
   getOrCreateAssociatedTokenAccount,
   mintTo,
 } from "@solana/spl-token";
-import {
-  getPayer,
-  createConnection,
-} from "./utils";
+import { getPayer, createConnection } from "./utils";
 
 const userPubkey = new web3.PublicKey(
-  "63EEC9FfGyksm7PkVC6z8uAmqozbQcTzbkWJNsgqjkFs"
+  "63EEC9FfGyksm7PkVC6z8uAmqozbQcTzbkWJNsgqjkFs" // push you wallet public key here
 );
 
 const main = async () => {
   try {
     const payer = getPayer();
-    console.log("payer", payer.publicKey.toBase58());
     const connection = await createConnection();
 
     const ariTokenMint = await createMint(
@@ -28,7 +22,7 @@ const main = async () => {
       null,
       6
     );
-    console.log("ariTokenMintPubkey", ariTokenMint.toBase58());
+    console.log("ARI_MINT_TOKEN", ariTokenMint.toBase58());
 
     const userAriTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
@@ -53,7 +47,7 @@ const main = async () => {
       null,
       6
     );
-    console.log("ariXTokenMintPubkey", ariXTokenMint.toBase58());
+    console.log("X_ARI_MINT_TOKEN", ariXTokenMint.toBase58());
 
     const idoTokenMint = await createMint(
       connection,
@@ -63,7 +57,7 @@ const main = async () => {
       6
     );
 
-    console.log("idoTokenMint", idoTokenMint.toBase58());
+    console.log("IDO_TOKEN_MINT", idoTokenMint.toBase58());
 
     const usdcTokenMint = await createMint(
       connection,
@@ -72,7 +66,7 @@ const main = async () => {
       null,
       6
     );
-    console.log("usdcTokenMint", usdcTokenMint.toBase58());
+    console.log("USDC_TOKEN_MINT", usdcTokenMint.toBase58());
   } catch (error) {
     console.error(error);
   }

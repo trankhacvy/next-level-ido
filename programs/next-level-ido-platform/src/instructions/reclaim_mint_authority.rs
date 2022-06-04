@@ -17,9 +17,8 @@ pub struct ReclaimMintAuthority<'info> {
         mut,
         address = token_mint.mint_authority.unwrap(),
     )]
-    ///the mint authority of the ari token
     pub token_authority: Signer<'info>,
-    ///used by anchor for init of the above
+
     pub token_program: Program<'info, Token>,
 }
 

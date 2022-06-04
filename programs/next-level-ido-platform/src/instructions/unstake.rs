@@ -6,14 +6,16 @@ use std::convert::TryInto;
 
 #[derive(Accounts)]
 pub struct Unstake<'info> {
+    // stake token
     pub token_mint: Account<'info, Mint>,
     #[account(
         mut,
     )]
+    // lp token
     pub x_token_mint: Account<'info, Mint>,
 
     #[account(mut)]
-    //the token account to withdraw from
+    // staker's LP token account
     pub x_token_from: Account<'info, TokenAccount>,
     //the authority allowed to transfer from x_token_from
     pub x_token_from_authority: Signer<'info>,
@@ -23,6 +25,7 @@ pub struct Unstake<'info> {
         seeds = [b"vault", token_mint.key().as_ref() ],
         bump,
     )]
+    // stake token vault
     pub token_vault: Account<'info, TokenAccount>,
 
     #[account(
@@ -35,7 +38,7 @@ pub struct Unstake<'info> {
     user: Box<Account<'info, User>>,
 
     #[account(mut)]
-    //the token account to send token
+    // staker's stake token account
     pub token_to: Account<'info, TokenAccount>,
 
     pub token_program: Program<'info, Token>,
@@ -51,7 +54,7 @@ pub fn exe(ctx: Context<Unstake>, amount: u64) -> Result<()> {
     let now = Clock::get().unwrap().unix_timestamp;
     update_user_tier(&mut ctx.accounts.user, now);
 
-    //burn token x of user
+    //burn LP of user
     let cpi_ctx = CpiContext::new(
         ctx.accounts.token_program.to_account_info(),
         token::Burn {
@@ -80,7 +83,7 @@ pub fn exe(ctx: Context<Unstake>, amount: u64) -> Result<()> {
     ];
     let signer = &[&seeds[..]];
 
-    //transfer from vault to user
+    //transfer stake token from vault to user
     let cpi_ctx = CpiContext::new_with_signer(
         ctx.accounts.token_program.to_account_info(),
         token::Transfer {

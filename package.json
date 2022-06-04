@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "scripts": {
     "build": "anchor build && node scripts/copy_idl.js",
-    "update-ido": "npx ts-node migrations/update_ido.ts",
     "mint": "npx ts-node migrations/generate_mint.ts"
   },
   "dependencies": {

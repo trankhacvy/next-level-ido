@@ -73,8 +73,6 @@ pub struct ParticipatePool<'info> {
 
 #[access_control(whilelist_phase(&ctx.accounts.ido_pool))]
 pub fn exe(ctx: Context<ParticipatePool>, amount: u64) -> Result<()> {
-    msg!("ParticipatePool");
-
     if ctx.accounts.user_usdc.amount < amount {
         return err!(ErrorCode::LowUsdc);
     }

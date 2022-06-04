@@ -1,7 +1,7 @@
 [features]
 seeds = false
 [programs.localnet]
-next_level_ido_platform = "EQQc7CVfiLnSPkA1T4ddTSBbVjv39uWgtRGNJssp61a3"
+next_level_ido_platform = "H8sDPuASnf5PJfuRNUwYd7K3LMaDnGqyM66RFuM6VKXg"
 
 [registry]
 url = "https://anchor.projectserum.com"

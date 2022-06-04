@@ -13,7 +13,8 @@ pub struct SimulatePoolPaticipants<'info> {
     pub ido_pool: Box<Account<'info, IdoPool>>,
 }
 
-// use this function for demo purpose
+// this function for demo purpose
+// We assume that 100 people already join IDO
 pub fn exe(ctx: Context<SimulatePoolPaticipants>) -> Result<()> {
     ctx.accounts.ido_pool.participant_count = 100;
     ctx.accounts.ido_pool.current_weight = 1380;

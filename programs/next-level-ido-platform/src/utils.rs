@@ -1,8 +1,6 @@
-use crate::constant::DECIMALS;
 use crate::state::{Log, StakeTier, User};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, TokenAccount};
-// use num_traits::checked_pow;
 use std::convert::TryInto;
 use std::ops::Deref;
 
@@ -56,7 +54,7 @@ pub fn get_price<'info>(
 }
 
 fn get_tier_by_amount(amount: u64) -> StakeTier {
-    // can we find a better way, ofcourse !!!
+    // TODO find a better way plz
     if amount >= (StakeTier::Dimond.value().0 as u64) {
         return StakeTier::Dimond;
     }
@@ -77,8 +75,6 @@ fn get_tier_by_amount(amount: u64) -> StakeTier {
 
 pub fn update_user_tier<'info>(user: &mut Account<'info, User>, current_ts: i64) {
     let staked_amount = user.staked_amount;
-    //.checked_div(u32::pow(10, DECIMALS as u32) as u64)
-    //.unwrap();
 
     let next_tier = get_tier_by_amount(staked_amount);
     emit!(Log {
@@ -109,15 +105,3 @@ impl<T: Deref<Target = [u8]>> TrimAsciiWhitespace for T {
         &self[from..=to]
     }
 }
-
-// pub fn calculate_token_allocation<'info>(ido_pool: &Account<'info, IdoPool>, program_id: &Pubkey) {
-//     let participants = &ido_pool.participants;
-//     // let (pda, _bump_seed) = Pubkey::find_program_address(&[ESCROW_PDA_SEED], ctx.program_id);
-//     for i in 0..participants.len() {
-//         let seed = &[b"user", participants[i].pubkey.as_ref()];
-//         let (pda) = Pubkey::find_program_address(seed, program_id);
-//         emit!(Log {
-//             message: format!("pda account {:?}", pda),
-//         });
-//     }
-// }

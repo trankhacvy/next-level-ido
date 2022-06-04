@@ -1,5 +1,5 @@
 use crate::constant::DECIMALS;
-use crate::errors::ErrorCode;
+// use crate::errors::ErrorCode;
 use crate::state::{IdoPool, IdoTimes};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
@@ -74,8 +74,6 @@ pub fn exe(
     token_price_denominator: u8,
     ido_times: IdoTimes,
 ) -> Result<()> {
-    msg!("INITIALIZE POOL");
-
     let ido_pool = &mut ctx.accounts.ido_pool;
 
     ido_pool.ido_name = ido_name;
@@ -108,18 +106,20 @@ pub fn exe(
     Ok(())
 }
 
-fn validate_ido_times(ido_times: IdoTimes) -> Result<()> {
-    let clock = Clock::get()?;
-    if ido_times.whitelist_start <= clock.unix_timestamp {
-        return err!(ErrorCode::IdoFuture);
-    }
-    if !(ido_times.whitelist_start < ido_times.whitelist_end
-        && ido_times.whitelist_end < ido_times.sale_start
-        && ido_times.sale_start < ido_times.sale_end
-        && ido_times.sale_end < ido_times.claim_start)
-    {
-        return err!(ErrorCode::SeqTimes);
-    }
+fn validate_ido_times(_ido_times: IdoTimes) -> Result<()> {
+    // TODO comment for demo day =))
+
+    // let clock = Clock::get()?;
+    // if ido_times.whitelist_start <= clock.unix_timestamp {
+    //     return err!(ErrorCode::IdoFuture);
+    // }
+    // if !(ido_times.whitelist_start < ido_times.whitelist_end
+    //     && ido_times.whitelist_end < ido_times.sale_start
+    //     && ido_times.sale_start < ido_times.sale_end
+    //     && ido_times.sale_end < ido_times.claim_start)
+    // {
+    //     return err!(ErrorCode::SeqTimes);
+    // }
 
     Ok(())
 }

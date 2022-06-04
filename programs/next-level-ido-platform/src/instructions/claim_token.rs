@@ -55,7 +55,6 @@ pub struct ClaimToken<'info> {
         bump
     )]
     pub redeemable_mint: Box<Account<'info, Mint>>,
-    ///used by anchor for init of the above
     pub token_program: Program<'info, Token>,
 }
 

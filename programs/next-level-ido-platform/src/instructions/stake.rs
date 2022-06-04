@@ -6,18 +6,23 @@ use std::convert::TryInto;
 
 #[derive(Accounts)]
 pub struct Stake<'info> {
+    // stake token
     pub token_mint: Account<'info, Mint>,
     #[account(mut)]
+    // LP Token
     pub x_token_mint: Account<'info, Mint>,
     #[account(mut)]
+    // staker's stake token account
     pub token_from: Account<'info, TokenAccount>,
     #[account(
         mut,
         seeds = [b"vault", token_mint.key().as_ref()],
         bump
     )]
+    // stake token vault
     pub token_vault: Account<'info, TokenAccount>,
     #[account(mut)]
+    // staker's LP token account
     pub x_token_to: Account<'info, TokenAccount>,
 
     #[account(
@@ -30,10 +35,9 @@ pub struct Stake<'info> {
         bump
     )]
     user: Box<Account<'info, User>>,
-
     #[account(mut)]
     user_authority: Signer<'info>,
-    ///used by anchor for init of the above
+
     pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
 }
@@ -55,7 +59,7 @@ pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
     ];
     let signer = &[&seeds[..]];
 
-    // mint xToken to user
+    // mint LP token to user
     if total_token == 0 || total_x_token == 0 {
         let cpi_ctx = CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
@@ -88,7 +92,7 @@ pub fn exe(ctx: Context<Stake>, amount: u64) -> Result<()> {
         token::mint_to(cpi_ctx, what)?;
     }
 
-    //transfer the users tokens to the vault
+    //transfer the stake token to the vault
     let cpi_ctx = CpiContext::new(
         ctx.accounts.token_program.to_account_info(),
         token::Transfer {
